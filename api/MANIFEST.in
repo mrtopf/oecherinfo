@@ -1,0 +1,3 @@
+recursive-include corona/endpoints *.py
+recursive-include corona/db *.py
+#include *.txt

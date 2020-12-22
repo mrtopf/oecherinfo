@@ -1,0 +1,9 @@
+{
+  "version": "v1",
+  "packages": {
+    "chartjs-plugin-annotation": {
+      "signature": "469e08c163a14e9412fad6167e66b497",
+      "file": true
+    }
+  }
+}
