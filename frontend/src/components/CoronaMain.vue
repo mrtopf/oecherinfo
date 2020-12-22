@@ -58,7 +58,7 @@
             <v-card-text class="py-0" v-if="loaded">
                 <v-row class="text-center">
                     <v-col cols="12" md="4" order-md="3" order="1">
-                        <v-card tile color="primary" class="text-left">
+                        <v-card tile class="text-left">
                             <v-simple-table
                                 dense
                                 small
@@ -146,7 +146,13 @@
                                     </tbody>
                                 </template>
                             </v-simple-table>
+                            <v-divider></v-divider>
+                            <v-card-text class="caption">
+                            Die Pfeile geben den Langzeitrend wieder (7-Tage-Durchschnitt von vor 7 Tagen mit dem von jetzt)
+
+                            </v-card-text>
                         </v-card>
+                        
                     </v-col>
                     <v-col cols="12" lg="4" order="1">
                         <Mini
