@@ -27,7 +27,7 @@ import {
     Title,
     Tooltip,
     Filler,
-    Legend,
+    Legend
 } from "chart.js";
 Chart.register(
     LineController,
@@ -49,7 +49,7 @@ export default {
     props: {
         attribute: String,
         muni: String,
-        dateRange: Array,
+        dateRange: Array
     },
     data: () => ({
         secondWave: true,
@@ -60,7 +60,7 @@ export default {
             active: "line",
             positive: "line",
             recovered: "line",
-            deaths: "line",
+            deaths: "line"
         },
         tabs: {
             incidence: "Inzidenz",
@@ -68,7 +68,7 @@ export default {
             active: "aktiv",
             positive: "Fälle",
             recovered: "Genesen",
-            deaths: "Tote",
+            deaths: "Tote"
         },
         titles: {
             incidence: "7-Tage-Inzidenz",
@@ -76,8 +76,8 @@ export default {
             active: "Aktive Fälle",
             positive: "Fälle insgesamt",
             recovered: "Genesen insgesamt",
-            deaths: "Todesfälle insgesamt",
-        },
+            deaths: "Todesfälle insgesamt"
+        }
     }),
     mounted() {
         if (this.muni_data) {
@@ -90,7 +90,7 @@ export default {
             this.myChart = null;
             this.$nextTick(function() {
                 this.render();
-            })
+            });
         },
         render() {
             if (this.muni_data) {
@@ -119,13 +119,13 @@ export default {
             this.myChart = new Chart(ctx, {
                 type: chartData.type,
                 data: chartData.data,
-                options: chartData.options,
+                options: chartData.options
             });
         },
 
         ...mapActions({
-            updateMuni: "corona/updateMuni",
-        }),
+            updateMuni: "corona/updateMuni"
+        })
     },
     computed: {
         labelRange() {
@@ -135,7 +135,7 @@ export default {
             );
         },
         dataSets() {
-            console.log(this.muni_data)
+            console.log(this.muni_data);
             switch (this.attribute) {
                 case "incidence":
                     return [
@@ -153,8 +153,8 @@ export default {
                             pointBorderWidth: 0,
                             pointRadius: 0,
                             fill: true,
-                            borderWidth: 2,
-                        },
+                            borderWidth: 2
+                        }
                     ];
                     break;
                 case "new":
@@ -170,7 +170,7 @@ export default {
                             backgroundColor: "#11B8A5",
                             pointRadius: 0,
                             pointBorderWidth: 0,
-                            borderWidth: 5,
+                            borderWidth: 5
                         },
                         {
                             label: "Neue Fälle",
@@ -182,8 +182,8 @@ export default {
                             barPercentage: 0.5,
                             barThickness: 6,
                             maxBarThickness: 8,
-                            minBarLength: 0,
-                        },
+                            minBarLength: 0
+                        }
                     ];
                     break;
                 default:
@@ -201,8 +201,8 @@ export default {
                             pointBorderWidth: 0,
                             pointRadius: 0,
                             fill: true,
-                            borderWidth: 2,
-                        },
+                            borderWidth: 2
+                        }
                     ];
                     break;
             }
@@ -227,8 +227,8 @@ export default {
                                 enabled: true,
                                 cornerRadius: 3,
                                 position: "left",
-                                xAdjust: 100,
-                            },
+                                xAdjust: 100
+                            }
                         },
                         inc200: {
                             id: "hline2",
@@ -244,9 +244,9 @@ export default {
                                 cornerRadius: 3,
                                 enabled: true,
                                 position: "left",
-                                xAdjust: 100,
-                            },
-                        },
+                                xAdjust: 100
+                            }
+                        }
                     };
                     break;
                 default:
@@ -269,8 +269,8 @@ export default {
                         enabled: true,
                         cornerRadius: 0,
                         position: "center",
-                        yAdjust: 0,
-                    },
+                        yAdjust: 0
+                    }
                 };
             }
             if (this.labelRange.includes("2020-12-16T15:00:00") > 0) {
@@ -289,8 +289,8 @@ export default {
                         enabled: true,
                         cornerRadius: 0,
                         position: "center",
-                        yAdjust: 0,
-                    },
+                        yAdjust: 0
+                    }
                 };
             }
             return annotations;
@@ -300,7 +300,7 @@ export default {
                 type: this.chartTypes[this.attribute],
                 data: {
                     labels: this.labelRange,
-                    datasets: this.dataSets,
+                    datasets: this.dataSets
                 },
                 options: {
                     responsive: true,
@@ -314,29 +314,29 @@ export default {
                                 unit: "day",
                                 stepSize: 7,
                                 displayFormats: {
-                                    day: "DD. MMM",
-                                },
+                                    day: "DD. MMM"
+                                }
                             },
 
                             beginAtZero: true,
                             ticks: {
-                                padding: 25,
-                            },
+                                padding: 25
+                            }
                         },
 
                         y: {
                             beginAtZero: true,
                             ticks: {
-                                padding: 25,
-                            },
-                        },
+                                padding: 25
+                            }
+                        }
                     },
                     plugins: {
                         legend: {
                             labels: {
                                 usePointStyle: true,
-                                boxWidth: 8,
-                            },
+                                boxWidth: 8
+                            }
                         },
 
                         annotation: {
@@ -345,12 +345,12 @@ export default {
                             animation: {
                                 numbers: {
                                     properties: ["width", "height"],
-                                    type: "number",
-                                },
-                            },
-                        },
-                    },
-                },
+                                    type: "number"
+                                }
+                            }
+                        }
+                    }
+                }
             };
         },
         muni_data() {
@@ -358,13 +358,13 @@ export default {
         },
         ...mapGetters("corona", ["muniName"]),
         ...mapState({
-            muniDict: (state) => state.corona.muniDict,
-            loaded: (state) => state.corona.loaded,
-            munis: (state) => state.corona.munis,
-            allMuniData: (state) => state.corona.allMuniData,
-            today: (state) => state.corona.today,
-            date: (state) => state.corona.date,
-        }),
+            muniDict: state => state.corona.muniDict,
+            loaded: state => state.corona.loaded,
+            munis: state => state.corona.munis,
+            allMuniData: state => state.corona.allMuniData,
+            today: state => state.corona.today,
+            date: state => state.corona.date
+        })
     },
     watch: {
         chartHeight(v) {
@@ -382,7 +382,7 @@ export default {
                 this.myChart.destroy();
                 this.myChart = null;
             }
-            this.$nextTick(function () {
+            this.$nextTick(function() {
                 this.render();
             });
 
@@ -396,7 +396,7 @@ export default {
         },
         muni_data(val, oldval) {
             this.render();
-        },
-    },
+        }
+    }
 };
 </script>
