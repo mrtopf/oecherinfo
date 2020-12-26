@@ -1,8 +1,8 @@
 <template>
     <v-container
         fluid
+        v-if="muni_data"
         class="d-flex child-flex flex-column pa-0"
-        style="nbackground: green"
     >
         <v-card class="ma-0 flex-grow-1 flex-shrink-0" ref="tabCard">
             <v-toolbar color="white" flat>
@@ -78,12 +78,13 @@
                 </v-tab>
             </v-tabs>
             <v-card-text>
-                <div class="legend">
-                    Stand {{ date }}<br />
-                    <span class="l1-line"></span> Lockdown Light, 2.11.2020<br />
-                    <span class="l2-line"></span> Weihnachts-Lockdown,
-                    16.12.2020
+            <div class="caption text-uppercase">
+            Aktueller Wert:
+            </div>
+            <div class="text-h5 text-md-h3 font-weight-bold">
+                {{todayValue}}
                 </div>
+                
             </v-card-text>
 
             <v-tabs-items v-model="activeTab" ref="tabs">
@@ -97,6 +98,14 @@
                     />
                 </v-tab-item>
             </v-tabs-items>
+            <v-divider></v-divider>
+            <div class="caption text-right py-5">
+
+                                Stand {{ date }}<br />
+                    <span class="l1-line"></span> Lockdown Light, 2.11.2020<br />
+                    <span class="l2-line"></span> Weihnachts-Lockdown,
+                    16.12.2020
+</div>
         </v-card>
     </v-container>
 </template>
@@ -113,7 +122,7 @@ export default {
     },
     name: "MuniView",
     data: () => ({
-        activeTab: "incidence",
+        activeTab: 0,
         chartHeight: 500,
         chartWidth: 500,
         startMenu: false,
@@ -194,6 +203,11 @@ export default {
         CoronaGraph,
     },
     computed: {
+        todayValue() {
+            const tab = Object.keys(this.tabs)[this.activeTab]
+            const d = this.muni_data[tab]
+            return Math.round(d[d.length-1])
+        },
         muni_data() {
             return this.allMuniData[this.muni];
         },

@@ -38,6 +38,32 @@ Adjust `api/etc/dev.ini` accordingly for ports etc.
 
 ## frontend setup
 
+Install the submodule
+
+```
+git submodule init
+git submodule update
+```
+
+Install yalc:
+
+```
+sudo npm install -g yalc # or `yarn global add yalc`
+
+```
+
+Install the plugin via yalc:
+
+```
+cd frontend/vendor/chartjs-plugin-annotation
+yarn
+npm run build
+yalc publish
+cd ../../..
+```
+
+This will publish the annotation plugin in the local npm store
+
 ```
 cd frontend
 yarn

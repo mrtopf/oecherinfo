@@ -50,8 +50,6 @@ export default {
         attribute: String,
         muni: String,
         dateRange: Array,
-        // chartHeight: [String, Number],
-        // chartWidth: Number,
     },
     data: () => ({
         secondWave: true,
@@ -86,12 +84,6 @@ export default {
             this.createChart(this.attribute + "-chart", this.chartData);
         }
     },
-    // created: function () {
-    //     window.addEventListener("resize", this.rerender);
-    // },
-    // beforeDestroy: function () {
-    //     window.removeEventListener("resize", this.rerender);
-    // },
     methods: {
         rerender() {
             this.myChart.destroy();
@@ -143,6 +135,7 @@ export default {
             );
         },
         dataSets() {
+            console.log(this.muni_data)
             switch (this.attribute) {
                 case "incidence":
                     return [

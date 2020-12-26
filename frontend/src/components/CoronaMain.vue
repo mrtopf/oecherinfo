@@ -250,6 +250,47 @@
                         />
                     </v-col>
                     <v-col cols="12" md="4" order="7">
+                        <v-card tile class="text-left">
+                            <v-simple-table
+                                :class="
+                                    $vuetify.breakpoint.smAndUp
+                                        ? 'overview-table'
+                                        : 'overview-table small'
+                                "
+                            >
+                                <template v-slot:default>
+                                    <thead>
+                                        <tr>
+                                            <th class="text-left">Krankenhaus</th>
+                                            <th class="text-left">normal</th>
+                                            <th class="text-left">intensiv</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr
+                                            v-for="item in hospitals"
+                                            :key="item.name"
+                                        >
+                                            <td>
+                                                {{ item.name }}
+                                            </td>
+                                            <td>
+                                                <v-chip dense label tile :color="red" dark class="font-weight-bold">
+                                                <!--{{item.low_care}}-->
+                                                ausgelastet
+                                                </v-chip>
+                                            </td>
+                                            <td>
+                                                {{item.high_care}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </template>
+                            </v-simple-table>
+                            </v-card>
+                                                </v-col>
+
+                    <v-col cols="12" md="4" order="7">
                         <Mini
                             :oldValue="yesterday[selectedMuni].deaths"
                             :newValue="today[selectedMuni].deaths"
@@ -267,6 +308,30 @@
                                     name: 'munidata',
                                     params: {
                                         attribute: 'deaths',
+                                        muni: selectedMuni,
+                                    },
+                                })
+                            "
+                        />
+                    </v-col>
+                    <v-col cols="12" md="4" order="7">
+                        <Mini
+                            :oldValue="yesterday[selectedMuni].new"
+                            :newValue="today[selectedMuni].new"
+                            :yesterdate="yesterdate"
+                            small
+                            color="#ef476f"
+                            title="Neue Fälle"
+                            dark
+                            :start="startIndex"
+                            :loading="!loaded"
+                            prop="new"
+                            :data="muni_data"
+                            @click="
+                                $router.push({
+                                    name: 'munidata',
+                                    params: {
+                                        attribute: 'new',
                                         muni: selectedMuni,
                                     },
                                 })
@@ -404,6 +469,23 @@ export default {
             "14tage": "14 Tage",
         },
         secondWave: true,
+        hospitals: [
+            {
+                name: 'Luisenhospital',
+                low_care: "normal",
+                high_care: "full",
+            },
+            {
+                name: 'Marienhospital',
+                low_care: "full",
+                high_care: "full",
+            },
+            {
+                name: 'Universitätsklinikum',
+                low_care: "normal",
+                high_care: "stressed",
+            },
+        ],
         headers: [
             {
                 text: "Kommune",
@@ -461,7 +543,7 @@ export default {
             if (this.startSelected == "w2") {
                 return this.selectedMuni == "sr" ? 180 : 54;
             } else if (this.startSelected == "14tage") {
-                const l = this.muni_data["incidence"].length;
+                const l = z;
                 return l - 14;
             } else {
                 return 1;

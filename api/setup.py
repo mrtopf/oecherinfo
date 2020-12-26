@@ -12,16 +12,11 @@ setup(
     install_requires=[
         'gunicorn',
         'click',
-        'cerberus',
         'flask',
         'flask-restful',
         'flask-pymongo',
         'flask-mongoengine',
-        'flask-mail',
         'Flask-Cors',
-        'pytest',
-        'pytest-flask',
-        'passlib',
     ],
     entry_points={
         'flask.commands': [

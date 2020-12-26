@@ -22,6 +22,12 @@ FIELDS = [
     "new_deaths",
     "deaths",
     "average_new_cases",
+    "new_avg",
+    "active_avg",
+    "recovered_avg",
+    "incidence_avg",
+    "positive_avg",
+    "deaths_avg",
 ]
 
 class MuniData(Resource):
