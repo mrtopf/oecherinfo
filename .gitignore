@@ -31,3 +31,4 @@ dist
 .vscode
 
 pip-selfcheck\.json
+frontend/deploy.sh
