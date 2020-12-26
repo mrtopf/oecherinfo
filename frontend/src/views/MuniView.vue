@@ -23,8 +23,8 @@
                                     name: 'munidata',
                                     params: {
                                         attribute: 'incidence',
-                                        muni: item.muni,
-                                    },
+                                        muni: item.muni
+                                    }
                                 }"
                             >
                                 <v-list-item-content>
@@ -78,20 +78,33 @@
                 </v-tab>
             </v-tabs>
             <v-card-text>
-            <div class="caption text-uppercase">
-            Aktueller Wert:
-            </div>
-            <div class="text-h5 text-md-h3 font-weight-bold">
-                {{todayValue}}
+                <div class="caption text-uppercase">Wert am {{ date }}:</div>
+                <div class="text-h5 text-md-h3 font-weight-bold primary--text">
+                    {{ todayValue }}<v-tooltip top
+                                v-if="propName!='recovered'"
+                    >
+                        <template v-slot:activator="{ on }">
+                            <v-icon
+                                v-on="on"
+                                :color="trend.color"
+                                :size="$vuetify.breakpoint.smAndUp ? 30 : 12"
+                                :style="trend.rotate"
+                                class="pa-0 pl-1 pr-5 ma-0"
+                                >{{ trend.icon }}</v-icon
+                            >
+                        </template>
+                        <span
+                            >Langzeittrend</span
+                        >
+                    </v-tooltip>
+                    <small class="pl-3 text-md-h6 caption">{{ diffValue }} zum vorherigen Datum</small>
                 </div>
-                
             </v-card-text>
 
             <v-tabs-items v-model="activeTab" ref="tabs">
                 <v-tab-item v-for="tab in Object.keys(tabs)" :key="tab">
                     <CoronaGraph
-                        :chartHeight="chartHeight"
-                        :chartWidth="chartWidth"
+                        class="pb-8"
                         :dateRange="dateRange"
                         :attribute="tab"
                         :muni="muni"
@@ -100,12 +113,10 @@
             </v-tabs-items>
             <v-divider></v-divider>
             <div class="caption text-right py-5">
-
-                                Stand {{ date }}<br />
-                    <span class="l1-line"></span> Lockdown Light, 2.11.2020<br />
-                    <span class="l2-line"></span> Weihnachts-Lockdown,
-                    16.12.2020
-</div>
+                Stand {{ date }}<br />
+                <span class="l1-line"></span> Lockdown Light, 2.11.2020<br />
+                <span class="l2-line"></span> Weihnachts-Lockdown, 16.12.2020
+            </div>
         </v-card>
     </v-container>
 </template>
@@ -118,7 +129,7 @@ import CoronaGraph from "@/components/CoronaGraph.vue";
 export default {
     props: {
         muni: String,
-        attribute: String,
+        attribute: String
     },
     name: "MuniView",
     data: () => ({
@@ -137,7 +148,7 @@ export default {
             active: "line",
             positive: "line",
             recovered: "line",
-            deaths: "line",
+            deaths: "line"
         },
         tabs: {
             incidence: "Inzidenz",
@@ -145,7 +156,7 @@ export default {
             active: "aktiv",
             positive: "Fälle",
             recovered: "Genesen",
-            deaths: "Tote",
+            deaths: "Tote"
         },
         titles: {
             incidence: "7-Tage-Inzidenz",
@@ -153,8 +164,8 @@ export default {
             active: "Aktive Fälle",
             positive: "Fälle insgesamt",
             recovered: "Genesen insgesamt",
-            deaths: "Todesfälle insgesamt",
-        },
+            deaths: "Todesfälle insgesamt"
+        }
     }),
     mounted() {
         if (this.muni_data) {
@@ -164,7 +175,7 @@ export default {
     watch: {
         muni_data(val, oldval) {
             this.dateRange = [0, val.incidence.length];
-        },
+        }
     },
     methods: {
         setStart(startSelected) {
@@ -191,36 +202,79 @@ export default {
             this.myChart = new Chart(ctx, {
                 type: chartData.type,
                 data: chartData.data,
-                options: chartData.options,
+                options: chartData.options
             });
         },
 
         ...mapActions({
-            updateMuni: "corona/updateMuni",
-        }),
+            updateMuni: "corona/updateMuni"
+        })
     },
     components: {
-        CoronaGraph,
+        CoronaGraph
     },
     computed: {
+        propName() {
+            return Object.keys(this.tabs)[this.activeTab];
+        },
         todayValue() {
-            const tab = Object.keys(this.tabs)[this.activeTab]
-            const d = this.muni_data[tab]
-            return Math.round(d[d.length-1])
+            return Math.round(this.today[this.muni][this.propName]);
+        },
+        yesterdayValue() {
+            return Math.round(this.yesterday[this.muni][this.propName]);
+        },
+        diffValue() {
+            const v = this.todayValue - this.yesterdayValue;
+            if (v > 0) {
+                return "+" + v;
+            } else if (v < 0) {
+                return v;
+            } else {
+                return "+/- 0";
+            }
+        },
+        trend() {
+            const d = Math.round(
+                this.today[this.muni][this.propName] -
+                    this.weekerday[this.muni][this.propName]
+            );
+            if (d > 0) {
+                return {
+                    rotate: "padding-bottom: 0px; transform: rotate(45deg)",
+                    icon: "fas fa-arrow-up",
+                    color: "red",
+                    hint: "Aufwärtstrend über 14 Tage"
+                };
+            } else if (d < 0) {
+                return {
+                    rotate: "transform: rotate(-45deg)",
+                    icon: "fas fa-arrow-down",
+                    color: "green",
+                    hint: "Abwärtstrend über 14 Tage"
+                };
+            } else {
+                return {
+                    icon: "fas fa-minus",
+                    color: "grey",
+                    hint: "gleichbleibend über 14 Tage"
+                };
+            }
         },
         muni_data() {
             return this.allMuniData[this.muni];
         },
         ...mapGetters("corona", ["muniName"]),
         ...mapState({
-            muniDict: (state) => state.corona.muniDict,
-            loaded: (state) => state.corona.loaded,
-            munis: (state) => state.corona.munis,
-            allMuniData: (state) => state.corona.allMuniData,
-            today: (state) => state.corona.today,
-            date: (state) => state.corona.date,
-        }),
-    },
+            muniDict: state => state.corona.muniDict,
+            loaded: state => state.corona.loaded,
+            munis: state => state.corona.munis,
+            allMuniData: state => state.corona.allMuniData,
+            today: state => state.corona.today,
+            yesterday: state => state.corona.yesterday,
+            weekerday: state => state.corona.weekerday,
+            date: state => state.corona.date
+        })
+    }
 };
 </script>
 <style lang="scss">

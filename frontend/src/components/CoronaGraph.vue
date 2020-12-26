@@ -135,7 +135,6 @@ export default {
             );
         },
         dataSets() {
-            console.log(this.muni_data);
             switch (this.attribute) {
                 case "incidence":
                     return [
@@ -367,27 +366,6 @@ export default {
         })
     },
     watch: {
-        chartHeight(v) {
-            console.log("height", v);
-            if (this.myChart) {
-                this.myChart.destroy();
-            }
-            this.render();
-            //this.myChart.canvas.parentNode.style.height=v
-        },
-        chartWidth(v) {
-            console.log("width", v);
-            if (this.myChart) {
-                console.log("bye");
-                this.myChart.destroy();
-                this.myChart = null;
-            }
-            this.$nextTick(function() {
-                this.render();
-            });
-
-            //this.myChart.canvas.parentNode.style.height=v
-        },
         dateRange(val) {
             this.render();
         },
