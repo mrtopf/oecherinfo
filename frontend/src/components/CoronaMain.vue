@@ -38,6 +38,7 @@
                             <v-icon>fa fa-calendar-alt</v-icon>
                         </v-btn>
                     </template>
+
                     <v-list>
                         <v-list-item class="font-weight-bold text-uppercase">
                             Zeitfenster
@@ -50,6 +51,9 @@
                         </v-list-item-group>
                     </v-list>
                 </v-menu>
+                <v-btn icon :loading="!loaded" @click="load()">
+                    <v-icon color="secondary">fa fa-sync</v-icon>
+                </v-btn>
             </v-card-title>
             <v-card-text class="pb-0 caption">
                 <b>{{ startDict[startSelected] }}</b> | Stand: {{ date }}
@@ -148,11 +152,11 @@
                             </v-simple-table>
                             <v-divider></v-divider>
                             <v-card-text class="caption">
-                            Die Pfeile geben den Langzeitrend wieder (7-Tage-Durchschnitt von vor 7 Tagen mit dem von jetzt)
-
+                                Die Pfeile geben den Langzeittrend wieder
+                                (7-Tage-Durchschnitt von vor 7 Tagen mit dem von
+                                jetzt)
                             </v-card-text>
                         </v-card>
-                        
                     </v-col>
                     <v-col cols="12" lg="4" order="1">
                         <Mini
@@ -167,8 +171,8 @@
                                     name: 'munidata',
                                     params: {
                                         attribute: 'incidence',
-                                        muni: selectedMuni,
-                                    },
+                                        muni: selectedMuni
+                                    }
                                 })
                             "
                             :start="startIndex"
@@ -194,8 +198,8 @@
                                     name: 'munidata',
                                     params: {
                                         attribute: 'active',
-                                        muni: selectedMuni,
-                                    },
+                                        muni: selectedMuni
+                                    }
                                 })
                             "
                         />
@@ -219,8 +223,8 @@
                                     name: 'munidata',
                                     params: {
                                         attribute: 'positive',
-                                        muni: selectedMuni,
-                                    },
+                                        muni: selectedMuni
+                                    }
                                 })
                             "
                         />
@@ -243,8 +247,8 @@
                                     name: 'munidata',
                                     params: {
                                         attribute: 'recovered',
-                                        muni: selectedMuni,
-                                    },
+                                        muni: selectedMuni
+                                    }
                                 })
                             "
                         />
@@ -261,7 +265,9 @@
                                 <template v-slot:default>
                                     <thead>
                                         <tr>
-                                            <th class="text-left">Krankenhaus</th>
+                                            <th class="text-left">
+                                                Krankenhaus
+                                            </th>
                                             <th class="text-left">normal</th>
                                             <th class="text-left">intensiv</th>
                                         </tr>
@@ -275,20 +281,27 @@
                                                 {{ item.name }}
                                             </td>
                                             <td>
-                                                <v-chip dense label tile :color="red" dark class="font-weight-bold">
-                                                <!--{{item.low_care}}-->
-                                                ausgelastet
+                                                <v-chip
+                                                    dense
+                                                    label
+                                                    tile
+                                                    color="red"
+                                                    dark
+                                                    class="font-weight-bold"
+                                                >
+                                                    <!--{{item.low_care}}-->
+                                                    ausgelastet
                                                 </v-chip>
                                             </td>
                                             <td>
-                                                {{item.high_care}}
+                                                {{ item.high_care }}
                                             </td>
                                         </tr>
                                     </tbody>
                                 </template>
                             </v-simple-table>
-                            </v-card>
-                                                </v-col>
+                        </v-card>
+                    </v-col>
 
                     <v-col cols="12" md="4" order="7">
                         <Mini
@@ -308,8 +321,8 @@
                                     name: 'munidata',
                                     params: {
                                         attribute: 'deaths',
-                                        muni: selectedMuni,
-                                    },
+                                        muni: selectedMuni
+                                    }
                                 })
                             "
                         />
@@ -332,15 +345,15 @@
                                     name: 'munidata',
                                     params: {
                                         attribute: 'new',
-                                        muni: selectedMuni,
-                                    },
+                                        muni: selectedMuni
+                                    }
                                 })
                             "
                         />
                     </v-col>
                 </v-row>
             </v-card-text>
-            <v-card-text>
+            <v-card-text v-if="loaded">
                 <v-row>
                     <v-col cols="12" md="6">
                         <v-btn
@@ -354,8 +367,8 @@
                                     name: 'munidata',
                                     params: {
                                         attribute: 'active',
-                                        muni: selectedMuni,
-                                    },
+                                        muni: selectedMuni
+                                    }
                                 })
                             "
                         >
@@ -388,7 +401,7 @@
                 </v-row>
             </v-card-text>
 
-            <v-card-text class="mt-10">
+            <v-card-text class="mt-10" v-if="loaded">
                 <h3 class="text-h4 black--text text-uppercase my-3">
                     Tabellarische Übersicht
                 </h3>
@@ -466,40 +479,40 @@ export default {
         startDict: {
             all: "Gesamtzeitraum",
             w2: "2. Welle",
-            "14tage": "14 Tage",
+            "14tage": "14 Tage"
         },
         secondWave: true,
         hospitals: [
             {
-                name: 'Luisenhospital',
+                name: "Luisenhospital",
                 low_care: "normal",
-                high_care: "full",
+                high_care: "full"
             },
             {
-                name: 'Marienhospital',
+                name: "Marienhospital",
                 low_care: "full",
-                high_care: "full",
+                high_care: "full"
             },
             {
-                name: 'Universitätsklinikum',
+                name: "Universitätsklinikum",
                 low_care: "normal",
-                high_care: "stressed",
-            },
+                high_care: "stressed"
+            }
         ],
         headers: [
             {
                 text: "Kommune",
                 align: "start",
                 sortable: true,
-                value: "municipality_name",
+                value: "municipality_name"
             },
             { text: "Aktiv", value: "active" },
             { text: "Neue Fälle", value: "new" },
             { text: "Fälle insgesamt", value: "positive" },
             { text: "Genesen", value: "recovered" },
             { text: "Verstorben", value: "deaths" },
-            { text: "Inzidenz", value: "incidence" },
-        ],
+            { text: "Inzidenz", value: "incidence" }
+        ]
     }),
     methods: {
         handleMuniClick(item) {
@@ -507,8 +520,8 @@ export default {
                 name: "munidata",
                 params: {
                     attribute: "incidence",
-                    muni: item.muni,
-                },
+                    muni: item.muni
+                }
             });
         },
         getChipColor(incidence) {
@@ -521,7 +534,7 @@ export default {
         },
         sortTable(items, sortBy, sortDesc) {
             // this mainly keeps the SR element on bottom
-            const parts = _.partition(items, (o) => o.muni == "sr"); // split into sr or not
+            const parts = _.partition(items, o => o.muni == "sr"); // split into sr or not
             const d = sortDesc[0] ? "desc" : "asc";
             let result = _.orderBy(parts[1], [sortBy], [d]);
             result.push(parts[0][0]);
@@ -529,21 +542,22 @@ export default {
         },
         ...mapActions({
             updateMuni: "corona/updateMuni",
-        }),
+            load: "corona/load",
+        })
     },
     async mounted() {},
     components: {
         Mini,
         MiniNew,
         Incidence,
-        NewCases,
+        NewCases
     },
     computed: {
         startIndex() {
             if (this.startSelected == "w2") {
                 return this.selectedMuni == "sr" ? 180 : 54;
             } else if (this.startSelected == "14tage") {
-                const l = z;
+                const l = this.muni_data["incidence"].length;
                 return l - 14;
             } else {
                 return 1;
@@ -552,7 +566,7 @@ export default {
         todayListFiltered() {
             return _.filter(
                 this.todayList,
-                (item) => item.muni == "sr" || item.muni == this.selectedMuni
+                item => item.muni == "sr" || item.muni == this.selectedMuni
             );
         },
         todayList() {
@@ -564,7 +578,7 @@ export default {
                 const wData = this.weekerday[muni];
                 let rec = {
                     municipality_name: tData["municipality_name"],
-                    muni: tData["municipality"],
+                    muni: tData["municipality"]
                 };
                 if (muni == "sr") {
                     rec["rowClass"] = "totalRow";
@@ -582,7 +596,7 @@ export default {
                     "incidence_avg",
                     "deaths_avg",
                     "recovered_avg",
-                    "positive_avg",
+                    "positive_avg"
                 ]) {
                     rec[prop] = Math.round(tData[prop]);
                     rec[prop + "_diff"] = Math.round(tData[prop] - yData[prop]);
@@ -606,17 +620,17 @@ export default {
         },
         ...mapGetters("corona", ["muniName", "muni_data"]),
         ...mapState({
-            muniDict: (state) => state.corona.muniDict,
-            loaded: (state) => state.corona.loaded,
-            munis: (state) => state.corona.munis,
-            today: (state) => state.corona.today,
-            yesterday: (state) => state.corona.yesterday,
-            weekerday: (state) => state.corona.weekerday,
-            date: (state) => state.corona.date,
-            yesterdate: (state) => state.corona.yesterdate,
-            selectedMuni: (state) => state.corona.selectedMuni,
-        }),
-    },
+            muniDict: state => state.corona.muniDict,
+            loaded: state => state.corona.loaded,
+            munis: state => state.corona.munis,
+            today: state => state.corona.today,
+            yesterday: state => state.corona.yesterday,
+            weekerday: state => state.corona.weekerday,
+            date: state => state.corona.date,
+            yesterdate: state => state.corona.yesterdate,
+            selectedMuni: state => state.corona.selectedMuni
+        })
+    }
 };
 </script>
 <style lang="scss">
