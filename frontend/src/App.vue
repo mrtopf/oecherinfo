@@ -12,7 +12,7 @@
                     @click="$router.push('/')"
                 >
                     <span class="font-weight-bold"> oecher.info </span>
-                    <span class="font-weight-thin"> | corona dashboard </span>
+                    <span class="font-weight-thin"> | corona </span>
                 </v-btn>
             </v-toolbar-title>
             <v-spacer></v-spacer>

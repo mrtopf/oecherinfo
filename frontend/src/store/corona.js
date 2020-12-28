@@ -1,8 +1,7 @@
-import axios from "axios";
-import router from '@/router'
+import axios from "axios"
+import router from "@/router"
 
-
-const API = process.env.VUE_APP_CORONA_API;
+const API = process.env.VUE_APP_CORONA_API
 
 const state = {
     loaded: false,
@@ -10,6 +9,8 @@ const state = {
     date: null,
     allMuniData: {},
     muniDict: {},
+    divi: {},
+    hospitals: {},
     today: {},
     yesterday: {},
     weekerday: {},
@@ -19,7 +20,7 @@ const state = {
 }
 
 const getters = {
-    muni_data: state => {
+    muni_data: (state) => {
         const routerMuni = router.currentRoute.params.muni
         if (routerMuni) {
             return state.allMuniData[routerMuni]
@@ -27,22 +28,72 @@ const getters = {
         const data = state.allMuniData[state.selectedMuni]
         return data
     },
-    muniName: state => {
+    muniName: (state) => {
         let selected = state.selectedMuni
         const routerMuni = router.currentRoute.params.muni
         if (routerMuni) {
             selected = routerMuni
         }
-        if (selected== "sr") {
-            return "Städteregion Aachen";
+        if (selected == "sr") {
+            return "Städteregion Aachen"
         } else {
-            return state.muniDict[selected];
+            return state.muniDict[selected]
         }
+    },
+    // return the list for today
+    todayList: (state) => {
+        // return today as list
+        let res = []
+        for (const muni in state.today) {
+            const tData = state.today[muni]
+            const yData = state.yesterday[muni]
+            const wData = state.weekerday[muni]
+            let rec = {
+                municipality_name: tData["municipality_name"],
+                muni: tData["municipality"],
+            }
+            if (muni == "sr") {
+                rec["rowClass"] = "totalRow"
+                rec["municipality_name"] = "Gesamtergebnis"
+            }
+            for (const prop of [
+                "new",
+                "active",
+                "incidence",
+                "deaths",
+                "recovered",
+                "positive",
+                "new_avg",
+                "active_avg",
+                "incidence_avg",
+                "deaths_avg",
+                "recovered_avg",
+                "positive_avg",
+            ]) {
+                rec[prop] = Math.round(tData[prop])
+                rec[prop + "_diff"] = Math.round(tData[prop] - yData[prop])
+
+                // compute trends via data from week ago
+                const d = Math.round(tData[prop] - wData[prop])
+                if (d > 0) {
+                    rec[prop + "_trend_color"] = "red"
+                    rec[prop + "_trend_icon"] = "fas fa-chevron-up"
+                } else if (d < 0) {
+                    rec[prop + "_trend_color"] = "green"
+                    rec[prop + "_trend_icon"] = "fas fa-chevron-down"
+                } else {
+                    rec[prop + "_trend_color"] = "grey"
+                    rec[prop + "_trend_icon"] = "fa fa-minus"
+                }
+            }
+            res.push(rec)
+        }
+        return res
     },
 }
 
 const actions = {
-    async load({commit, dispatch}) {
+    async load({ commit, dispatch }) {
         commit("setLoading")
         axios
             .get(`${API}/all`)
@@ -54,6 +105,8 @@ const actions = {
                 commit("storeYesterdate", response.data.yesterdateFormatted)
                 commit("storeDate", response.data.dateFormatted)
                 commit("storeMuniData", response.data.muni_data)
+                commit("storeDIVIData", response.data.divi)
+                commit("storeHospitals", response.data.hospitals)
                 commit("setLoaded")
             })
             .catch((error) => {
@@ -61,24 +114,24 @@ const actions = {
                 alert("Ein Fehler ist beim Laden der Daten aufgetreten")
             })
     },
-    updateMuni({commit, state}, muni) {
+    updateMuni({ commit, state }, muni) {
         commit("setMuni", muni.muni)
-    }
+    },
 }
 const mutations = {
     storeMunis(state, munis) {
         state.muniDict = munis
         let allMunis = []
         for (const muni in munis) {
-            if (muni=="sr") {
+            if (muni == "sr") {
                 allMunis.unshift({
                     muni: muni,
-                    name: "Städteregion Aachen"
+                    name: "Städteregion Aachen",
                 })
             } else {
                 allMunis.push({
                     muni: muni,
-                    name: munis[muni]
+                    name: munis[muni],
                 })
             }
         }
@@ -102,6 +155,12 @@ const mutations = {
     storeMuniData(state, data) {
         state.allMuniData = data
     },
+    storeDIVIData(state, data) {
+        state.divi = data
+    },
+    storeHospitals(state, data) {
+        state.hospitals = data
+    },
     setMuni(state, muni) {
         Object.keys(state.muniDict).indexOf(muni)
         state.selectedMuni = muni
@@ -111,7 +170,7 @@ const mutations = {
     },
     setLoading(state) {
         state.loaded = false
-    }
+    },
 }
 
 export const corona = {
@@ -119,5 +178,5 @@ export const corona = {
     state,
     getters,
     actions,
-    mutations
+    mutations,
 }
