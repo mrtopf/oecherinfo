@@ -35,3 +35,4 @@ frontend/deploy.sh
 example.csv
 .gitignore
 frontend_deploy.sh
+deploy.sh
