@@ -30,6 +30,23 @@ FIELDS = [
     "deaths_avg",
 ]
 
+HOSPITAL_MAP = {
+    '771888' :  'Marienhospital, Aachen',
+    '772078' :  'Luisenhospital, Aachen',
+    '771450' :  'Universitätsklinikum, Aachen',
+    '772113' :  'Rhein-Maas Klinikum, Würselen',
+    '771699' :  'Bethlehem-Gesundheitszentrum, Stolberg',
+    '772187' :  'St.-Antonius-Hospital, Eschweiler',
+    '772720' :  'Eifelklinik St. Brigida, Simmerath',
+}
+
+STATUS_COLORS = {
+    'NICHT_VERFUEGBAR': 'red',
+    'BEGRENZT': 'oecheryellow',
+    'KEINE_ANGABE': 'grey lighten-3',
+    'VERFUEGBAR': 'green',
+}
+
 class MuniData(Resource):
     """return data for one municipality"""
 
@@ -130,6 +147,29 @@ class AllData(Resource):
             muni_data[muni] = data
             
         resp['muni_data'] = muni_data
+
+        # add divi data
+        divi_results =  mongo.db.divi_daily.find({'gemeindeschluessel': '05334'}).sort("date", -1).limit(1)[0]
+        resp['divi'] = divi_results
+        resp['divi']['dateFormatted'] = resp['divi']['date'].strftime("%d.%m.%Y %H:%M")
+
+        # get hospitals
+        divi_results =  mongo.db.divi_hospitals.find({},{'krankenhausStandort': 1, 'bettenStatus': 1})
+        hospitals = []
+        for h in divi_results:
+            hospitals.append({
+                #'name': h['krankenhausStandort']['bezeichnung'],
+                'name': HOSPITAL_MAP[h['_id']],
+                'lowCare': STATUS_COLORS[h['bettenStatus']['statusLowCare']],
+                'highCare': STATUS_COLORS[h['bettenStatus']['statusHighCare']],
+                'ecmo': STATUS_COLORS[h['bettenStatus']['statusECMO']],
+                'lowCareText': h['bettenStatus']['statusLowCare'].capitalize(),
+                'highCareText': h['bettenStatus']['statusHighCare'].capitalize(),
+                'ecmoText': h['bettenStatus']['statusECMO'].capitalize(),
+                
+            })
+    
+        resp['hospitals'] = hospitals
         return resp
 
             
