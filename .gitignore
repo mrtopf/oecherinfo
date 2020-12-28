@@ -32,3 +32,6 @@ dist
 
 pip-selfcheck\.json
 frontend/deploy.sh
+example.csv
+.gitignore
+frontend_deploy.sh
