@@ -118,4 +118,8 @@ export default {
 .footer a {
     color: white !important;
 }
+.ttip {
+    border-bottom: 1px dashed rgba(0,0,0,0.5);
+    cursor: pointer;
+}
 </style>
