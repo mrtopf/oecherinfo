@@ -6,7 +6,9 @@
         :height="$vuetify.breakpoint.mdAndUp ? 650 : 480"
     >
         <v-card-text>
-            <h2 class="text-h6 text-md-h4 font-weight-bold primary--text pa-0 ma-0 mb-6">
+            <h2
+                class="text-h6 text-md-h4 font-weight-bold primary--text pa-0 ma-0 mb-6"
+            >
                 {{ title }}: {{ todayValue }}
                 <v-tooltip bottom max-width="300" v-if="trends">
                     <template v-slot:activator="{ on }">
@@ -19,11 +21,7 @@
                     Unterschied zum Vortag
                 </v-tooltip>
 
-                <v-tooltip
-                    bottom
-                    v-if="trends"
-                    max-width="300"
-                >
+                <v-tooltip bottom v-if="trends" max-width="300">
                     <template v-slot:activator="{ on }">
                         <span class="ttip">
                             <v-icon
@@ -44,22 +42,48 @@
             </h2>
             <v-card color="transparent" flat>
                 <v-tabs
+                    ref="tabs"
                     v-model="view"
                     background-color="#f7f7f7"
                     class="graph-tabs"
                     active-class="graph-tab-active"
                 >
-                    <v-tab key="daily" class="body-2 font-weight-bold">
+                    <v-tab
+                        key="daily"
+                        class="body-2 font-weight-bold"
+                        @click="
+                            $matomo.trackEvent(
+                                'CoronaGraph-Tab',
+                                'daily',
+                                attribute
+                            )
+                        "
+                    >
                         Täglich
                     </v-tab>
                     <v-tab
                         key="cumulative"
                         v-if="cumulative"
-                        class="body-2 font-weight-bold"
-                    >
-                        kumuliert
+                        @click="
+                            $matomo.trackEvent(
+                                'CoronaGraph-Tab',
+                                'cumulative',
+                                attribute
+                            )
+                        "
+                        class="body-2 font-weight-bold" > kumuliert
                     </v-tab>
-                    <v-tab key="data" class="body-2 font-weight-bold">
+                    <v-tab
+                        key="data"
+                        class="body-2 font-weight-bold"
+                        @click="
+                            $matomo.trackEvent(
+                                'CoronaGraph-Tab',
+                                'data',
+                                attribute
+                            )
+                        "
+                    >
                         Daten
                     </v-tab>
                 </v-tabs>
@@ -141,7 +165,7 @@ import {
     Title,
     Tooltip,
     Filler,
-    Legend,
+    Legend
 } from "chart.js";
 Chart.register(
     LineController,
@@ -173,7 +197,7 @@ export default {
     data: () => ({
         view: 0,
         myChart: null,
-        myCumulativeChart: null,
+        myCumulativeChart: null
     }),
     mounted() {
         if (this.muni_data) {
@@ -207,12 +231,12 @@ export default {
             this.myChart = new Chart(ctx, {
                 type: "bar",
                 data: this.chartData.data,
-                options: this.chartData.options,
+                options: this.chartData.options
             });
         },
         createCumulativeChart() {
             if (!this.cumulative) {
-                return
+                return;
             }
             const ctx = document.getElementById(
                 this.attribute + "-cumulative-chart"
@@ -220,13 +244,13 @@ export default {
             this.myCumulativeChart = new Chart(ctx, {
                 type: "bar",
                 data: this.cumulativeChartData.data,
-                options: this.chartData.options,
+                options: this.chartData.options
             });
         },
 
         ...mapActions({
-            updateMuni: "corona/updateMuni",
-        }),
+            updateMuni: "corona/updateMuni"
+        })
     },
     computed: {
         /**
@@ -253,7 +277,10 @@ export default {
                 return _.slice(array, start, end);
             }
 
-            return _.chain(data).map(window).map(average).value();
+            return _.chain(data)
+                .map(window)
+                .map(average)
+                .value();
         },
         attributeData() {
             return this.muni_data[this.attribute];
@@ -285,23 +312,24 @@ export default {
             const d = this.diffValueWeek;
             if (d > 0) {
                 return {
-                    rotate: "padding-bottom: 0px; transform: translate(0px,8px) rotate(45deg) ",
+                    rotate:
+                        "padding-bottom: 0px; transform: translate(0px,8px) rotate(45deg) ",
                     icon: "fas fa-arrow-up",
                     color: "red",
-                    hint: "Aufwärtstrend über 14 Tage",
+                    hint: "Aufwärtstrend über 14 Tage"
                 };
             } else if (d < 0) {
                 return {
                     rotate: "transform: rotate(-45deg)",
                     icon: "fas fa-arrow-down",
                     color: "green",
-                    hint: "Abwärtstrend über 14 Tage",
+                    hint: "Abwärtstrend über 14 Tage"
                 };
             } else {
                 return {
                     icon: "fas fa-minus",
                     color: "grey",
-                    hint: "gleichbleibend über 14 Tage",
+                    hint: "gleichbleibend über 14 Tage"
                 };
             }
         },
@@ -311,19 +339,19 @@ export default {
                     text: "Datum",
                     value: "date",
                     sortable: true,
-                    sort: (a, b) => (new Date(a) < new Date(b) ? -1 : 1),
+                    sort: (a, b) => (new Date(a) < new Date(b) ? -1 : 1)
                 },
                 {
                     text: this.title,
                     value: "value",
-                    sortable: true,
-                },
+                    sortable: true
+                }
             ];
             if (this.cumulative) {
                 headers.push({
                     text: "kumuliert",
                     value: "sum",
-                    sortable: true,
+                    sortable: true
                 });
             }
             return headers;
@@ -336,12 +364,12 @@ export default {
                     data.push({
                         date: moment(md["labels"][idx]),
                         value: Math.round(md[this.attribute][idx]),
-                        sum: md[this.cumulative][idx],
+                        sum: md[this.cumulative][idx]
                     });
                 } else {
                     data.push({
                         date: moment(md["labels"][idx]),
-                        value: Math.round(md[this.attribute][idx]),
+                        value: Math.round(md[this.attribute][idx])
                     });
                 }
             }
@@ -354,7 +382,7 @@ export default {
             );
         },
         dataSets() {
-            const l = this.averages.length
+            const l = this.averages.length;
             return [
                 {
                     type: "line",
@@ -363,7 +391,7 @@ export default {
                     borderColor: "#11616A",
                     pointRadius: 0,
                     pointBorderWidth: 0,
-                    borderWidth: 3,
+                    borderWidth: 3
                 },
                 {
                     label: this.title,
@@ -378,8 +406,8 @@ export default {
 
                     barPercentage: 1.8,
                     minBarLength: 0,
-                    hoverBackgroundColor: "black",
-                },
+                    hoverBackgroundColor: "black"
+                }
             ];
         },
         annotations() {
@@ -402,8 +430,8 @@ export default {
                                 enabled: true,
                                 cornerRadius: 3,
                                 position: "left",
-                                xAdjust: 100,
-                            },
+                                xAdjust: 100
+                            }
                         },
                         inc200: {
                             id: "hline2",
@@ -419,9 +447,9 @@ export default {
                                 cornerRadius: 3,
                                 enabled: true,
                                 position: "left",
-                                xAdjust: 100,
-                            },
-                        },
+                                xAdjust: 100
+                            }
+                        }
                     };
                     break;
                 default:
@@ -446,8 +474,8 @@ export default {
                         position: "center",
                         position: "top left",
                         yAdjust: 170,
-                        content: "Lockdownchen",
-                    },
+                        content: "Lockdownchen"
+                    }
                 };
             }
             if (this.labelRange.includes("2020-12-16T15:00:00") > 0) {
@@ -467,8 +495,8 @@ export default {
                         cornerRadius: 0,
                         position: "bottom left",
                         yAdjust: 170,
-                        content: "Lockdown",
-                    },
+                        content: "Lockdown"
+                    }
                 };
             }
             return annotations;
@@ -478,7 +506,7 @@ export default {
                 type: "bar",
                 data: {
                     labels: this.labelRange,
-                    datasets: this.dataSets,
+                    datasets: this.dataSets
                 },
                 options: {
                     responsive: true,
@@ -490,22 +518,22 @@ export default {
                             time: {
                                 unit: "month",
                                 displayFormats: {
-                                    month: "DD. MMM",
-                                },
+                                    month: "DD. MMM"
+                                }
                             },
 
                             beginAtZero: true,
                             ticks: {
-                                padding: 25,
-                            },
+                                padding: 25
+                            }
                         },
 
                         y: {
                             beginAtZero: true,
                             ticks: {
-                                padding: 25,
-                            },
-                        },
+                                padding: 25
+                            }
+                        }
                     },
                     plugins: {
                         tooltip: {
@@ -517,13 +545,13 @@ export default {
                             xPadding: 15,
                             cornerRadius: 0,
                             borderColor: "#333333",
-                            borderWidth: 1,
+                            borderWidth: 1
                         },
                         legend: {
                             labels: {
                                 usePointStyle: true,
-                                boxWidth: 8,
-                            },
+                                boxWidth: 8
+                            }
                         },
 
                         annotation: {
@@ -532,12 +560,12 @@ export default {
                             animation: {
                                 numbers: {
                                     properties: ["width", "height"],
-                                    type: "number",
-                                },
-                            },
-                        },
-                    },
-                },
+                                    type: "number"
+                                }
+                            }
+                        }
+                    }
+                }
             };
         },
         chartData() {
@@ -546,8 +574,8 @@ export default {
                 type: "bar",
                 data: {
                     labels: this.labelRange,
-                    datasets: this.dataSets,
-                },
+                    datasets: this.dataSets
+                }
             };
             return { ...b, ...myData };
         },
@@ -563,15 +591,15 @@ export default {
                     backgroundColor: "#1B9AAA",
                     barPercentage: 1.8,
                     minBarLength: 0,
-                    hoverBackgroundColor: "black",
-                },
+                    hoverBackgroundColor: "black"
+                }
             ];
             const myData = {
                 type: "bar",
                 data: {
                     labels: this.muni_data["labels"],
-                    datasets: dataSets,
-                },
+                    datasets: dataSets
+                }
             };
             return { ...b, ...myData };
         },
@@ -580,16 +608,20 @@ export default {
         },
         ...mapGetters("corona", ["muniName"]),
         ...mapState({
-            muniDict: (state) => state.corona.muniDict,
-            loaded: (state) => state.corona.loaded,
-            munis: (state) => state.corona.munis,
-            allMuniData: (state) => state.corona.allMuniData,
-            today: (state) => state.corona.today,
-            date: (state) => state.corona.date,
-            dateRange: (state) => state.corona.dateRange,
-        }),
+            muniDict: state => state.corona.muniDict,
+            loaded: state => state.corona.loaded,
+            munis: state => state.corona.munis,
+            allMuniData: state => state.corona.allMuniData,
+            today: state => state.corona.today,
+            date: state => state.corona.date,
+            dateRange: state => state.corona.dateRange
+        })
     },
     watch: {
+        // view(v) {
+        //     console.log(v, this.$refs.tabs)
+        //     this.$matomo.trackEvent('CoronaGraph', 'tab', this.attribute, v)
+        // },
         dateRange(val) {
             this.render();
         },
@@ -598,12 +630,12 @@ export default {
         },
         muni_data(val, oldval) {
             this.render();
-        },
-    },
+        }
+    }
 };
 </script>
 <style lang="scss">
-@import '~vuetify/src/styles/styles.sass';
+@import "~vuetify/src/styles/styles.sass";
 
 #data-table {
     background: #f8f8f8 !important;

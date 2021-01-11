@@ -100,10 +100,10 @@ export default {
             return result;
         },
         handleMuniClick(item) {
+            this.$matomo.trackEvent('Corona', 'OverviewTable-Click', item.muni)
             this.$router.push({
                 name: "cases",
                 params: {
-                    attribute: "incidence",
                     muni: item.muni
                 }
             });

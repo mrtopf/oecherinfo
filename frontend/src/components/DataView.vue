@@ -1,9 +1,5 @@
 <template>
-    <v-card
-        v-if="muni_data"
-        class="ma-0 flex-grow-1 flex-shrink-0"
-        flat
-    >
+    <v-card v-if="muni_data" class="ma-0 flex-grow-1 flex-shrink-0" flat>
         <v-container fluid>
             <v-row no-gutters>
                 <v-col cols="12" class="pl-2">
@@ -38,13 +34,37 @@
                                 Zeitfenster
                             </v-list-item>
                             <v-divider></v-divider>
-                            <v-list-item @click="setDateRangeStart('all')"
+                            <v-list-item
+                                @click="
+                                    setDateRangeStart('all');
+                                    $matomo.trackEvent(
+                                        'Corona',
+                                        'change-daterange',
+                                        'all'
+                                    );
+                                "
                                 >komplett</v-list-item
                             >
-                            <v-list-item @click="setDateRangeStart('w2')"
+                            <v-list-item
+                                @click="
+                                    setDateRangeStart('w2');
+                                    $matomo.trackEvent(
+                                        'Corona',
+                                        'change-daterange',
+                                        'w2'
+                                    );
+                                "
                                 >2. Welle</v-list-item
                             >
-                            <v-list-item @click="setDateRangeStart('1month')"
+                            <v-list-item
+                                @click="
+                                    setDateRangeStart('1month');
+                                    $matomo.trackEvent(
+                                        'Corona',
+                                        'change-daterange',
+                                        '1month'
+                                    );
+                                "
                                 >letzter Monat</v-list-item
                             >
                         </v-list>
@@ -104,7 +124,7 @@ export default {
             all: "alles",
             w2: "ab 2. Welle",
             "1month": "letzter Monat"
-        },
+        }
     }),
     mounted() {
         if (this.muni_data) {

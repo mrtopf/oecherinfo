@@ -1,6 +1,9 @@
 <template>
-    <v-card color="#f0f0f0" tile
-            :to="{ name: 'cases', params: { muni: muni } }"
+    <v-card
+        color="#f0f0f0"
+        tile
+        @click.capture="$matomo.trackEvent('Corona', 'minichart-click', title)"
+        :to="{ name: 'cases', params: { muni: muni } }"
     >
         <v-card-title class="text-h5 font-weight-bold text-uppercase">
             {{ title }}
@@ -310,7 +313,7 @@ export default {
                         display: false
                     },
                     tooltip: {
-                        enabled: false,
+                        enabled: false
                     }
                 }
             };
