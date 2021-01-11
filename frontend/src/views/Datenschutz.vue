@@ -63,7 +63,7 @@ Viele Datenverarbeitungsvorgänge sind nur mit Ihrer ausdrücklichen Einwilligun
             </li>
         </ul>
 
-        <!-- <h3>Website-Analse mit Matomo</h3>
+        <h3>Website-Analse mit Matomo</h3>
         <p>
             Diese Website benutzt den Open Source Webanalysedienst Matomo ohne
             Cookies. Ihre IP-Adresse wird vor der Speicherung anonymisiert.
@@ -77,8 +77,8 @@ Viele Datenverarbeitungsvorgänge sind nur mit Ihrer ausdrücklichen Einwilligun
         </p>
         <p>
             Daten werden nicht an Dritte weitergegeben und nicht zu Werbezwecken
-            genutzt.
-        </p> -->
+            genutzt. 
+        </p>
 
         <h2>Nutzung von externen Diensten</h2>
         <h3>Google Web Fonts</h3>
