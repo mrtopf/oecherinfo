@@ -4,16 +4,17 @@
         v-if="muni_data"
         class="d-flex child-flex flex-column pa-0"
     >
-        <v-row>
+        <v-row no-gutters>
             <v-col cols="12">
                 <div class="body-2 pt-5 px-9 black--text">
                     Zuletzt aktualisiert am {{ date }}
                 </div>
             </v-col>
-            <v-col cols="2">
-                <v-list nav class="mt-0 pl-7">
-                    <v-list-item-group v-model="activeTab">
+            <v-col cols="12" md=2 class="d-none d-md-flex">
+                <v-list nav class="mt-4 pl-7" id="nav-list">
+                    <v-list-item-group v-model="activeTab" active-class="nav-active">
                         <v-list-item
+                            :ripple="false"
                             v-for="item in navItems"
                             :key="item.title"
                             link
@@ -28,7 +29,7 @@
                     </v-list-item-group>
                 </v-list>
             </v-col>
-            <v-col cols="10">
+            <v-col cols="12" md=10>
                 <v-card
                     class="ma-0 flex-grow-1 flex-shrink-0"
                     flat
@@ -42,7 +43,7 @@
                                 <template v-slot:activator="{ on }">
                                     <v-btn
                                         text
-                                        class="float-left text-h5 font-weight-bold pl-0 black--text labelButton"
+                                        class="float-left text-h6 text-md-h5 font-weight-bold pl-0 black--text labelButton"
                                         disabled
                                     >
                                         Fallzahlen
@@ -52,7 +53,7 @@
                                         text
                                         dark
                                         v-on="on"
-                                        class="text-h5 font-weight-bold pa-0"
+                                        class="text-h6 text-md-h5 font-weight-bold pa-0"
                                     >
                                         {{ muniDict[muni] }}
                                         <v-icon right>fa fa-caret-down</v-icon>
@@ -82,7 +83,7 @@
                             </v-menu>
                         </v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-menu offset-y bottom left>
+                        <v-menu offset-y bottom left v-if="false">
                             <template v-slot:activator="{ on }">
                                 <v-btn
                                     color="oecheryellow darken-1"
@@ -117,103 +118,25 @@
                         </v-menu>
                     </v-toolbar>
                     <v-divider></v-divider>
-                    <!-- <v-tabs
-                        centered
-                        v-model="activeTab"
-                        background-color="primary"
-                        dark
-                    >
-                        <v-tab
-                            exact
-                            v-for="tab in Object.keys(tabs)"
-                            :key="tab"
-                        >
-                            {{ tabs[tab] }}
-                        </v-tab>
-                    </v-tabs> -->
-                    <!-- <v-card-text>
-                        <div class="caption text-uppercase">
-                            Wert am {{ date }}:
-                        </div>
-                        <div
-                            class="text-h5 text-md-h3 font-weight-bold primary--text"
-                        >
-                            {{ todayValue
-                            }}<v-tooltip top v-if="propName != 'recovered'">
-                                <template v-slot:activator="{ on }">
-                                    <v-icon
-                                        v-on="on"
-                                        :color="trend.color"
-                                        :size="
-                                            $vuetify.breakpoint.smAndUp
-                                                ? 30
-                                                : 12
-                                        "
-                                        :style="trend.rotate"
-                                        class="pa-0 pl-1 pr-5 ma-0"
-                                        >{{ trend.icon }}</v-icon
-                                    >
-                                </template>
-                                <span>Langzeittrend</span>
-                            </v-tooltip>
-                            <small class="pl-3 text-md-h6 caption"
-                                >{{ diffValue }} zum vorherigen Datum</small
-                            >
-                        </div>
-                    </v-card-text> -->
                     <v-row>
-                        <v-card flat class="mx-6 pb-0" width="150">
+                        <v-card flat class="mx-6 pb-0" :width="attribute.width" :key="attribute.name"
+                        v-for="attribute in keyAttributes
+                        ">
                             <v-card-text
                                 class="font-weight-bold caption pb-0 mt-0"
                             >
-                                Inzidenz
+                                {{attribute.name}}
                             </v-card-text>
                             <v-card-text
                                 class="font-weight-bold text-h3 mt-0 pt-0 pb-0 mb-0"
                             >
-                                {{ Math.round(today[muni].incidence) }}
-                            </v-card-text>
-                        </v-card>
-                        <v-card flat class="mx-6 pb-0" width="150">
-                            <v-card-text
-                                class="font-weight-bold caption pb-0 mt-0"
-                            >
-                                Aktive Fälle
-                            </v-card-text>
-                            <v-card-text
-                                class="font-weight-bold text-h3 mt-0 pt-0"
-                            >
-                                {{ Math.round(today[muni].active) }}
-                            </v-card-text>
-                        </v-card>
-                        <v-card flat class="mx-6 pb-0" width="150">
-                            <v-card-text
-                                class="font-weight-bold caption pb-0 mt-0"
-                            >
-                                Neu
-                            </v-card-text>
-                            <v-card-text
-                                class="font-weight-bold text-h3 mt-0 pt-0 pb-0 mb-0"
-                            >
-                                {{ Math.round(today[muni].new) }}
-                            </v-card-text>
-                        </v-card>
-                        <v-card flat class="mx-6 pb-0" width="200">
-                            <v-card-text
-                                class="font-weight-bold caption pb-0 mt-0"
-                            >
-                                Gesamtzahl
-                            </v-card-text>
-                            <v-card-text
-                                class="font-weight-bold text-h3 mt-0 pt-0 pb-0 mb-0"
-                            >
-                                {{ Math.round(today[muni].positive) }}
+                                {{ Math.round(today[muni][attribute.item]) }}
                             </v-card-text>
                         </v-card>
                     </v-row>
 
                     <CoronaGraph
-                        class="pb-8 mt-10 mx-6"
+                        class="pb-8 mt-10 mx-0 px-0 mx-md-6"
                         title="Fälle nach Datum"
                         :dateRange="dateRange"
                         attribute="new"
@@ -221,29 +144,28 @@
                         :muni="muni"
                     />
                     <CoronaGraph
-                        class="pb-8 mt-10 mx-6"
+                        class="pb-8 mt-10 mx-0 px-0 mx-md-6"
                         title="7-Tage-Inzidenz"
                         :dateRange="dateRange"
                         attribute="incidence"
                         :muni="muni"
                     />
                     <CoronaGraph
-                        class="pb-8 mt-10 mx-6"
+                        class="pb-8 mt-10 mx-0 px-0 mx-md-6"
                         title="Aktive Fälle"
                         :dateRange="dateRange"
                         attribute="active"
                         :muni="muni"
                     />
                     <CoronaGraph
-                        class="pb-8 mt-10 mx-6"
+                        class="pb-8 mt-10 mx-0 px-0 mx-md-6"
                         title="Todesfälle nach Datum"
                         :dateRange="dateRange"
                         attribute="new_deaths"
                         cumulative="deaths"
                         :muni="muni"
                     />
-                    <v-divider></v-divider>
-                    <div class="caption text-right py-5">
+                    <div class="caption text-right py-5 px-2">
                         Stand {{ date }}<br />
                         <span class="l1-line"></span> Lockdown Light,
                         2.11.2020<br />
@@ -280,6 +202,28 @@ export default {
             recovered: "Genesen",
             deaths: "Tote",
         },
+        keyAttributes: [
+            {
+                name: "Inzidenz",
+                item: "incidence",
+                width: 150
+            },
+            {
+                name: "Aktive Fälle",
+                item: "active",
+                width: 150
+            },
+            {
+                name: "Neue Fälle",
+                item: "new",
+                width: 150
+            },
+            {
+                name: "Gesamzahl",
+                item: "positive",
+                width: 200
+            },
+        ],
         navItems: [
             {
                 title: "Übersicht",
@@ -397,7 +341,7 @@ export default {
     },
 };
 </script>
-<style lang="scss">
+<style scoped>
 .l1-line {
     display: inline-block;
     border-top: 3px dashed #f78656;
@@ -415,7 +359,23 @@ export default {
     font-size: 0.7rem;
     color: black;
 }
-.labelButton .v-btn__content {
+.labelButton >>> .v-btn__content {
     color: #023047 !important;
+}
+.nav-active:before {
+    border-radius: 0 !important;
+    opacity: 0;
+}
+.nav-active {
+    border-radius: 0;
+    background: #1B9AAA;
+    color: white !important;
+}
+.nav-active .v-list-item__title {
+    color: white !important;
+    font-weight: bold;
+}
+#nav-list .v-list-item:before {
+    border-radius: 0 !important;
 }
 </style>

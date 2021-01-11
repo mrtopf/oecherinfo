@@ -17,6 +17,7 @@
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
     "vue": "^2.6.11",
+    "vue-matomo": "^3.14.0-0",
     "vue-moment": "^4.1.0",
     "vue-router": "^3.2.0",
     "vuetify": "^2.2.11",

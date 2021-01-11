@@ -5,6 +5,8 @@ const API = process.env.VUE_APP_CORONA_API
 
 const state = {
     loaded: false,
+    dateRange: [180, 190],
+    dateRangeName: "1month",
     data: {},
     date: null,
     allMuniData: {},
@@ -114,9 +116,22 @@ const actions = {
                 alert("Ein Fehler ist beim Laden der Daten aufgetreten")
             })
     },
-    updateMuni({ commit, state }, muni) {
-        commit("setMuni", muni.muni)
+    updateMuni({ commit }, muni) {
+        commit("setMuni", muni)
     },
+    setDateRangeStart({commit, state, getters}, dateRangeName) {
+        commit("setDateRangeName", dateRangeName)
+        const end = getters.muni_data.incidence.length;
+        if (dateRangeName == "w2") {
+            commit("setDateRange", [state.selectedMuni == "sr" ? 180 : 54, end])
+        } else if (dateRangeName == "1month") {
+            commit("setDateRange", [end-31, end])
+        } else if (dateRangeName == "all") {
+            commit("setDateRange", [0, end])
+        } else {
+            commit("setDateRange", [0, end])
+        }
+    }
 }
 const mutations = {
     storeMunis(state, munis) {
@@ -162,7 +177,6 @@ const mutations = {
         state.hospitals = data
     },
     setMuni(state, muni) {
-        Object.keys(state.muniDict).indexOf(muni)
         state.selectedMuni = muni
     },
     setLoaded(state) {
@@ -170,6 +184,12 @@ const mutations = {
     },
     setLoading(state) {
         state.loaded = false
+    },
+    setDateRange(state, range) {
+        state.dateRange = range
+    },
+    setDateRangeName(state, dateRangeName) {
+        state.dateRangeName = dateRangeName
     },
 }
 

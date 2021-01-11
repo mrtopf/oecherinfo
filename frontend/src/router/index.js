@@ -1,44 +1,61 @@
 import Vue from "vue"
 import VueRouter from "vue-router"
 import Main from "../views/Main.vue"
-//import IncidenceView from "../views/IncidenceView.vue"
 import MuniView from "../views/MuniView.vue"
-import CoronaGraph from "../components/CoronaGraph.vue"
+import CasesView from "../views/CasesView.vue"
+import RecoveredView from "../views/RecoveredView.vue"
+import DeathsView from "../views/DeathsView.vue"
 
 Vue.use(VueRouter)
 
 const routes = [
     {
         path: "/",
-        name: "Main",
+        name: "main",
         component: Main,
+    },
+    {
+        path: "/cases",
+        name: "cases_sr",
+        component: CasesView,
+        props: true,
+    },
+    {
+        path: "/recovered",
+        name: "recovered_sr",
+        component: RecoveredView,
+        props: true,
+    },
+    {
+        path: "/deaths",
+        name: "deaths_sr",
+        component: DeathsView,
+        props: true,
+    },
+    {
+        path: "/cases/:muni",
+        name: "cases",
+        component: CasesView,
+        props: true,
+    },
+    {
+        path: "/recovered/:muni",
+        name: "recovered",
+        component: RecoveredView,
+        props: true,
+    },
+    {
+        path: "/deaths/:muni",
+        name: "deaths",
+        component: DeathsView,
+        props: true,
     },
     {
         path: "/:muni",
         name: "munidata",
         component: MuniView,
         props: true,
-        // children: [
-        //     {
-        //         name: "incidence",
-        //         path: ":attribute",
-        //         component: CoronaGraph,
-        //         props: true,
-        //     },
-        //     {
-        //         name: "active",
-        //         path: ":attribute",
-        //         component: CoronaGraph,
-        //         props: true,
-        //     },
-        // ]
     },
-    // {
-    //     path: "/:muni/:attribute",
-    //     name: "munigraph",
-    //     component: CoronaGraph,
-    //     props: true,
-    // },
     {
         path: "/datenschutz",
         name: "privacy",
@@ -54,6 +71,9 @@ const router = new VueRouter({
     mode: "history",
     base: process.env.BASE_URL,
     routes,
+    scrollBehavior (to, from, savedPosition) {
+        return { x: 0, y: 0 }
+    }      
 })
 
 export default router

@@ -3,15 +3,15 @@
         color="#f7f7f7"
         class="ma-3 pa-3"
         tile
-        :height="$vuetify.breakpoint.mdAndUp ? 650 : 340"
+        :height="$vuetify.breakpoint.mdAndUp ? 650 : 480"
     >
         <v-card-text>
-            <h2 class="text-h4 font-weight-bold primary--text pa-0 ma-0 mb-6">
+            <h2 class="text-h6 text-md-h4 font-weight-bold primary--text pa-0 ma-0 mb-6">
                 {{ title }}: {{ todayValue }}
-                <v-tooltip bottom max-width="300">
+                <v-tooltip bottom max-width="300" v-if="trends">
                     <template v-slot:activator="{ on }">
                         <span v-on="on" class="mr-3 pa-0 ttip">
-                            <small class="text-md-h6 caption"
+                            <small class="text-h6 text-md-h6 caption"
                                 >{{ diffValueFormatted }}
                             </small>
                         </span>
@@ -21,7 +21,7 @@
 
                 <v-tooltip
                     bottom
-                    v-if="attribute != 'recovered'"
+                    v-if="trends"
                     max-width="300"
                 >
                     <template v-slot:activator="{ on }">
@@ -29,9 +29,9 @@
                             <v-icon
                                 v-on="on"
                                 :color="trend.color"
-                                :size="$vuetify.breakpoint.smAndUp ? 30 : 12"
+                                :size="$vuetify.breakpoint.smAndUp ? 30 : 20"
                                 :style="trend.rotate"
-                                class="pa-0 pl-1 pr-5 ma-0"
+                                class="pa-0 pl-1 pr-5 ma-0 trend-icon"
                                 >{{ trend.icon }}</v-icon
                             >
                         </span>
@@ -62,7 +62,6 @@
                     <v-tab key="data" class="body-2 font-weight-bold">
                         Daten
                     </v-tab>
-                    <!-- <v-tab key="about"> Über </v-tab> -->
                 </v-tabs>
                 <v-tabs-items v-model="view">
                     <v-tab-item eager>
@@ -116,12 +115,6 @@
                             </v-data-table>
                         </v-card>
                     </v-tab-item>
-                    <v-tab-item>
-                        <v-card flat color="#f7f7f7">
-                            <v-card-title> Tägliche Daten </v-card-title>
-                            <v-card-text> </v-card-text>
-                        </v-card>
-                    </v-tab-item>
                 </v-tabs-items>
             </v-card>
         </v-card-text>
@@ -170,46 +163,42 @@ export default {
     props: {
         attribute: String,
         muni: String,
-        dateRange: Array,
         cumulative: String, // attribute name of cumulative date or null
         title: String, // Title of the graph section
+        trends: {
+            type: Boolean,
+            default: true
+        }
     },
     data: () => ({
         view: 0,
         myChart: null,
+        myCumulativeChart: null,
     }),
     mounted() {
         if (this.muni_data) {
             this.createChart();
-            if (this.attribute != "incidence") {
-                this.createCumulativeChart();
-            }
+            this.createCumulativeChart();
         }
     },
     methods: {
-        rerender() {
-            this.myChart.destroy();
-            this.myChart = null;
-            this.$nextTick(function () {
-                this.render();
-            });
-        },
         render() {
             if (this.muni_data) {
-                const oldType = this.myChart && this.myChart.type;
                 if (this.myChart) {
-                    this.myChart.type = "bar";
                     this.myChart.data.datasets = this.chartData.data.datasets;
                     this.myChart.data.labels = this.chartData.data.labels;
                     this.myChart.options.plugins.annotation.annotations = this.annotations;
-                    if (this.myChart.type != oldType) {
-                        this.myChart.destroy();
-                        this.createChart();
-                    } else {
-                        this.myChart.update();
-                    }
+                    this.myChart.update();
                 } else {
-                    this.createChart(this.attribute + "-chart", this.chartData);
+                    this.createChart();
+                }
+                if (this.myCumulativeChart) {
+                    this.myCumulativeChart.data.datasets = this.cumulativeChartData.data.datasets;
+                    this.myCumulativeChart.data.labels = this.cumulativeChartData.data.labels;
+                    this.myCumulativeChart.options.plugins.annotation.annotations = this.annotations;
+                    this.myCumulativeChart.update();
+                } else {
+                    this.createCumulativeChart();
                 }
             }
         },
@@ -222,10 +211,13 @@ export default {
             });
         },
         createCumulativeChart() {
+            if (!this.cumulative) {
+                return
+            }
             const ctx = document.getElementById(
                 this.attribute + "-cumulative-chart"
             );
-            this.myChart = new Chart(ctx, {
+            this.myCumulativeChart = new Chart(ctx, {
                 type: "bar",
                 data: this.cumulativeChartData.data,
                 options: this.chartData.options,
@@ -293,7 +285,7 @@ export default {
             const d = this.diffValueWeek;
             if (d > 0) {
                 return {
-                    rotate: "padding-bottom: 0px; transform: rotate(45deg)",
+                    rotate: "padding-bottom: 0px; transform: translate(0px,8px) rotate(45deg) ",
                     icon: "fas fa-arrow-up",
                     color: "red",
                     hint: "Aufwärtstrend über 14 Tage",
@@ -362,26 +354,28 @@ export default {
             );
         },
         dataSets() {
+            const l = this.averages.length
             return [
                 {
                     type: "line",
                     label: "7-Tages-Durschschnitt",
                     data: this.averages,
                     borderColor: "#11616A",
-                    backgroundColor: "#11616A",
                     pointRadius: 0,
                     pointBorderWidth: 0,
                     borderWidth: 3,
                 },
                 {
                     label: this.title,
-                    data: this.muni_data[this.attribute].slice(
+                    data: this.attributeData.slice(
                         this.dateRange[0],
                         this.dateRange[1]
                     ),
                     borderColor: "#ffffff",
-                    borderWidth: 1,
-                    backgroundColor: "#1EB2C2",
+                    borderWidth: this.$vuetify.breakpoint.mdAndUp ? 1 : 0,
+                    backgroundColor: "#60D7E6",
+                    //backgroundColor: (ctx) => {  return ctx.index -l < -7 ? "#fa0": "#0af"},
+
                     barPercentage: 1.8,
                     minBarLength: 0,
                     hoverBackgroundColor: "black",
@@ -440,7 +434,7 @@ export default {
                     mode: "vertical",
                     scaleID: "x",
                     value: new Date("02 Nov 2020"),
-                    borderColor: "#333",
+                    borderColor: "#E09D00",
                     borderWidth: 2,
                     borderDash: [10, 10],
                     label: {
@@ -450,7 +444,7 @@ export default {
                         enabled: true,
                         cornerRadius: 0,
                         position: "center",
-                        position: "bottom left",
+                        position: "top left",
                         yAdjust: 170,
                         content: "Lockdownchen",
                     },
@@ -463,7 +457,7 @@ export default {
                     mode: "vertical",
                     scaleID: "x",
                     value: new Date("16 Dec 2020"),
-                    borderColor: "#333",
+                    borderColor: "#BC1038",
                     borderWidth: 2,
                     borderDash: [10, 10],
                     label: {
@@ -565,7 +559,7 @@ export default {
                     label: this.title,
                     data: data,
                     borderColor: "#ffffff",
-                    borderWidth: 1,
+                    borderWidth: this.$vuetify.breakpoint.mdAndUp ? 1 : 0,
                     backgroundColor: "#1B9AAA",
                     barPercentage: 1.8,
                     minBarLength: 0,
@@ -592,6 +586,7 @@ export default {
             allMuniData: (state) => state.corona.allMuniData,
             today: (state) => state.corona.today,
             date: (state) => state.corona.date,
+            dateRange: (state) => state.corona.dateRange,
         }),
     },
     watch: {
@@ -608,6 +603,8 @@ export default {
 };
 </script>
 <style lang="scss">
+@import '~vuetify/src/styles/styles.sass';
+
 #data-table {
     background: #f8f8f8 !important;
     padding-top: 5px;
@@ -622,5 +619,11 @@ export default {
 }
 .graph-tab-active {
     background: #ffc43d;
+}
+@media #{map-get($display-breakpoints, 'sm-and-down')} {
+    .trend-icon {
+        position: relative;
+        top: -5px;
+    }
 }
 </style>

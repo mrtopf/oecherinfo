@@ -13,11 +13,6 @@
                 }}</small>
                     </template> 
             </v-toolbar-title>
-            <!-- <v-spacer></v-spacer>
-            <v-btn icon @click="$emit('click')"
-             v-if="!noDetails"
-                ><v-icon>fa fa-expand-alt</v-icon></v-btn
-            > -->
         </v-toolbar>
 
         <v-card-text class="text-left">

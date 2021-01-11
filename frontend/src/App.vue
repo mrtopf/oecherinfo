@@ -7,7 +7,7 @@
             <v-toolbar-title dark class="pa-0">
                 <v-btn
                     text
-                    class="text-xs-caption text-lg-h5"
+                    class="text-xs-caption text-md-h5"
                     exact
                     @click="$router.push('/')"
                 >
@@ -16,59 +16,96 @@
                 </v-btn>
             </v-toolbar-title>
             <v-spacer></v-spacer>
+            <v-btn text
+                href="https://blog.oecher.info">
+                Blog
+            </v-btn>
         </v-app-bar>
 
-                
         <v-navigation-drawer temporary absolute v-model="drawer">
             <v-list-item>
                 <v-list-item-content>
-                    <v-list-item-icon>
-                        <v-icon>fa fa-virus</v-icon>
-                    </v-list-item-icon>
                     <v-list-item-title class="title">
                         Corona-Daten
                     </v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
             <v-divider></v-divider>
-            <v-list dense nav>
-                <v-list-item key="dash" link to="/">
-                    <v-list-item-content>
-                        <v-list-item-title class="font-weight-bold"
-                            >Übersicht</v-list-item-title
-                        >
-                    </v-list-item-content>
-                </v-list-item>
-                <v-list-item
-                    v-for="item in $store.state.corona.munis"
-                    :key="item.value"
-                    link
-                    :to="{
-                        name: 'munidata',
-                        params: { attribute: 'incidence', muni: item.muni },
-                    }"
+            <v-list nav class="" id="2av-list">
+                <v-list-item-group
+                    v-model="activeTab"
+                    active-class="nav-active"
                 >
-                    <v-list-item-content>
-                        <v-list-item-title>{{ item.name }}</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
+                    <v-list-item
+                        :ripple="false"
+                        v-for="item in navItems"
+                        :key="item.title"
+                        :to="{
+                            name: item.route,
+                            params: {
+                                muni: muni
+                            }
+                        }"
+                        link
+                        exact
+                        :active="item.active"
+                    >
+                        <v-list-item-content>
+                            <v-list-item-title>{{
+                                item.title
+                            }}</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                </v-list-item-group>
             </v-list>
         </v-navigation-drawer>
 
         <v-main>
-            <!-- {{$vuetify.breakpoint.name}} -->
-            <router-view></router-view>
+            <v-row>
+                <v-col cols="12" md="2" class="d-none d-md-flex">
+                    <v-list nav class="mt-4 pl-7" id="nav-list">
+                        <v-list-item-group
+                            v-model="activeTab"
+                            active-class="nav-active"
+                        >
+                            <v-list-item
+                                :ripple="false"
+                                v-for="item in navItems"
+                                :key="item.title"
+                                :to="{
+                                    name: item.route,
+                                    params: {
+                                        muni: muni
+                                    }
+                                }"
+                                link
+                                exact
+                                :active="item.active"
+                            >
+                                <v-list-item-content>
+                                    <v-list-item-title>{{
+                                        item.title
+                                    }}</v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </v-list-item-group>
+                    </v-list>
+                </v-col>
+                <v-col cols="12" md="10">
+                    <router-view></router-view>
+                </v-col>
+            </v-row>
         </v-main>
         <v-footer color="primary lighten-1" dark class="footer caption">
             <v-row dense>
-                <v-col cols="12" lg=6>
+                <v-col cols="12" lg="6">
                     Ein Projekt von
                     <a target="_blank" href="https://twitter.com/mrtopf"
                         >Christian "MrTopf" Scholz</a
                     >
                 </v-col>
 
-                <v-col class="text-md-right" cols="12" lg=6>
+                <v-col class="text-md-right" cols="12" lg="6">
                     <a href="/datenschutz">Datenschutz</a> |
                     <a target="_blank" href="https://mrtopf.de/impressum"
                         >IMPRESSUM</a
@@ -84,7 +121,7 @@ import { mapState, mapActions, mapGetters } from "vuex";
 
 export default {
     props: {
-        muni: String,
+        // muni: String
     },
     name: "App",
 
@@ -95,31 +132,75 @@ export default {
     methods: {
         ...mapActions({
             loadCoronaData: "corona/load",
-            updateMuni: "corona/updateMuni",
-        }),
+            updateMuni: "corona/updateMuni"
+        })
     },
     computed: {
+        muni() {
+            const muni = this.$router.currentRoute.params.muni;
+            if (!muni) {
+                return "sr";
+            }
+            return muni;
+        },
         ...mapGetters("corona", ["muni_data"]),
         ...mapState({
-            munis: (state) => state.corona.munis,
-            today: (state) => state.corona.today,
-            loaded: (state) => state.corona.loaded,
-            date: (state) => state.corona.date,
-            selectedMuni: (state) => state.corona.selectedMuni,
-        }),
+            munis: state => state.corona.munis,
+            today: state => state.corona.today,
+            loaded: state => state.corona.loaded,
+            date: state => state.corona.date,
+            selectedMuni: state => state.corona.selectedMuni
+        })
     },
     data: () => ({
         mymuni: "sr",
         drawer: false,
-    }),
+        activeTab: 0,
+        navItems: [
+            {
+                title: "Übersicht",
+                route: "main"
+            },
+            {
+                title: "Fallzahlen",
+                active: true,
+                route: "cases"
+            },
+            {
+                title: "Genesen",
+                route: "recovered"
+            },
+            {
+                title: "Todesfälle",
+                route: "deaths"
+            }
+        ]
+    })
 };
 </script>
-<style lang="scss">
+<style >
 .footer a {
     color: white !important;
 }
 .ttip {
-    border-bottom: 1px dashed rgba(0,0,0,0.5);
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.5);
     cursor: pointer;
+}
+.nav-active:before {
+    border-radius: 0 !important;
+    opacity: 0;
+}
+
+.nav-active {
+    border-radius: 0 !important;
+    background: #158897;
+    color: white !important;
+}
+.nav-active .v-list-item__title {
+    color: white !important;
+    font-weight: bold;
+}
+#nav-list .v-list-item:before {
+    border-radius: 0 !important;
 }
 </style>
