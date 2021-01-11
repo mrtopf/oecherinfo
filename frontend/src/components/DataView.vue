@@ -105,29 +105,9 @@ export default {
             w2: "ab 2. Welle",
             "1month": "letzter Monat"
         },
-        navItems: [
-            {
-                title: "Übersicht",
-                route: "main"
-            },
-            {
-                title: "Fallzahlen",
-                active: true,
-                route: "cases"
-            },
-            {
-                title: "Genesen",
-                route: "recovered"
-            },
-            {
-                title: "Todesfälle",
-                route: "deaths"
-            }
-        ]
     }),
     mounted() {
         if (this.muni_data) {
-            console.log("mounted");
             this.setDateRangeStart("all");
         }
         this.updateMuni(this.muni);
