@@ -9,7 +9,7 @@
                     text
                     class="text-xs-caption text-md-h5"
                     exact
-                    @click="$router.push('/')"
+                    @click="$router.push('/').catch(()=>{})"
                 >
                     <span class="font-weight-bold"> oecher.info </span>
                     <span class="font-weight-thin"> | corona </span>
