@@ -17,7 +17,7 @@
             </v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn text
-                href="https://blog.oecher.info">
+                href="https://blog.oecher.info?utm_source=oecher.info&utm_medium=web&utm_campaign=bloglink">
                 Blog
             </v-btn>
         </v-app-bar>
