@@ -1,7 +1,6 @@
 import Vue from "vue"
 import VueRouter from "vue-router"
 import Main from "../views/Main.vue"
-import MuniView from "../views/MuniView.vue"
 import CasesView from "../views/CasesView.vue"
 import RecoveredView from "../views/RecoveredView.vue"
 import DeathsView from "../views/DeathsView.vue"
@@ -19,42 +18,54 @@ const routes = [
         name: "cases_sr",
         component: CasesView,
         props: true,
+        meta: {
+            title: 'oecher.info | Corona Dashboard | Fälle'
+        }
     },
     {
         path: "/recovered",
         name: "recovered_sr",
         component: RecoveredView,
         props: true,
+        meta: {
+            title: 'oecher.info | Corona Dashboard | Genesen'
+        }
     },
     {
         path: "/deaths",
         name: "deaths_sr",
         component: DeathsView,
         props: true,
+        meta: {
+            title: 'oecher.info | Corona Dashboard | Todesfälle'
+        }
     },
     {
         path: "/cases/:muni",
         name: "cases",
         component: CasesView,
         props: true,
+        meta: {
+            title: 'oecher.info | Corona Dashboard | Fälle'
+        }
     },
     {
         path: "/recovered/:muni",
         name: "recovered",
         component: RecoveredView,
         props: true,
+        meta: {
+            title: 'oecher.info | Corona Dashboard | Genesen'
+        }
     },
     {
         path: "/deaths/:muni",
         name: "deaths",
         component: DeathsView,
         props: true,
-    },
-    {
-        path: "/:muni",
-        name: "munidata",
-        component: MuniView,
-        props: true,
+        meta: {
+            title: 'oecher.info | Corona Dashboard | Todesfälle'
+        }
     },
     {
         path: "/datenschutz",
@@ -71,9 +82,9 @@ const router = new VueRouter({
     mode: "history",
     base: process.env.BASE_URL,
     routes,
-    scrollBehavior (to, from, savedPosition) {
+    scrollBehavior(to, from, savedPosition) {
         return { x: 0, y: 0 }
-    }      
+    }
 })
 
 export default router

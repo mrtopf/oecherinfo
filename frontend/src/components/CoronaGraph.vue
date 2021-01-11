@@ -53,8 +53,8 @@
                         class="body-2 font-weight-bold"
                         @click="
                             $matomo.trackEvent(
-                                'CoronaGraph-Tab',
-                                'daily',
+                                'Corona',
+                                'graphclick-daily',
                                 attribute
                             )
                         "
@@ -66,8 +66,8 @@
                         v-if="cumulative"
                         @click="
                             $matomo.trackEvent(
-                                'CoronaGraph-Tab',
-                                'cumulative',
+                                'Corona',
+                                'graphclick-cumulative',
                                 attribute
                             )
                         "
@@ -78,8 +78,8 @@
                         class="body-2 font-weight-bold"
                         @click="
                             $matomo.trackEvent(
-                                'CoronaGraph-Tab',
-                                'data',
+                                'Corona',
+                                'graphclick-data',
                                 attribute
                             )
                         "

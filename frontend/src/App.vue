@@ -9,15 +9,17 @@
                     text
                     class="text-xs-caption text-md-h5"
                     exact
-                    @click="$router.push('/').catch(()=>{})"
+                    @click="$router.push('/').catch(() => {})"
                 >
                     <span class="font-weight-bold"> oecher.info </span>
                     <span class="font-weight-thin"> | corona </span>
                 </v-btn>
             </v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn text
-                href="https://blog.oecher.info?utm_source=oecher.info&utm_medium=web&utm_campaign=bloglink">
+            <v-btn
+                text
+                href="https://blog.oecher.info?utm_source=oecher.info&utm_medium=web&utm_campaign=bloglink"
+            >
                 Blog
             </v-btn>
         </v-app-bar>
@@ -152,6 +154,12 @@ export default {
             selectedMuni: state => state.corona.selectedMuni
         })
     },
+    watch: {
+        $route(to, from) {
+            document.title = to.meta.title || "oecher.info | Corona Dashboard";
+        }
+    },
+
     data: () => ({
         mymuni: "sr",
         drawer: false,
