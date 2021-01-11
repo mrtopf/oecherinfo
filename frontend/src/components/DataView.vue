@@ -100,15 +100,6 @@ export default {
     },
     name: "DataView",
     data: () => ({
-        activeTab: 0,
-        tabs: {
-            incidence: "Inzidenz",
-            new: "neu",
-            active: "aktiv",
-            positive: "Fälle",
-            recovered: "Genesen",
-            deaths: "Tote"
-        },
         dateRangeTitles: {
             all: "alles",
             w2: "ab 2. Welle",
@@ -157,52 +148,6 @@ export default {
         MuniSelector
     },
     computed: {
-        propName() {
-            return Object.keys(this.tabs)[this.activeTab];
-        },
-        todayValue() {
-            return Math.round(this.today[this.muni][this.propName]);
-        },
-        yesterdayValue() {
-            return Math.round(this.yesterday[this.muni][this.propName]);
-        },
-        diffValue() {
-            const v = this.todayValue - this.yesterdayValue;
-            if (v > 0) {
-                return "+" + v;
-            } else if (v < 0) {
-                return v;
-            } else {
-                return "+/- 0";
-            }
-        },
-        trend() {
-            const d = Math.round(
-                this.today[this.muni][this.propName] -
-                    this.weekerday[this.muni][this.propName]
-            );
-            if (d > 0) {
-                return {
-                    rotate: "padding-bottom: 0px; transform: rotate(45deg)",
-                    icon: "fas fa-arrow-up",
-                    color: "red",
-                    hint: "Aufwärtstrend über 14 Tage"
-                };
-            } else if (d < 0) {
-                return {
-                    rotate: "transform: rotate(-45deg)",
-                    icon: "fas fa-arrow-down",
-                    color: "green",
-                    hint: "Abwärtstrend über 14 Tage"
-                };
-            } else {
-                return {
-                    icon: "fas fa-minus",
-                    color: "grey",
-                    hint: "gleichbleibend über 14 Tage"
-                };
-            }
-        },
         muni_data() {
             return this.allMuniData[this.muni];
         },
