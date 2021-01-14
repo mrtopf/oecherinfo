@@ -13,51 +13,51 @@
         >
             <template v-slot:item.active="{ item }">
                 {{ item.active }}
-                <small v-if="item.active_diff < 0">
+                <!-- <small v-if="item.active_diff < 0">
                     ({{ item.active_diff }})
                 </small>
                 <small v-if="item.active_diff > 0">
                     (-{{ item.active_diff }})
-                </small>
+                </small> -->
                 <v-icon
                     :color="item.active_avg_trend_color"
                     :size="$vuetify.breakpoint.smAndUp ? 14 : 9"
-                    class="pa-0 pl-1 ma-0"
+                    class="pa-0 pl-0 ma-0"
                     >{{ item.active_avg_trend_icon }}</v-icon
                 >
             </template>
             <template v-slot:item.recovered="{ item }">
                 {{ item.recovered }}
-                <small v-if="item.recovered_diff < 0">
+                <!-- <small v-if="item.recovered_diff < 0">
                     ({{ item.recovered_diff }})
                 </small>
                 <small v-if="item.recovered_diff > 0">
                     (+{{ item.recovered_diff }})
-                </small>
+                </small> -->
             </template>
             <template v-slot:item.positive="{ item }">
                 {{ item.positive }}
-                <b v-if="item.positive_diff < 0">
+                <!-- <b v-if="item.positive_diff < 0">
                     ({{ item.positive_diff }})
                 </b>
                 <b v-if="item.positive_diff > 0">
                     (+{{ item.positive_diff }})
-                </b>
+                </b> -->
                 <v-icon
                     :color="item.new_avg_trend_color"
                     :size="$vuetify.breakpoint.smAndUp ? 14 : 9"
-                    class="pa-0 pl-1 ma-0"
+                    class="pa-0 pl-0 ma-0"
                     >{{ item.new_avg_trend_icon }}</v-icon
                 >
             </template>
             <template v-slot:item.deaths="{ item }">
                 {{ item.deaths }}
-                <b v-if="item.deaths_diff < 0"> ({{ item.deaths_diff }}) </b>
-                <b v-if="item.deaths_diff > 0"> (+{{ item.deaths_diff }}) </b>
+                <!-- <b v-if="item.deaths_diff < 0"> ({{ item.deaths_diff }}) </b>
+                <b v-if="item.deaths_diff > 0"> (+{{ item.deaths_diff }}) </b> -->
                 <v-icon
                     :color="item.new_avg_trend_color"
                     :size="$vuetify.breakpoint.smAndUp ? 14 : 9"
-                    class="pa-0 pl-1 ma-0"
+                    class="pa-0 pl-0 ma-0"
                     >{{ item.new_avg_trend_icon }}</v-icon
                 >
             </template>
@@ -67,16 +67,16 @@
                     class="mr-4"
                 ></v-badge>
                 {{ item.incidence }}
-                <small v-if="item.incidence_diff > 0">
+                <!-- <small v-if="item.incidence_diff > 0">
                     (+{{ item.incidence_diff }})
                 </small>
                 <small v-if="item.incidence_diff < 0">
                     ({{ item.incidence_diff }})
-                </small>
+                </small> -->
                 <v-icon
                     :color="item.incidence_avg_trend_color"
                     :size="$vuetify.breakpoint.smAndUp ? 14 : 9"
-                    class="pa-0 pl-1 ma-0"
+                    class="pa-0 pl-0 ma-0"
                     >{{ item.incidence_avg_trend_icon }}</v-icon
                 >
             </template>
