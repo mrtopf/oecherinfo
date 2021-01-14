@@ -22,37 +22,37 @@
                             <tr>
                                 <th>Anzahl Standorte</th>
                                 <td>
-                                    {{ divi.anzahl_standorte }}
+                                    {{ divi[0].anzahl_standorte }}
                                 </td>
                             </tr>
                             <tr>
                                 <th>Belegte Betten</th>
                                 <td>
-                                    {{ divi.betten_belegt }}
+                                    {{ divi[0].betten_belegt }}
                                 </td>
                             </tr>
                             <tr>
                                 <th>Freie Betten</th>
                                 <td>
-                                    {{ divi.betten_frei }}
+                                    {{ divi[0].betten_frei }}
                                 </td>
                             </tr>
                             <tr>
                                 <th>COVID-Fälle</th>
                                 <td>
-                                    {{ divi.faelle_covid_aktuell }}
+                                    {{ divi[0].faelle_covid_aktuell }}
                                 </td>
                             </tr>
                             <tr>
                                 <th>davon beatmet</th>
                                 <td>
-                                    {{ divi.faelle_covid_aktuell_beatmet }}
+                                    {{ divi[0].faelle_covid_aktuell_beatmet }}
                                 </td>
                             </tr>
                             <tr>
                                 <th>Stand</th>
                                 <td>
-                                    {{ divi.dateFormatted }}
+                                    {{ divi_date }}
                                 </td>
                             </tr>
                         </tbody>
@@ -327,6 +327,7 @@ export default {
             loaded: (state) => state.corona.loaded,
             munis: (state) => state.corona.munis,
             divi: (state) => state.corona.divi,
+            divi_date: (state) => state.corona.divi_date,
             hospitals: (state) => state.corona.hospitals,
             today: (state) => state.corona.today,
             yesterday: (state) => state.corona.yesterday,

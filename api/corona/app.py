@@ -149,9 +149,9 @@ class AllData(Resource):
         resp['muni_data'] = muni_data
 
         # add divi data
-        divi_results =  mongo.db.divi_daily.find({'gemeindeschluessel': '05334'}).sort("date", -1).limit(1)[0]
-        resp['divi'] = divi_results
-        resp['divi']['dateFormatted'] = resp['divi']['date'].strftime("%d.%m.%Y %H:%M")
+        divi_results =  mongo.db.divi_daily.find({'gemeindeschluessel': '05334'}).sort("date", -1)
+        resp['divi'] = list(divi_results)
+        resp['divi_date'] = resp['divi'][0]['date'].strftime("%d.%m.%Y %H:%M")
 
         # get hospitals
         divi_results =  mongo.db.divi_hospitals.find({},{'krankenhausStandort': 1, 'bettenStatus': 1})

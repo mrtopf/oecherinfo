@@ -9,6 +9,7 @@ const state = {
     dateRangeName: "1month",
     data: {},
     date: null,
+    divi_date: null,
     allMuniData: {},
     muniDict: {},
     divi: {},
@@ -108,6 +109,7 @@ const actions = {
                 commit("storeDate", response.data.dateFormatted)
                 commit("storeMuniData", response.data.muni_data)
                 commit("storeDIVIData", response.data.divi)
+                commit("storeDIVIDate", response.data.divi_date)
                 commit("storeHospitals", response.data.hospitals)
                 commit("setLoaded")
             })
@@ -172,6 +174,9 @@ const mutations = {
     },
     storeDIVIData(state, data) {
         state.divi = data
+    },
+    storeDIVIDate(state, data) {
+        state.divi_date = data
     },
     storeHospitals(state, data) {
         state.hospitals = data
