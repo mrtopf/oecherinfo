@@ -220,15 +220,15 @@ export default {
             return Math.round((diff / this.last2Week) * 100, 2);
         },
         trend() {
-            const diff = this.last2Week - this.lastWeek;
-            if (diff == 0) {
+            const diffPercent = this.lastWeekDifferencePercent
+            if (diffPercent > -5 && diffPercent < 5) {
                 return {
-                    icon: "fas fa-minus",
+                    icon: "",
                     chipColor: "gray lighten-4",
                     color: "gray darken-3",
                     hint: "Gleichbleibend"
                 };
-            } else if (diff > 0) {
+            } else if (diffPercent <= -5) {
                 // better times
                 return {
                     icon: "fas fa-arrow-down",
@@ -245,6 +245,16 @@ export default {
                     hint: "Aufwärtstrend über 14 Tage"
                 };
             }
+        },
+        trendColor() {
+            const diffPercent = this.lastWeekDifferencePercent
+            if (diffPercent > -5 && diffPercent < 5) {
+                return "#e0e0e0"
+            } else if (diffPercent <= -5) {
+                return "#c3e5cc"
+            }
+            return "#f88"
+
         },
         muni_data() {
             return this.allMuniData[this.muni];
@@ -265,7 +275,7 @@ export default {
                     data: this.muni_data[this.attribute],
                     borderWidth: 0,
                     backgroundColor: ctx => {
-                        return ctx.index - l < -7 ? "transparent" : "#f88";
+                        return ctx.index - l < -7 ? "transparent" : this.trendColor;
                     },
                     barPercentage: 6,
                     minBarLength: 0
