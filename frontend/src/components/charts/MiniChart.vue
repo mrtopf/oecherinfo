@@ -1,6 +1,6 @@
 <template>
     <v-card
-        color="#f0f0f0"
+        color="#fff"
         tile
         @click.capture="$matomo.trackEvent('Corona', 'minichart-click', title)"
         :to="{ name: 'cases', params: { muni: muni } }"

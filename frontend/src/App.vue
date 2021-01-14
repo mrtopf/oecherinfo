@@ -65,7 +65,7 @@
         <v-main>
             <v-row>
                 <v-col cols="12" md="2" class="d-none d-md-flex">
-                    <v-list nav class="mt-4 pl-7" id="nav-list">
+                    <v-list nav class="mt-4 pl-7" id="nav-list" color="#f8f8f8">
                         <v-list-item-group
                             v-model="activeTab"
                             active-class="nav-active"
@@ -187,6 +187,9 @@ export default {
 };
 </script>
 <style >
+main {
+    background: #f8f8f8;
+}
 .footer a {
     color: white !important;
 }

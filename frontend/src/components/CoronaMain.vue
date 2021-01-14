@@ -1,6 +1,6 @@
 <template>
     <v-container fluid class="pa-0">
-        <v-card tile flat>
+        <v-card tile flat color="#f8f8f8">
             <v-card-text>
                 <h1
                     class="text-xs-h7 text-md-h3 pb-3 font-weight-bold primary--text"

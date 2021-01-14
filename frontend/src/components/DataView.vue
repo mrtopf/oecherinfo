@@ -1,5 +1,5 @@
 <template>
-    <v-card v-if="muni_data" class="ma-0 flex-grow-1 flex-shrink-0" flat>
+    <v-card v-if="muni_data" class="ma-0 flex-grow-1 flex-shrink-0" flat color="#f8f8f8">
         <v-container fluid>
             <v-row no-gutters>
                 <v-col cols="12" class="pl-2">
@@ -80,6 +80,7 @@
                 class="mx-6 pb-0"
                 :width="attribute.width"
                 :key="attribute.name"
+                color="#f8f8f8"
                 v-for="attribute in keyAttributes"
             >
                 <v-card-text class="font-weight-bold caption pb-0 mt-0">
@@ -92,12 +93,12 @@
                 </v-card-text>
             </v-card>
         </v-row>
-        <slot name="graphs">hi, graphs here!</slot>
+        <slot name="graphs"></slot>
 
         <div class="caption text-right py-5 px-2">
             Stand {{ date }}<br />
             <span class="l1-line"></span> Lockdown Light, 2.11.2020<br />
-            <span class="l2-line"></span> Weihnachts-Lockdown, 16.12.2020
+            <span class="l2-line"></span> Lockdown 16.12.2020<br>
         </div>
     </v-card>
 </template>

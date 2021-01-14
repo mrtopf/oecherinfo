@@ -1,6 +1,6 @@
 <template>
     <v-card
-        color="#f7f7f7"
+        color="#fff"
         class="ma-3 pa-3"
         tile
         :height="$vuetify.breakpoint.mdAndUp ? 650 : 480"
@@ -44,7 +44,7 @@
                 <v-tabs
                     ref="tabs"
                     v-model="view"
-                    background-color="#f7f7f7"
+                    background-color="#fff"
                     class="graph-tabs"
                     active-class="graph-tab-active"
                 >
@@ -90,7 +90,7 @@
                 <v-tabs-items v-model="view">
                     <v-tab-item eager>
                         <v-card
-                            color="#f7f7f7"
+                            color="#fff"
                             flat
                             :height="$vuetify.breakpoint.mdAndUp ? 500 : 300"
                         >
@@ -104,7 +104,7 @@
                     </v-tab-item>
                     <v-tab-item eager v-if="cumulative">
                         <v-card
-                            color="#f7f7f7"
+                            color="#fff"
                             flat
                             :height="$vuetify.breakpoint.mdAndUp ? 500 : 300"
                         >
@@ -117,7 +117,7 @@
                         </v-card>
                     </v-tab-item>
                     <v-tab-item>
-                        <v-card flat color="#f7f7f7">
+                        <v-card flat color="#fff">
                             <v-data-table
                                 fixed-header
                                 id="data-table"
