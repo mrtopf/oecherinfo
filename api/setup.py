@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='corona',
-    version='1.1.1',
+    version='1.1.0',
     url="https://comlounge.net",
     packages=['corona'],
     author="COM.lounge GmbH",
