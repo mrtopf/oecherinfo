@@ -153,3 +153,14 @@ def import_divi_details():
 
     click.echo("Finished divi hospital import in %s seconds" %
             (round(time.time()-start_time, 2)))
+
+@corona_cli.command()
+@with_appcontext
+@click.pass_context
+def all(ctx):
+    """import all"""
+    ctx.invoke(import_corona)
+    ctx.invoke(avgs)
+    ctx.invoke(import_divi)
+    ctx.invoke(import_divi_details)
+    
