@@ -100,7 +100,7 @@ export default {
             return result;
         },
         handleMuniClick(item) {
-            this.$matomo.trackEvent('Corona', 'OverviewTable-Click', item.muni)
+            this.$matomo.trackEvent("Corona", "OverviewTable-Click", item.muni);
             this.$router.push({
                 name: "cases",
                 params: {
@@ -139,7 +139,7 @@ export default {
                 { text: "Fälle insgesamt", value: "positive" },
                 { text: "Aktiv", value: "active" },
                 { text: "Genesen", value: "recovered" },
-                { text: "Verstorben", value: "deaths" },
+                { text: "Verstorben", value: "deaths" }
             ]
         };
     }

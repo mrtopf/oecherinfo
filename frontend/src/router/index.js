@@ -4,6 +4,8 @@ import Main from "../views/Main.vue"
 import CasesView from "../views/CasesView.vue"
 import RecoveredView from "../views/RecoveredView.vue"
 import DeathsView from "../views/DeathsView.vue"
+import HospitalView from "../views/HospitalView.vue"
+import { faHospitalSymbol } from "@fortawesome/pro-regular-svg-icons"
 
 Vue.use(VueRouter)
 
@@ -20,6 +22,15 @@ const routes = [
         props: true,
         meta: {
             title: 'oecher.info | Corona Dashboard | Fälle'
+        }
+    },
+    {
+        path: "/hospitals",
+        name: "hospitals",
+        component: HospitalView,
+        props: true,
+        meta: {
+            title: 'oecher.info | Corona Dashboard | Intensivbetten'
         }
     },
     {

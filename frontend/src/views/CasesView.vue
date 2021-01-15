@@ -4,32 +4,34 @@
         :muni="muni"
         :keyAttributes="keyAttributes"
         :attribute="attribute"
+        :todayData="today[muni]"
     >
         <template v-slot:graphs>
             <CoronaGraph
                 class="pb-8 mt-10 mx-0 px-0 mx-md-6"
                 title="7-Tage-Inzidenz"
                 attribute="incidence"
-                :muni="muni"
+                :data="muni_data"
             />
             <CoronaGraph
                 class="pb-8 mt-10 mx-0 px-0 mx-md-6"
                 title="Neue Fälle nach Datum"
                 attribute="new"
                 cumulative="positive"
-                :muni="muni"
+                :data="muni_data"
             />
             <CoronaGraph
                 class="pb-8 mt-10 mx-0 px-0 mx-md-6"
                 title="Aktive Fälle"
                 attribute="active"
-                :muni="muni"
+                :data="muni_data"
             />
         </template>
     </DataView>
 </template>
 
 <script>
+import { mapState, mapActions, mapGetters } from "vuex";
 import DataView from "@/components/DataView.vue";
 import CoronaGraph from "@/components/CoronaGraph.vue";
 
@@ -66,6 +68,16 @@ export default {
             }
         ]
     }),
+
+    computed: {
+        muni_data() {
+            return this.allMuniData[this.muni];
+        },
+        ...mapState({
+            allMuniData: state => state.corona.allMuniData,
+            today: state => state.corona.today
+        })
+    },
 
     components: {
         DataView,

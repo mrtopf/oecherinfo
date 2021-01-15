@@ -26,7 +26,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>Belegte Betten</th>
+                                <th>Verfügbare Betten</th>
                                 <td>
                                     {{ divi[0].betten_belegt }}
                                 </td>

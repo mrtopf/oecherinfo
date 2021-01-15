@@ -192,6 +192,11 @@ export default {
         trends: {
             type: Boolean,
             default: true
+        },
+        data: Object,
+        barWidth: {
+            type: Number,
+            default: 1.8,
         }
     },
     data: () => ({
@@ -404,7 +409,7 @@ export default {
                     backgroundColor: "#60D7E6",
                     //backgroundColor: (ctx) => {  return ctx.index -l < -7 ? "#fa0": "#0af"},
 
-                    barPercentage: 1.8,
+                    barPercentage: this.barWidth,
                     minBarLength: 0,
                     hoverBackgroundColor: "black"
                 }
@@ -604,7 +609,8 @@ export default {
             return { ...b, ...myData };
         },
         muni_data() {
-            return this.allMuniData[this.muni];
+            return this.data
+            //return this.allMuniData[this.muni];
         },
         ...mapGetters("corona", ["muniName"]),
         ...mapState({

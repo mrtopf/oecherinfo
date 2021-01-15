@@ -92,6 +92,12 @@
                     erhalten
                 </div>
                 <OverviewTable></OverviewTable>
+                <v-card-text class="caption text-right">
+                    Die Pfeile
+                    <v-icon small color="red">fa fa-chevron-down</v-icon>
+                    <v-icon small color="green">fa fa-chevron-up</v-icon> geben
+                    den 7-Tage-Trend wieder.
+                </v-card-text>
             </v-card-text>
 
             <v-card-text class="mt-10">

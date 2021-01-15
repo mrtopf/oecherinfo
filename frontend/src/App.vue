@@ -63,40 +63,48 @@
         </v-navigation-drawer>
 
         <v-main>
-            <v-row>
-                <v-col cols="12" md="2" class="d-none d-md-flex">
-                    <v-list nav class="mt-4 pl-7" id="nav-list" color="#f8f8f8">
-                        <v-list-item-group
-                            v-model="activeTab"
-                            active-class="nav-active"
+            <v-container fluid class="pa-0">
+                <v-row no-gutters>
+                    <v-col cols="12" md="2" class="d-none d-md-flex">
+                        <v-list
+                            nav
+                            class="mt-4 pl-7"
+                            id="nav-list"
+                            color="#f8f8f8"
                         >
-                            <v-list-item
-                                :ripple="false"
-                                v-for="item in navItems"
-                                :key="item.title"
-                                :to="{
-                                    name: item.route,
-                                    params: {
-                                        muni: muni
-                                    }
-                                }"
-                                link
-                                exact
-                                :active="item.active"
+                            <v-list-item-group
+                                v-model="activeTab"
+                                active-class="nav-active"
                             >
-                                <v-list-item-content>
-                                    <v-list-item-title>{{
-                                        item.title
-                                    }}</v-list-item-title>
-                                </v-list-item-content>
-                            </v-list-item>
-                        </v-list-item-group>
-                    </v-list>
-                </v-col>
-                <v-col cols="12" md="10">
-                    <router-view></router-view>
-                </v-col>
-            </v-row>
+                                <v-list-item
+                                    :ripple="false"
+                                    v-for="(item, i) in navItems"
+                                    :key="item.title"
+                                    :to="{
+                                        name: item.route,
+                                        params: {
+                                            muni: muni
+                                        }
+                                    }"
+                                    :nexact="muni != 'sr' || i == 0"
+                                    link
+                                    :exact="i == 0"
+                                    :active="item.active"
+                                >
+                                    <v-list-item-content>
+                                        <v-list-item-title>{{
+                                            item.title
+                                        }}</v-list-item-title>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </v-list-item-group>
+                        </v-list>
+                    </v-col>
+                    <v-col cols="12" md="10">
+                        <router-view></router-view>
+                    </v-col>
+                </v-row>
+            </v-container>
         </v-main>
         <v-footer color="primary lighten-1" dark class="footer caption">
             <v-row dense>
@@ -139,7 +147,7 @@ export default {
     },
     computed: {
         muni() {
-            const muni = this.$router.currentRoute.params.muni;
+            const muni = this.$route.params.muni;
             if (!muni) {
                 return "sr";
             }
@@ -181,6 +189,10 @@ export default {
             {
                 title: "Todesfälle",
                 route: "deaths"
+            },
+            {
+                title: "Intensivbetten",
+                route: "hospitals"
             }
         ]
     })

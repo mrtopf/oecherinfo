@@ -8,7 +8,7 @@
                     </div>
                 </v-col>
                 <v-col cols="12" md="8" class="pl-2">
-                    <MuniSelector :title="title" :muni="muni" />
+                    <MuniSelector :title="title" :muni="muni" :attribute="attribute" />
                 </v-col>
                 <v-col cols="12" md="4" class="text-md-right pl-0">
                     <v-menu offset-y bottom left>
@@ -89,7 +89,7 @@
                 <v-card-text
                     class="font-weight-bold text-h3 mt-0 pt-0 pb-0 mb-0"
                 >
-                    {{ Math.round(today[muni][attribute.item]) }}
+                    {{ Math.round(todayData[attribute.item]) }}
                 </v-card-text>
             </v-card>
         </v-row>
@@ -117,7 +117,8 @@ export default {
             default: "sr"
         },
         attribute: String,
-        keyAttributes: Array
+        keyAttributes: Array,
+        todayData: Object,
     },
     name: "DataView",
     data: () => ({

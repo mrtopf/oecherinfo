@@ -4,6 +4,7 @@
         :muni="muni"
         :keyAttributes="keyAttributes"
         :attribute="attribute"
+        :todayData="today[muni]"
     >
         <template v-slot:graphs>
             <CoronaGraph
@@ -11,7 +12,7 @@
                 title="Todesfälle nach Datum"
                 attribute="new_deaths"
                 cumulative="deaths"
-                :muni="muni"
+                :data="muni_data"
                 :trends="false"
             />
         </template>
@@ -19,6 +20,7 @@
 </template>
 
 <script>
+import { mapState, mapActions, mapGetters } from "vuex";
 import DataView from "@/components/DataView.vue";
 import CoronaGraph from "@/components/CoronaGraph.vue";
 
@@ -45,6 +47,15 @@ export default {
             }
         ]
     }),
+    computed: {
+        muni_data() {
+            return this.allMuniData[this.muni];
+        },
+        ...mapState({
+            allMuniData: state => state.corona.allMuniData,
+            today: state => state.corona.today
+        })
+    },
 
     components: {
         DataView,

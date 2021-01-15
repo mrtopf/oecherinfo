@@ -27,7 +27,7 @@
                     :to="{
                         name: $route.name,
                         params: {
-                            attribute: 'incidence',
+                            attribute: attribute,
                             muni: item.muni
                         }
                     }"
@@ -46,6 +46,7 @@ import { mapState, mapActions, mapGetters } from "vuex";
 export default {
     props: {
         title: String,
+        attribute: String,
         muni: {
             type: String,
             default: "sr"
