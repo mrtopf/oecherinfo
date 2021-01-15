@@ -74,10 +74,10 @@
                     ({{ item.incidence_diff }})
                 </small> -->
                 <v-icon
-                    :color="item.incidence_avg_trend_color"
+                    :color="item.incidence_trend_color"
                     :size="$vuetify.breakpoint.smAndUp ? 14 : 9"
                     class="pa-0 pl-0 ma-0"
-                    >{{ item.incidence_avg_trend_icon }}</v-icon
+                    >{{ item.incidence_trend_icon }}</v-icon
                 >
             </template>
         </v-data-table>
