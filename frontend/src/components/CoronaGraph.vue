@@ -52,7 +52,7 @@
                         key="daily"
                         class="body-2 font-weight-bold"
                         @click="
-                            $matomo.trackEvent(
+                            $matomo && $matomo.trackEvent(
                                 'Corona',
                                 'graphclick-daily',
                                 attribute
@@ -65,7 +65,7 @@
                         key="cumulative"
                         v-if="cumulative"
                         @click="
-                            $matomo.trackEvent(
+                            $matomo && $matomo.trackEvent(
                                 'Corona',
                                 'graphclick-cumulative',
                                 attribute
@@ -77,7 +77,7 @@
                         key="data"
                         class="body-2 font-weight-bold"
                         @click="
-                            $matomo.trackEvent(
+                            $matomo && $matomo.trackEvent(
                                 'Corona',
                                 'graphclick-data',
                                 attribute

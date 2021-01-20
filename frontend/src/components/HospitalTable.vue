@@ -9,6 +9,7 @@
                 </v-toolbar>
 
                 <v-simple-table
+                    v-if="divi.length>0"
                     class="mb-5"
                     dense
                     :class="
@@ -69,7 +70,7 @@
                     <v-dialog v-model="hospitalHelp" scrollable width="700">
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn
-                                @click.capture="$matomo.trackEvent('Corona', 'hospital-info-click')"
+                                @click.capture="$matomo && $matomo.trackEvent('Corona', 'hospital-info-click')"
                                 color="white"
                                 dark
                                 v-bind="attrs"

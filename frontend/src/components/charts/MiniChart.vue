@@ -2,7 +2,7 @@
     <v-card
         color="#fff"
         tile
-        @click.capture="$matomo.trackEvent('Corona', 'minichart-click', title)"
+        @click.capture="$matomo && $matomo.trackEvent('Corona', 'minichart-click', title)"
         :to="{ name: 'cases', params: { muni: muni } }"
     >
         <v-card-title class="text-h5 font-weight-bold text-uppercase">

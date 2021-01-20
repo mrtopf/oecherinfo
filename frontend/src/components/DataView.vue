@@ -37,7 +37,7 @@
                             <v-list-item
                                 @click="
                                     setDateRangeStart('all');
-                                    $matomo.trackEvent(
+                                    $matomo && $matomo.trackEvent(
                                         'Corona',
                                         'change-daterange',
                                         'all'
@@ -48,7 +48,7 @@
                             <v-list-item
                                 @click="
                                     setDateRangeStart('w2');
-                                    $matomo.trackEvent(
+                                    $matomo && $matomo.trackEvent(
                                         'Corona',
                                         'change-daterange',
                                         'w2'
@@ -59,7 +59,7 @@
                             <v-list-item
                                 @click="
                                     setDateRangeStart('1month');
-                                    $matomo.trackEvent(
+                                    $matomo && $matomo.trackEvent(
                                         'Corona',
                                         'change-daterange',
                                         '1month'
