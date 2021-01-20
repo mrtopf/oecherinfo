@@ -59,6 +59,9 @@
                         </tbody>
                     </template>
                 </v-simple-table>
+                <v-card-actions>
+                    <v-btn :to="{name: 'hospitals'}" tile small color="primary">Alle Daten einsehen</v-btn>
+                </v-card-actions>
             </v-card>
         </v-col>
         <v-col>
