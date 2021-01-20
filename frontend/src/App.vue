@@ -24,7 +24,7 @@
             </v-btn>
         </v-app-bar>
 
-        <v-navigation-drawer temporary absolute v-model="drawer">
+        <v-navigation-drawer app v-model="drawer">
             <v-list-item>
                 <v-list-item-content>
                     <v-list-item-title class="title">
