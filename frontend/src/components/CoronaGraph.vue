@@ -391,7 +391,7 @@ export default {
             return [
                 {
                     type: "line",
-                    label: "7-Tages-Durschschnitt",
+                    label: "7-Tages-Durchschnitt",
                     data: this.averages,
                     borderColor: "#11616A",
                     pointRadius: 0,
