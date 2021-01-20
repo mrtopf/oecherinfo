@@ -71,13 +71,12 @@
                     </v-menu>
                 </v-col>
             </v-row>
-        </v-container>
 
         <v-divider></v-divider>
         <v-row>
             <v-card
                 flat
-                class="mx-6 pb-0"
+                class="mx-2 pb-0"
                 :width="attribute.width"
                 :key="attribute.name"
                 color="#f8f8f8"
@@ -93,6 +92,8 @@
                 </v-card-text>
             </v-card>
         </v-row>
+                </v-container>
+
         <slot name="graphs"></slot>
 
         <div class="caption text-right py-5 px-2">
