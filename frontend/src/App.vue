@@ -226,4 +226,8 @@ main {
 #nav-list .v-list-item:before {
     border-radius: 0 !important;
 }
+.v-card__text, .v-card__title {
+  word-break: normal !important;
+}
+
 </style>
