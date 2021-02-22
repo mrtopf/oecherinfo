@@ -101,6 +101,7 @@ The response is in JSON and looks like follows:
 
 **Question**: Should we return a list of objects or maybe just lists to save some space? It could look like this:
 
+```
 {
     count: 71,
     lastUpdated: "2020-08-05T11:05:00",
@@ -128,6 +129,7 @@ The response is in JSON and looks like follows:
     ],
     ...
 }
+```
 
 This way we don't have to repeat the keys all the time. Moreover it might be easier to feed it into chart libraries.
 
