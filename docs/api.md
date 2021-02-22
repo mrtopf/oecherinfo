@@ -23,6 +23,7 @@ Thus the path starts with the version number starting with `/v1/`.
     - `newCases`: new cases per day
     - `cumCases`: cumulative cases
     - `activeCases`: active cases per day
+    - `avgRollingRate`: rolling rate per day (Inzidenz)
     - `rollingRate`: rolling rate per day (Inzidenz)
     - `rollingRatePerc`: change of rolling rate in percentage (like gov.uk does it **new**)
     - `avgNewCases`: average value over +/-3 days for new cases per day
