@@ -34,6 +34,8 @@ Thus the path starts with the version number starting with `/v1/`.
     - `newRecovered`: new recovered ppl per day
     - `avgNewRecovered`: average value over +/-3 days for recovered ppl
     - `cumRecovered`: cumulative recovered people
+    - `r4` : the r4 value
+    - `r7` : the r7 value
 
 - Hospital data per day:
     - `freeBeds`: free beds per day of hospitals in the county
