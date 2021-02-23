@@ -12,7 +12,7 @@ from flask_restful import Resource, abort, request
 from corona.db import mongo
 from corona.json_encoder import CustomJSONEncoder
 
-import coronaapi # api v1
+import corona.api as coronaapi# api v1
 
 FIELDS = [
     "new",
