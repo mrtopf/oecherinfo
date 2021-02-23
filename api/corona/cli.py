@@ -35,7 +35,8 @@ KOMMUNEN_MAP = {
 }
 
 # all attributes we compute averages for
-ATTRIBUTES = ['incidence', 'new', 'active', 'new_recovered', 'new_deaths']
+ATTRIBUTES = ['incidence', 'new', 'active', 'new_recovered', 'new_deaths', 'recovered', 'positive', 'deaths']
+#ATTRIBUTES = ['incidence', 'new', 'active', 'new_recovered', 'new_deaths']
 ATTRIBUTES_DIVI = ['faelle_covid_aktuell', 'faelle_covid_aktuell_beatmet', 'betten_frei', 'betten_belegt', 'betten_gesamt']
 
 @corona_cli.command()
@@ -184,6 +185,7 @@ def avgs():
         for idx,v in enumerate(avg):
             data[idx][attr+'_avg'] = v
             mongo.db.divi_daily.save(data[idx])
+
                 
         click.echo("Finished DIVI - %s" %attr)
     
