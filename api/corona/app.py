@@ -12,6 +12,8 @@ from flask_restful import Resource, abort, request
 from corona.db import mongo
 from corona.json_encoder import CustomJSONEncoder
 
+import coronaapi # api v1
+
 FIELDS = [
     "new",
     "active",
@@ -206,6 +208,10 @@ def create_app(config=None):
 
     # REST endpoints
 
+    api = Api(app, prefix='/corona/v1')
+    coronaapi.setup(api)
+
+    # old API
     api = Api(app, prefix='/api')
     api.add_resource(
         MuniData,
@@ -217,6 +223,7 @@ def create_app(config=None):
         '/all',
         endpoint="all"
     )
+    # end old api
 
     return app
 
