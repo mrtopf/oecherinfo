@@ -23,6 +23,7 @@ Thus the path starts with the version number starting with `/v1/`.
     - `newCases`: new cases per day
     - `cumCases`: cumulative cases
     - `activeCases`: active cases per day
+    - `avgRollingRate`: rolling rate per day (Inzidenz)
     - `rollingRate`: rolling rate per day (Inzidenz)
     - `rollingRatePerc`: change of rolling rate in percentage (like gov.uk does it **new**)
     - `avgNewCases`: average value over +/-3 days for new cases per day
@@ -101,6 +102,7 @@ The response is in JSON and looks like follows:
 
 **Question**: Should we return a list of objects or maybe just lists to save some space? It could look like this:
 
+```
 {
     count: 71,
     lastUpdated: "2020-08-05T11:05:00",
@@ -128,6 +130,7 @@ The response is in JSON and looks like follows:
     ],
     ...
 }
+```
 
 This way we don't have to repeat the keys all the time. Moreover it might be easier to feed it into chart libraries.
 
