@@ -1,3 +1,4 @@
+
 from flask_restful import Resource, abort, request
 
 from corona.config import ALLOWED_MUNI_FIELDS, API_TO_DATABASE_MAPPING, DATABASE_TO_API_MAPPING
@@ -36,24 +37,40 @@ class Municipality(Resource):
         data = list(mongo.db.data.find(
             {'municipality': muni}).sort("date", -1))
         first = data[0]
-        print(data)
         resp = {
             'date': first['date'],
             'dateFormatted': first['date'].strftime("%d. %B %Y"),
             'fields': fields,
             'format': output,
-        }
-
+            'dates': [d['date'] for d in data]
+        }        
+    
         today={}
         yesterday={}
         trend={}
         for f in fields:
             db_field = API_TO_DATABASE_MAPPING[f]
-            today[f] = data[0][db_field]
-            yesterday[f] = data[1][db_field]
+            if data[0][db_field]:
+                today[f] = round(data[0][db_field],2)
+            else:
+                today[f] = None
+            if data[1][db_field]:
+                yesterday[f] = round(data[1][db_field],2)
+            else:
+                yesterday[f] = None
 
+            # add the series to the response
+            series = resp[f] = [d[db_field] or 0 for d in data]
+
+            # compute the trends
+            if f=="rollingRate":
+                diff = trend['rollingRate7DayChange'] = round(data[0]['incidence'] - data[7]['incidence'],2)
+                trend['rollingRate7DayChangePercent'] = round(diff / data[7]['incidence'],2)
+            else:
+                diff = trend['%s7DayChange' %f] = sum(series[0:7]) - sum(series[8:14])
+                trend['%s7DayChangePercent' %f] = round(diff / sum(series[8:14]),2)
+                
         resp['today'] = today
         resp['yesterday'] = yesterday
-            
-        
+        resp['trend'] = trend
         return resp
