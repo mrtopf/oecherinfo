@@ -1,4 +1,5 @@
 import datetime
+from typing import NoReturn
 import click
 import time
 import requests
@@ -104,6 +105,30 @@ def avgs():
     for (name, muni) in KOMMUNEN_MAP.items():
         data = list(mongo.db.data.find({'municipality': muni}).sort("date", 1))
 
+        cases = [0 if d['new'] is None else d['new'] for d in data]
+        # compute R for this muni
+        rwert = [None for i in range(0,len(cases)+1)]
+        rwert7 = [None for i in range(0,len(cases)+1)]
+
+        window=4
+        # note that a[:len(cases)] does not get the last element
+        for t in range(0,len(cases)+1):
+            if t <window*2:
+                data[t-1]['r4'] = None
+            else:
+                data[t-1]['r4'] = round(sum(cases[t-window:t]) / max(sum(cases[t-window*2:t-window]),0.001),2)
+                #print(data[t-1]['r'], data[t-1]['new'])
+            mongo.db.data.save(data[t-1])
+
+        window=7
+        for t in range(0, len(cases)+1):
+            if t<window*2:
+                data[t-1]['r7'] = None
+            else:
+                data[t-1]['r7'] = round(sum(cases[t-window:t]) / max(sum(cases[t-window*2:t-window]),0.001),2)
+                #print(data[t-1]['r7'], data[t-1]['new'])
+            mongo.db.data.save(data[t-1])
+
         for attr in ATTRIBUTES:
             numbers = [d[attr] for d in data]
             numbers_series = pandas.Series(numbers)
@@ -123,6 +148,17 @@ def avgs():
                     data[idx][attr+'_last'] = data[idx-1][attr]
                 else:
                     data[idx][attr+'_last'] = data[idx][attr]
+
+                # for incidence compute percentage change from past 7 days
+                if attr=="incidence":
+                    # incidence should not be None or 0 (div by zero)
+                    if idx > 7 and data[idx-7]['incidence']:
+                        diff = data[idx]['incidence'] - data[idx-7]['incidence']
+                        perc = diff/data[idx-7]['incidence']
+                    else:
+                        perc = 0
+                    data[idx]['incidence_perc'] = perc
+                    
                 mongo.db.data.save(data[idx])
                 
         click.echo("Finished %s" % name)
