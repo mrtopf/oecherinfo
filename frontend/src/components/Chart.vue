@@ -44,12 +44,6 @@ export default {
                 },
                 data: [
                     {
-                        yAxis: 50
-                    },
-                    {
-                        yAxis: 200
-                    },
-                    {
                         xAxis: "2020-11-02",
                         name: "L1",
                         label: {
@@ -77,6 +71,15 @@ export default {
                     }
                 ]
             };
+            if (this.showLines) {
+                markLines.data.push(
+                    { yAxis: 50 }
+                )
+                markLines.data.push(
+                    { yAxis: 200 }
+                )
+            }
+
             let series = [
                 {
                     name: this.name,
@@ -87,9 +90,9 @@ export default {
                     color: "#1C9FB0"
                 }
             ];
-            if (this.showLines) {
-                series[0]["markLine"] = markLines;
-            }
+            
+            series[0]["markLine"] = markLines;
+
             if (this.avgs) {
                 series.push({
                     name: "7-Tage-Durchschnitt",
