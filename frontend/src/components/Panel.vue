@@ -4,7 +4,35 @@
             primary-title
             class="text-h6 text-md-h4 font-weight-bold primary--text"
         >
-            {{ title }}
+            {{ title }}: <span class="pl-2">{{ todayValue }}</span>
+            <v-tooltip bottom max-width="300" v-if="showTrends">
+                <template v-slot:activator="{ on }">
+                    <span v-on="on" class="ml-3 mr-3 pa-0 ttip">
+                        <small class="text-h6 text-md-h6 caption"
+                            >{{ diffYesterday }}
+                        </small>
+                    </span>
+                </template>
+                Unterschied zum Vortag
+            </v-tooltip>
+            <v-tooltip bottom max-width="300" v-if="showTrends">
+                <template v-slot:activator="{ on }">
+                    <span class="ttip">
+                        <v-icon
+                            v-on="on"
+                            :color="trend.color"
+                            :size="$vuetify.breakpoint.smAndUp ? 30 : 20"
+                            :style="trend.rotate"
+                            class="pa-0 pl-1 pr-5 ma-0 trend-icon"
+                            >{{ trend.icon }}</v-icon
+                        >
+                    </span>
+                </template>
+                <span
+                    >Der Langzeittrend ist die Differenz des Wertes von vor 7
+                    Tagen verglichen mit dem aktuellen Wert.</span
+                >
+            </v-tooltip>
         </v-card-title>
         <v-card-text style="max-width: 1024px;" class="body-2 pr-10 pl-5">
             <slot name="description"></slot>
@@ -73,7 +101,12 @@ export default {
         matomoAttribute: String, // used for matomo to know which graph was clicked on
         title: String,
         tableAttributes: Array,
-        data: Object
+        data: Object,
+        attribute: String, // attribute to use for header numbers
+        showTrends: {
+            type: Boolean,
+            default: true
+        }
     },
     data() {
         return {
@@ -118,6 +151,48 @@ export default {
                 data.push(record);
             }
             return data;
+        },
+        todayValue() {
+            return this.data.today[this.attribute];
+        },
+        diffYesterday() {
+            const d = Math.round(
+                this.data.today[this.attribute] -
+                    this.data.yesterday[this.attribute],
+                2
+            );
+            if (d > 0) {
+                return "+" + d;
+            } else if (d < 0) {
+                return d;
+            } else {
+                return "+/- 0";
+            }
+        },
+        trend() {
+            const d = this.data.trend[this.attribute];
+            if (d > 0) {
+                return {
+                    rotate:
+                        "padding-bottom: 0px; transform: translate(0px,8px) rotate(45deg) ",
+                    icon: "fas fa-arrow-up",
+                    color: "red",
+                    hint: "Aufwärtstrend über 14 Tage"
+                };
+            } else if (d < 0) {
+                return {
+                    rotate: "transform: rotate(-45deg)",
+                    icon: "fas fa-arrow-down",
+                    color: "green",
+                    hint: "Abwärtstrend über 14 Tage"
+                };
+            } else {
+                return {
+                    icon: "fas fa-minus",
+                    color: "grey",
+                    hint: "gleichbleibend über 14 Tage"
+                };
+            }
         }
     }
 };

@@ -22,6 +22,7 @@
                 <Panel
                     title="7-Tage-Inzidenz"
                     matomoAttribute="incidence"
+                    attribute="rollingRate"
                     :data="data"
                     :tableAttributes="[
                         { value: 'rollingRate', text: '7-Tage-Inzidenz' },
@@ -81,6 +82,7 @@
                 <Panel
                     title="Neue Fälle"
                     matomoAttribute="cases"
+                    attribute="newCases"
                     :data="data"
                     :tableAttributes="[
                         { value: 'newCases', text: 'Neue Fälle' },
@@ -123,6 +125,8 @@
                 <Panel
                     title="R-Wert"
                     matomoAttribute="rvalue"
+                    attribute="r4"
+                    :showTrends="false"
                     :data="data"
                     :tableAttributes="[
                         { value: 'r4', text: 'R-Wert 4 Tage' },
@@ -160,6 +164,7 @@
                 <Panel
                     title="Aktive Fälle"
                     matomoAttribute="cases"
+                    attribute="activeCases"
                     :data="data"
                     :tableAttributes="[
                         { value: 'activeCases', text: 'Aktive Fälle' },
