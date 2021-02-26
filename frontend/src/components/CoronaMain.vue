@@ -136,8 +136,6 @@
 
 <script>
 import Mini from "./charts/Mini.vue";
-import Incidence from "./charts/Incidence.vue";
-import NewCases from "./charts/NewCases.vue";
 import MiniChart from "./charts/MiniChart.vue";
 
 import OverviewTable from "./OverviewTable.vue";
@@ -191,8 +189,6 @@ export default {
     components: {
         Mini,
         MiniChart,
-        Incidence,
-        NewCases,
         OverviewTable,
         HospitalTable
     },
