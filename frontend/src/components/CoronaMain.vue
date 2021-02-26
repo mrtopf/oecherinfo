@@ -12,7 +12,6 @@
             <v-card-title class="text-xs-h7 text-lg-h5 pb-0 font-weight-bold">
                 Übersicht Städteregion Aachen
             </v-card-title>
-
             <v-card-text class="py-0" v-if="loaded">
                 <v-row>
                     <v-col cols="12" md="4">
@@ -139,11 +138,12 @@
 import Mini from "./charts/Mini.vue";
 import Incidence from "./charts/Incidence.vue";
 import NewCases from "./charts/NewCases.vue";
-import MiniNew from "./charts/MiniNew.vue";
 import MiniChart from "./charts/MiniChart.vue";
 
 import OverviewTable from "./OverviewTable.vue";
 import HospitalTable from "./HospitalTable.vue";
+
+import { format } from "echarts";
 
 import { mapState, mapActions, mapGetters } from "vuex";
 
@@ -151,31 +151,45 @@ import axios from "axios";
 
 import _ from "lodash";
 
-const API = process.env.VUE_APP_CORONA_API;
+const API = process.env.VUE_APP_CORONA_API_NEW;
 
 export default {
     name: "CoronaMain",
     data: () => ({
-        range: [0, 100],
-        startSelected: "w2",
-        // diff sr to rest: 180-54
-        startDict: {
-            all: "Gesamtzeitraum",
-            w2: "2. Welle",
-            "14tage": "14 Tage"
-        },
-        secondWave: true
+        sr: null,
+        aachen: null,
+        divi: null,
+        loading: true
     }),
     methods: {
+        async load2() {
+            await axios
+                .get(`${API}/muni/sr?fields=rollingRate,activeCases,newCases`)
+                .then(response => {
+                    this.sr = response.data;
+                });
+            await axios
+                .get(
+                    `${API}/muni/aachen?fields=rollingRate,activeCases,newCases`
+                )
+                .then(response => {
+                    this.sr = response.data;
+                });
+            await axios.get(`${API}/divi/`).then(response => {
+                this.divi = response.data;
+            });
+            this.loading = false;
+        },
         ...mapActions({
             updateMuni: "corona/updateMuni",
             load: "corona/load"
         })
     },
-    async mounted() {},
+    async mounted() {
+        this.load2();
+    },
     components: {
         Mini,
-        MiniNew,
         MiniChart,
         Incidence,
         NewCases,
@@ -183,16 +197,10 @@ export default {
         HospitalTable
     },
     computed: {
-        startIndex() {
-            if (this.startSelected == "w2") {
-                return this.selectedMuni == "sr" ? 180 : 54;
-            } else if (this.startSelected == "14tage") {
-                const l = this.muni_data["incidence"].length;
-                return l - 14;
-            } else {
-                return 1;
-            }
+        date() {
+            return this.sr && format.formatTime("dd.MM.yyyy", this.sr.date);
         },
+
         ...mapGetters("corona", ["muniName", "muni_data", "todayList"]),
         ...mapState({
             muniDict: state => state.corona.muniDict,
@@ -202,7 +210,6 @@ export default {
             today: state => state.corona.today,
             yesterday: state => state.corona.yesterday,
             weekerday: state => state.corona.weekerday,
-            date: state => state.corona.date,
             yesterdate: state => state.corona.yesterdate,
             selectedMuni: state => state.corona.selectedMuni
         })
