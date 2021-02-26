@@ -1,6 +1,5 @@
 <template>
     <v-card
-        v-if="muni_data"
         class="ma-0 flex-grow-1 flex-shrink-0"
         flat
         color="#f8f8f8"
@@ -56,7 +55,6 @@
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
 
-import CoronaGraph from "@/components/CoronaGraph.vue";
 import MuniSelector from "@/components/MuniSelector.vue";
 
 export default {
@@ -73,45 +71,9 @@ export default {
     name: "DataView",
     data: () => ({
     }),
-    mounted() {
-        if (this.muni_data) {
-            this.setDateRangeStart("all");
-        }
-        this.updateMuni(this.muni);
-    },
-    watch: {
-        muni_data(val, oldval) {
-            this.setDateRangeStart("all");
-        }
-    },
-    methods: {
-        ...mapActions({
-            setDateRangeStart: "corona/setDateRangeStart",
-            updateMuni: "corona/updateMuni"
-        })
-    },
     components: {
-        CoronaGraph,
         MuniSelector
     },
-    computed: {
-        muni_data() {
-            return this.allMuniData[this.muni];
-        },
-        ...mapGetters("corona", ["muniName"]),
-        ...mapState({
-            muniDict: state => state.corona.muniDict,
-            loaded: state => state.corona.loaded,
-            munis: state => state.corona.munis,
-            allMuniData: state => state.corona.allMuniData,
-            today: state => state.corona.today,
-            yesterday: state => state.corona.yesterday,
-            weekerday: state => state.corona.weekerday,
-            date: state => state.corona.date,
-            dateRange: state => state.corona.dateRange,
-            dateRangeName: state => state.corona.dateRangeName
-        })
-    }
 };
 </script>
 <style scoped>
