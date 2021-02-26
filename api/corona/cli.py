@@ -107,18 +107,21 @@ def avgs():
         data = list(mongo.db.data.find({'municipality': muni}).sort("date", 1))
 
         cases = [0 if d['new'] is None else d['new'] for d in data]
-        # compute R for this muni
-        rwert = [None for i in range(0,len(cases)+1)]
-        rwert7 = [None for i in range(0,len(cases)+1)]
 
+        ###
+        ### compute R4 and R7
+        ###
         window=4
         # note that a[:len(cases)] does not get the last element
         for t in range(0,len(cases)+1):
             if t <window*2:
                 data[t-1]['r4'] = None
             else:
-                data[t-1]['r4'] = round(sum(cases[t-window:t]) / max(sum(cases[t-window*2:t-window]),0.001),2)
-                #print(data[t-1]['r'], data[t-1]['new'])
+                data[t-1]['r4'] = round(sum(cases[t-window:t]) / max(sum(cases[t-window*2:t-window]),1),2)
+                # if r > 200:
+                #     print(sum(cases[t-window:t]), sum(cases[t-window*2:t-window]))
+                #     print(cases[t-window:t], cases[t-window*2:t-window])
+                #     print(data[t-1]['r'], data[t-1]['new'])
             mongo.db.data.save(data[t-1])
 
         window=7
@@ -126,9 +129,10 @@ def avgs():
             if t<window*2:
                 data[t-1]['r7'] = None
             else:
-                data[t-1]['r7'] = round(sum(cases[t-window:t]) / max(sum(cases[t-window*2:t-window]),0.001),2)
+                data[t-1]['r7'] = round(sum(cases[t-window:t]) / max(sum(cases[t-window*2:t-window]),1),2)
                 #print(data[t-1]['r7'], data[t-1]['new'])
             mongo.db.data.save(data[t-1])
+
 
         for attr in ATTRIBUTES:
             numbers = [d[attr] for d in data]
