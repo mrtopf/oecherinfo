@@ -44,6 +44,10 @@ Thus the path starts with the version number starting with `/v1/`.
     - `avgCovdi19Cases`: avg of covid 19 cases in ICUs
     - `ventilatorCases`: covid 19 cases on ventilators in ICUs
     - `avgVentilatorCases`: avg of covid 19 cases on ventilaros in ICUs
+    - `allBeds`: occupied and free beds combined
+    - `avgAllBeds`: average of occupied and free beds combined
+    - `occupiedBeds`: beds which are occupied
+    - `avgOccupiedBeds`: avg of beds which are occupied
 
 ### Making a request
 
