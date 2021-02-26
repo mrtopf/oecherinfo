@@ -51,11 +51,11 @@ class Municipality(Resource):
         for f in fields:
             db_field = API_TO_DATABASE_MAPPING[f]
             if data[0][db_field]:
-                today[f] = round(data[0][db_field],2)
+                today[f] = round(data[0][db_field],0 if f=='rollingRate' else 2)
             else:
                 today[f] = None
             if data[1][db_field]:
-                yesterday[f] = round(data[1][db_field],2)
+                yesterday[f] = round(data[1][db_field],0 if f=='rollingRate' else 2)
             else:
                 yesterday[f] = None
 
