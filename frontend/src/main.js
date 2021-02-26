@@ -5,6 +5,38 @@ import router from "./router"
 import store from "./store"
 import vuetify from "./plugins/vuetify"
 
+import ECharts from 'vue-echarts'
+
+import * as echarts from "echarts/core";
+const { use, registerMap, registerTheme } = echarts;
+
+import { CanvasRenderer } from "echarts/renderers";
+import { BarChart, LineChart } from "echarts/charts";
+import {
+    DataZoomComponent,
+    VisualMapComponent,
+    MarkLineComponent,
+    DataZoomSliderComponent, 
+    GridComponent, 
+    TooltipComponent,
+    ToolboxComponent,
+} from "echarts/components";
+
+use([BarChart, 
+    VisualMapComponent,
+    GridComponent, 
+    TooltipComponent, 
+    LineChart, 
+    DataZoomComponent,
+    DataZoomSliderComponent, 
+    MarkLineComponent,
+    ToolboxComponent,
+    CanvasRenderer]);
+
+
+// register globally (or you can do it locally)
+Vue.component('v-chart', ECharts)
+
 
 import VueMoment from 'vue-moment'
 Vue.use(VueMoment, {

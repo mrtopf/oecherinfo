@@ -1,5 +1,10 @@
 <template>
-    <v-card v-if="muni_data" class="ma-0 flex-grow-1 flex-shrink-0" flat color="#f8f8f8">
+    <v-card
+        v-if="muni_data"
+        class="ma-0 flex-grow-1 flex-shrink-0"
+        flat
+        color="#f8f8f8"
+    >
         <v-container fluid>
             <v-row no-gutters>
                 <v-col cols="12" class="pl-2">
@@ -8,10 +13,14 @@
                     </div>
                 </v-col>
                 <v-col cols="12" md="8" class="pl-2">
-                    <MuniSelector :title="title" :muni="muni" :attribute="attribute" />
+                    <MuniSelector
+                        :title="title"
+                        :muni="muni"
+                        :attribute="attribute"
+                    />
                 </v-col>
                 <v-col cols="12" md="4" class="text-md-right pl-0">
-                    <v-menu offset-y bottom left>
+                    <!-- <v-menu offset-y bottom left>
                         <template v-slot:activator="{ on }">
                             <v-btn
                                 color="primary"
@@ -37,69 +46,72 @@
                             <v-list-item
                                 @click="
                                     setDateRangeStart('all');
-                                    $matomo && $matomo.trackEvent(
-                                        'Corona',
-                                        'change-daterange',
-                                        'all'
-                                    );
+                                    $matomo &&
+                                        $matomo.trackEvent(
+                                            'Corona',
+                                            'change-daterange',
+                                            'all'
+                                        );
                                 "
                                 >komplett</v-list-item
                             >
                             <v-list-item
                                 @click="
                                     setDateRangeStart('w2');
-                                    $matomo && $matomo.trackEvent(
-                                        'Corona',
-                                        'change-daterange',
-                                        'w2'
-                                    );
+                                    $matomo &&
+                                        $matomo.trackEvent(
+                                            'Corona',
+                                            'change-daterange',
+                                            'w2'
+                                        );
                                 "
                                 >2. Welle</v-list-item
                             >
                             <v-list-item
                                 @click="
                                     setDateRangeStart('1month');
-                                    $matomo && $matomo.trackEvent(
-                                        'Corona',
-                                        'change-daterange',
-                                        '1month'
-                                    );
+                                    $matomo &&
+                                        $matomo.trackEvent(
+                                            'Corona',
+                                            'change-daterange',
+                                            '1month'
+                                        );
                                 "
                                 >letzter Monat</v-list-item
                             >
                         </v-list>
-                    </v-menu>
+                    </v-menu> -->
                 </v-col>
             </v-row>
 
-        <v-divider></v-divider>
-        <v-row>
-            <v-card
-                flat
-                class="mx-2 pb-0"
-                :width="attribute.width"
-                :key="attribute.name"
-                color="#f8f8f8"
-                v-for="attribute in keyAttributes"
-            >
-                <v-card-text class="font-weight-bold caption pb-0 mt-0">
-                    {{ attribute.name }}
-                </v-card-text>
-                <v-card-text
-                    class="font-weight-bold text-h3 mt-0 pt-0 pb-0 mb-0"
+            <v-divider></v-divider>
+            <v-row>
+                <v-card
+                    flat
+                    class="mx-2 pb-0"
+                    :width="attribute.width"
+                    :key="attribute.name"
+                    color="#f8f8f8"
+                    v-for="attribute in keyAttributes"
                 >
-                    {{ Math.round(todayData[attribute.item]) }}
-                </v-card-text>
-            </v-card>
-        </v-row>
-                </v-container>
+                    <v-card-text class="font-weight-bold caption pb-0 mt-0">
+                        {{ attribute.name }}
+                    </v-card-text>
+                    <v-card-text
+                        class="font-weight-bold text-h3 mt-0 pt-0 pb-0 mb-0"
+                    >
+                        {{ Math.round(todayData[attribute.item]) }}
+                    </v-card-text>
+                </v-card>
+            </v-row>
+        </v-container>
 
         <slot name="graphs"></slot>
 
         <div class="caption text-right py-5 px-2">
             Stand {{ date }}<br />
             <span class="l1-line"></span> Lockdown Light, 2.11.2020<br />
-            <span class="l2-line"></span> Lockdown 16.12.2020<br>
+            <span class="l2-line"></span> Lockdown 16.12.2020<br />
         </div>
     </v-card>
 </template>
@@ -119,7 +131,7 @@ export default {
         },
         attribute: String,
         keyAttributes: Array,
-        todayData: Object,
+        todayData: Object
     },
     name: "DataView",
     data: () => ({
