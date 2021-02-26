@@ -1,9 +1,5 @@
 <template>
-    <v-card
-        class="ma-0 flex-grow-1 flex-shrink-0"
-        flat
-        color="#f8f8f8"
-    >
+    <v-card class="ma-0 flex-grow-1 flex-shrink-0" flat color="#f8f8f8">
         <v-card
             flat
             color="transparent"
@@ -20,14 +16,18 @@
                         Zuletzt aktualisiert am {{ date }}
                     </div>
                 </v-col>
-                <v-col cols="12" md="8" class="pl-2" >
+                <v-col cols="12" md="8" class="pl-2">
                     <MuniSelector
                         v-if="!hideMuniSelector"
                         :title="title"
                         :muni="muni"
                         :attribute="attribute"
                     />
-                    <span v-else>{{title}}</span>
+                    <span
+                        class="float-left text-h6 text-md-h5 font-weight-bold pl-0 black--text labelButton"
+                        v-else
+                        >{{ title }}</span
+                    >
                 </v-col>
             </v-row>
 
@@ -47,7 +47,11 @@
                     <v-card-text
                         class="font-weight-bold text-h4 mt-0 pt-0 pb-0 mb-0"
                     >
-                        {{ (data.today[attribute.item] || 0).toLocaleString("de-DE")  }}
+                        {{
+                            (data.today[attribute.item] || 0).toLocaleString(
+                                "de-DE"
+                            )
+                        }}
                     </v-card-text>
                 </v-card>
             </v-row>
@@ -80,14 +84,13 @@ export default {
         date: String,
         data: Object,
         loading: Boolean,
-        hideMuniSelector: Boolean,
+        hideMuniSelector: Boolean
     },
     name: "DataView",
-    data: () => ({
-    }),
+    data: () => ({}),
     components: {
         MuniSelector
-    },
+    }
 };
 </script>
 <style scoped>

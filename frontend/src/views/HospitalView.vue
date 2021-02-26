@@ -11,36 +11,33 @@
         <template v-slot:graphs>
             <Panel
                 title="freie Betten"
-                matomoAttribute="betten_frei"
+                matomoAttribute="beds"
                 attribute="freeBeds"
                 :data="data"
                 :tableAttributes="[
-                    { value: 'freeBeds', text: 'freie Betten' },
+                    { value: 'allBeds', text: 'alle Betten' },
+                    { value: 'occupiedBeds', text: 'belegte Betten' },
                     {
-                        value: 'avgFreeBeds',
-                        text: 'Durchschnitt der letzten 7 Tage'
+                        value: 'avgAllBeds',
+                        text: 'Durchschnitt, alle Betten'
                     },
+                    {
+                        value: 'avgOccupiedBeds',
+                        text: 'Durchschnitt, belegte Betten'
+                    }
                 ]"
-                :tabs="[
-                    { id: 'daily', title: 'Täglich' },
-                ]"
+                :tabs="[{ id: 'daily', title: 'täglich' }]"
             >
                 <template v-slot:description>
                     <summary>
-                        Anzahl der freien Betten auf Intensivstationen in der Städteregion Aachen.
+                        Anzahl der Betten auf Intensivstationen
                     </summary>
                 </template>
                 <template v-slot:tab.daily>
-                    <Chart
-                        :labels="data.dates"
-                        :data="data.freeBeds"
-                        :avgs="data.avgFreeBeds"
-                        name="freie Betten"
-                    >
-                    </Chart>
+                    <BedChart :labels="data.dates" :data="data" name="Betten">
+                    </BedChart>
                 </template>
             </Panel>
-
 
             <Panel
                 title="COVID-19-Fälle"
@@ -52,15 +49,14 @@
                     {
                         value: 'avgCovid19Cases',
                         text: 'Durchschnitt der letzten 7 Tage'
-                    },
+                    }
                 ]"
-                :tabs="[
-                    { id: 'daily', title: 'Täglich' },
-                ]"
+                :tabs="[{ id: 'daily', title: 'Täglich' }]"
             >
                 <template v-slot:description>
                     <summary>
-                        Anzahl der Betten auf Intensivstationen, die mit COVID-19-Patienten belegt sind.
+                        Anzahl der Betten auf Intensivstationen, die mit
+                        COVID-19-Patienten belegt sind.
                     </summary>
                 </template>
                 <template v-slot:tab.daily>
@@ -84,15 +80,15 @@
                     {
                         value: 'avgVentilatorCases',
                         text: 'Durchschnitt der letzten 7 Tage'
-                    },
+                    }
                 ]"
-                :tabs="[
-                    { id: 'daily', title: 'Täglich' },
-                ]"
+                :tabs="[{ id: 'daily', title: 'Täglich' }]"
             >
                 <template v-slot:description>
                     <summary>
-                        Anzahl der Betten auf Intensivstationen, die mit COVID-19-Patienten belegt sind, die beatmet werden müssen.
+                        Anzahl der Betten auf Intensivstationen, die mit
+                        COVID-19-Patienten belegt sind, die beatmet werden
+                        müssen.
                     </summary>
                 </template>
                 <template v-slot:tab.daily>
@@ -101,54 +97,6 @@
                         :data="data.ventilatorCases"
                         :avgs="data.avgVentilatorCases"
                         name="COVID-19-Fälle, beatmet"
-                    >
-                    </Chart>
-                </template>
-            </Panel>
-
-
-            <Panel
-                title="Betten insgesamt"
-                matomoAttribute="beds"
-                attribute="allBeds"
-                :data="data"
-                :tableAttributes="[
-                    { value: 'allBeds', text: 'alle Betten' },
-                    { value: 'occupiedBeds', text: 'belegte Betten' },
-                    {
-                        value: 'avgAllBeds',
-                        text: 'Durchschnitt, alle Betten'
-                    },
-                    {
-                        value: 'avgOccupiedBeds',
-                        text: 'Durchschnitt, belegte Betten'
-                    },
-                ]"
-                :tabs="[
-                    { id: 'all', title: 'Gesamtzahl' },
-                    { id: 'occupied', title: 'belegt' },
-                ]"
-            >
-                <template v-slot:description>
-                    <summary>
-                        Anzahl der Betten auf Intensivstationen
-                    </summary>
-                </template>
-                <template v-slot:tab.all>
-                    <Chart
-                        :labels="data.dates"
-                        :data="data.allBeds"
-                        :avgs="data.avgAllBeds"
-                        name="Gesamtzahl Betten"
-                    >
-                    </Chart>
-                </template>
-                <template v-slot:tab.occupied>
-                    <Chart
-                        :labels="data.dates"
-                        :data="data.occupiedBeds"
-                        :avgs="data.avgOccupiedBeds"
-                        name="Belegte Betten"
                     >
                     </Chart>
                 </template>
@@ -162,6 +110,7 @@ import { mapState, mapActions, mapGetters } from "vuex";
 import DataView from "@/components/DataView.vue";
 import Panel from "@/components/Panel.vue";
 import Chart from "@/components/Chart.vue";
+import BedChart from "@/components/BedChart.vue";
 import { format } from "echarts";
 
 const API = process.env.VUE_APP_CORONA_API_NEW;
@@ -193,12 +142,17 @@ export default {
         data: null,
         keyAttributes: [
             {
-                name: "Betten",
+                name: "Gesamtzahl",
+                item: "allBeds",
+                width: 150
+            },
+            {
+                name: "belegt",
                 item: "occupiedBeds",
                 width: 150
             },
             {
-                name: "freie Betten",
+                name: "frei",
                 item: "freeBeds",
                 width: 150
             },
@@ -222,7 +176,8 @@ export default {
     components: {
         DataView,
         Panel,
-        Chart
+        Chart,
+        BedChart
     }
 };
 </script>
