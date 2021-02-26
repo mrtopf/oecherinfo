@@ -15,10 +15,11 @@
             :keyAttributes="keyAttributes"
             :attribute="attribute"
             :todayData="data.today"
+            :date="date"
+            
         >
             <template v-slot:graphs>
                 <Panel
-                    class="pb-8 mt-10 mx-0 px-0 mx-md-6"
                     title="7-Tage-Inzidenz"
                     matomoAttribute="incidence"
                     :data="data"
@@ -78,7 +79,6 @@
                 </Panel>
 
                 <Panel
-                    class="pb-8 mt-10 mx-0 px-0 mx-md-6"
                     title="Neue Fälle"
                     matomoAttribute="cases"
                     :data="data"
@@ -121,7 +121,6 @@
                 </Panel>
 
                 <Panel
-                    class="pb-8 mt-10 mx-0 px-0 mx-md-6"
                     title="R-Wert"
                     matomoAttribute="rvalue"
                     :data="data"
@@ -136,7 +135,8 @@
                 >
                     <template v-slot:description>
                         <summary>
-                            Eine magische Reproduktionszahl.
+                            Die Reproduktionszahl R besagt, wie viele weitere Personen eine einzelne Person mit COVID-19 infiziert.
+                            Dies wird sowohl über einen 4-Tages- als auch einen 7-Tages-Zeitraum berechnet.
                         </summary>
                     </template>
                     <template v-slot:tab.r4>
@@ -158,7 +158,6 @@
                 </Panel>
 
                 <Panel
-                    class="pb-8 mt-10 mx-0 px-0 mx-md-6"
                     title="Aktive Fälle"
                     matomoAttribute="cases"
                     :data="data"
@@ -198,6 +197,7 @@ import { mapState, mapActions, mapGetters } from "vuex";
 import DataView from "@/components/DataView.vue";
 import Panel from "@/components/Panel.vue";
 import Chart from "@/components/Chart.vue";
+import { format } from "echarts";
 
 const API = process.env.VUE_APP_CORONA_API_NEW;
 
@@ -237,7 +237,7 @@ export default {
             {
                 name: "Inzidenz",
                 item: "rollingRate",
-                width: 150
+                width: 100
             },
             {
                 name: "Aktive Fälle",
@@ -253,11 +253,20 @@ export default {
                 name: "Gesamzahl",
                 item: "cumCases",
                 width: 200
+            },
+            {
+                name: "R-Wert",
+                item: "r4",
+                width: 150
             }
         ]
     }),
 
-    computed: {},
+    computed: {
+        date() {
+            return format.formatTime('dd.MM.yyyy', this.data.date)
+        }
+    },
 
     components: {
         DataView,

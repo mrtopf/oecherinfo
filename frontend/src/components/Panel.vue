@@ -1,5 +1,5 @@
 <template>
-    <v-card color="#fff" class="ma-3 pa-3" tile>
+    <v-card color="#fff" class="pb-8 mt-10 mx-0 px-0 mx-md-6" tile>
         <v-card-title
             primary-title
             class="text-h6 text-md-h4 font-weight-bold primary--text"
@@ -73,7 +73,7 @@ export default {
         matomoAttribute: String, // used for matomo to know which graph was clicked on
         title: String,
         tableAttributes: Array,
-        data: Object,
+        data: Object
     },
     data() {
         return {
@@ -92,29 +92,32 @@ export default {
                     sortable: true,
                     sort: (a, b) => (new Date(a) < new Date(b) ? -1 : 1)
                 }
-            ]
+            ];
             for (const h of this.tableAttributes) {
                 headers.push({
                     text: h.text,
                     value: h.value,
                     sortable: true
-                })
+                });
             }
             return headers;
         },
         tableData() {
-            const selectedAttributes = [...map(this.tableAttributes, "value"), 'dates']
-            
+            const selectedAttributes = [
+                ...map(this.tableAttributes, "value"),
+                "dates"
+            ];
+
             // construct [{key: value},...] from {'key': [value, ...], ...} in this.data
             let data = [];
-            for (const idx in this.data['dates']) {
-                let record = {}
+            for (const idx in this.data["dates"]) {
+                let record = {};
                 for (const attr of selectedAttributes) {
-                    record[attr] = this.data[attr][idx]
+                    record[attr] = this.data[attr][idx];
                 }
-                data.push(record)
+                data.push(record);
             }
-            return data
+            return data;
         }
     }
 };
