@@ -1,33 +1,158 @@
 <template>
     <DataView
-        title="Fallzahlen"
-        :muni="muni"
+        title="Krankenhaussituation Städteregion Aachen"
+        :loading="loading"
+        :data="data"
+        hide-muni-selector
         :keyAttributes="keyAttributes"
         :attribute="attribute"
-        :todayData="divi[0]"
+        :date="date"
     >
         <template v-slot:graphs>
-            <CoronaGraph
-                class="pb-8 mt-10 mx-0 px-0 mx-md-6"
+            <Panel
                 title="freie Betten"
-                attribute="betten_frei"
-                :data="divi_data"
-                :barWidth="1"
-            />
-            <CoronaGraph
-                class="pb-8 mt-10 mx-0 px-0 mx-md-6"
-                title="COVID-Fälle"
-                attribute="covid"
-                :data="divi_data"
-                :barWidth="1"
-            />
-            <CoronaGraph
-                class="pb-8 mt-10 mx-0 px-0 mx-md-6"
-                title="beatmet"
-                attribute="ventilated"
-                :data="divi_data"
-                :barWidth="1"
-            />
+                matomoAttribute="betten_frei"
+                attribute="freeBeds"
+                :data="data"
+                :tableAttributes="[
+                    { value: 'freeBeds', text: 'freie Betten' },
+                    {
+                        value: 'avgFreeBeds',
+                        text: 'Durchschnitt der letzten 7 Tage'
+                    },
+                ]"
+                :tabs="[
+                    { id: 'daily', title: 'Täglich' },
+                ]"
+            >
+                <template v-slot:description>
+                    <summary>
+                        Anzahl der freien Betten auf Intensivstationen in der Städteregion Aachen.
+                    </summary>
+                </template>
+                <template v-slot:tab.daily>
+                    <Chart
+                        :labels="data.dates"
+                        :data="data.freeBeds"
+                        :avgs="data.avgFreeBeds"
+                        name="freie Betten"
+                    >
+                    </Chart>
+                </template>
+            </Panel>
+
+
+            <Panel
+                title="COVID-19-Fälle"
+                matomoAttribute="covid"
+                attribute="covid19Cases"
+                :data="data"
+                :tableAttributes="[
+                    { value: 'covid19Cases', text: 'freie Betten' },
+                    {
+                        value: 'avgCovid19Cases',
+                        text: 'Durchschnitt der letzten 7 Tage'
+                    },
+                ]"
+                :tabs="[
+                    { id: 'daily', title: 'Täglich' },
+                ]"
+            >
+                <template v-slot:description>
+                    <summary>
+                        Anzahl der Betten auf Intensivstationen, die mit COVID-19-Patienten belegt sind.
+                    </summary>
+                </template>
+                <template v-slot:tab.daily>
+                    <Chart
+                        :labels="data.dates"
+                        :data="data.covid19Cases"
+                        :avgs="data.avgCovid19Cases"
+                        name="COVID-19-Fälle"
+                    >
+                    </Chart>
+                </template>
+            </Panel>
+
+            <Panel
+                title="COVID-19-Fälle, beatmet"
+                matomoAttribute="ventilated"
+                attribute="ventilatorCases"
+                :data="data"
+                :tableAttributes="[
+                    { value: 'ventilatorCases', text: 'COVID-19, beatmet' },
+                    {
+                        value: 'avgVentilatorCases',
+                        text: 'Durchschnitt der letzten 7 Tage'
+                    },
+                ]"
+                :tabs="[
+                    { id: 'daily', title: 'Täglich' },
+                ]"
+            >
+                <template v-slot:description>
+                    <summary>
+                        Anzahl der Betten auf Intensivstationen, die mit COVID-19-Patienten belegt sind, die beatmet werden müssen.
+                    </summary>
+                </template>
+                <template v-slot:tab.daily>
+                    <Chart
+                        :labels="data.dates"
+                        :data="data.ventilatorCases"
+                        :avgs="data.avgVentilatorCases"
+                        name="COVID-19-Fälle, beatmet"
+                    >
+                    </Chart>
+                </template>
+            </Panel>
+
+
+            <Panel
+                title="Betten insgesamt"
+                matomoAttribute="beds"
+                attribute="allBeds"
+                :data="data"
+                :tableAttributes="[
+                    { value: 'allBeds', text: 'alle Betten' },
+                    { value: 'occupiedBeds', text: 'belegte Betten' },
+                    {
+                        value: 'avgAllBeds',
+                        text: 'Durchschnitt, alle Betten'
+                    },
+                    {
+                        value: 'avgOccupiedBeds',
+                        text: 'Durchschnitt, belegte Betten'
+                    },
+                ]"
+                :tabs="[
+                    { id: 'all', title: 'Gesamtzahl' },
+                    { id: 'occupied', title: 'belegt' },
+                ]"
+            >
+                <template v-slot:description>
+                    <summary>
+                        Anzahl der Betten auf Intensivstationen
+                    </summary>
+                </template>
+                <template v-slot:tab.all>
+                    <Chart
+                        :labels="data.dates"
+                        :data="data.allBeds"
+                        :avgs="data.avgAllBeds"
+                        name="Gesamtzahl Betten"
+                    >
+                    </Chart>
+                </template>
+                <template v-slot:tab.occupied>
+                    <Chart
+                        :labels="data.dates"
+                        :data="data.occupiedBeds"
+                        :avgs="data.avgOccupiedBeds"
+                        name="Belegte Betten"
+                    >
+                    </Chart>
+                </template>
+            </Panel>
         </template>
     </DataView>
 </template>
@@ -35,61 +160,69 @@
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
 import DataView from "@/components/DataView.vue";
-import CoronaGraph from "@/components/CoronaGraph.vue";
-import _ from "lodash"
+import Panel from "@/components/Panel.vue";
+import Chart from "@/components/Chart.vue";
+import { format } from "echarts";
+
+const API = process.env.VUE_APP_CORONA_API_NEW;
 
 export default {
     props: {
-        muni: {
-            type: String,
-            default: "sr"
-        },
         attribute: String
     },
-    name: "CasesView",
+    name: "HospitalView",
+    mounted() {
+        this.load();
+    },
+    methods: {
+        load() {
+            axios.get(`${API}/divi/`).then(response => {
+                this.data = response.data;
+                this.loading = false;
+            });
+        }
+    },
+    watch: {
+        muni(v) {
+            this.load();
+        }
+    },
+
     data: () => ({
+        loading: true,
+        data: null,
         keyAttributes: [
             {
                 name: "Betten",
-                item: "betten_belegt",
+                item: "occupiedBeds",
                 width: 150
             },
             {
                 name: "freie Betten",
-                item: "betten_frei",
+                item: "freeBeds",
                 width: 150
             },
             {
-                name: "COVID-Fälle",
-                item: "faelle_covid_aktuell",
+                name: "COVID-19-Fälle",
+                item: "covid19Cases",
                 width: 150
             },
             {
                 name: "davon beatmet",
-                item: "faelle_covid_aktuell_beatmet",
+                item: "ventilatorCases",
                 width: 150
             }
         ]
     }),
     computed: {
-        divi_data() {
-            const revData = _.reverse(this.divi)
-            return {
-                labels: revData.map( d => d.date),
-                betten_frei: revData.map( d => parseInt(d.betten_frei)),
-                betten: revData.map( d => parseInt(d.betten)),
-                covid: revData.map( d => parseInt(d.faelle_covid_aktuell)),
-                ventilated: revData.map( d => parseInt(d.faelle_covid_aktuell_beatmet)),
-            }
-        },
-        ...mapState({
-            divi: state => state.corona.divi
-        })
+        date() {
+            return this.data && format.formatTime("dd.MM.yyyy", this.data.date);
+        }
     },
-
     components: {
         DataView,
-        CoronaGraph
+        Panel,
+        Chart
     }
 };
 </script>

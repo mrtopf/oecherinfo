@@ -169,7 +169,7 @@ def avgs():
         click.echo("Finished %s" % name)
 
     # do divi averages
-    data = list(mongo.db.divi_daily.find().sort("date", 1))
+    data = list(mongo.db.divi_daily.find({'gemeindeschluessel': '05334'}).sort("date", 1))
     # compute beds sum
     for idx, d in enumerate(data):
         data[idx]['betten_gesamt'] = int(d['betten_frei']) + int(d['betten_belegt'])
@@ -190,7 +190,7 @@ def avgs():
             data[idx][attr+'_avg'] = v
             mongo.db.divi_daily.save(data[idx])
 
-                
+        
         click.echo("Finished DIVI - %s" %attr)
     
     click.echo("Finished computing avgs in %s seconds" %
