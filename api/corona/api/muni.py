@@ -42,7 +42,7 @@ class Municipality(Resource):
             'dateFormatted': first['date'].strftime("%d. %B %Y"),
             'fields': fields,
             'format': output,
-            'dates': [d['date'] for d in data]
+            'dates': list(reversed([d['date'] for d in data]))
         }        
     
         today={}
@@ -60,7 +60,11 @@ class Municipality(Resource):
                 yesterday[f] = None
 
             # add the series to the response
-            series = resp[f] = [d[db_field] or 0 for d in data]
+            if f == "rollingRate":
+                series = resp[f] = [round(d[db_field] or 0,0) for d in data]
+            else:
+                series = resp[f] = [round(d[db_field] or 0,2) for d in data]
+            resp[f].reverse()
 
             # compute the trends
             if f=="rollingRate":
@@ -68,7 +72,7 @@ class Municipality(Resource):
                 trend['rollingRate7DayChangePercent'] = round(diff / data[7]['incidence'],2)
             else:
                 diff = trend['%s7DayChange' %f] = sum(series[0:7]) - sum(series[8:14])
-                trend['%s7DayChangePercent' %f] = round(diff / sum(series[8:14]),2)
+                trend['%s7DayChangePercent' %f] = round(diff / max(sum(series[8:14]),0.0001),2)
                 
         resp['today'] = today
         resp['yesterday'] = yesterday
