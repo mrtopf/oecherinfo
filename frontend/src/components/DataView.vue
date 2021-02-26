@@ -34,9 +34,9 @@
                         {{ attribute.name }}
                     </v-card-text>
                     <v-card-text
-                        class="font-weight-bold text-h3 mt-0 pt-0 pb-0 mb-0"
+                        class="font-weight-bold text-h4 mt-0 pt-0 pb-0 mb-0"
                     >
-                        {{ Math.round(todayData[attribute.item]) }}
+                        {{ (todayData[attribute.item] || 0).toLocaleString("de-DE")  }}
                     </v-card-text>
                 </v-card>
             </v-row>
@@ -66,7 +66,8 @@ export default {
         },
         attribute: String,
         keyAttributes: Array,
-        todayData: Object
+        todayData: Object,
+        date: String,
     },
     name: "DataView",
     data: () => ({
