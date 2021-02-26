@@ -19,69 +19,6 @@
                         :attribute="attribute"
                     />
                 </v-col>
-                <v-col cols="12" md="4" class="text-md-right pl-0">
-                    <!-- <v-menu offset-y bottom left>
-                        <template v-slot:activator="{ on }">
-                            <v-btn
-                                color="primary"
-                                dark
-                                text
-                                class="pl-2"
-                                v-on="on"
-                            >
-                                Zeitspanne:
-                                {{ dateRangeTitles[dateRangeName] }}
-                                <v-icon right>fa fa-caret-down</v-icon>
-                            </v-btn>
-                        </template>
-                        <v-list>
-                            <v-list-item
-                                class="font-weight-bold text-uppercase"
-                            >
-                                <v-icon small left>fa fa-calendar-alt</v-icon>
-
-                                Zeitfenster
-                            </v-list-item>
-                            <v-divider></v-divider>
-                            <v-list-item
-                                @click="
-                                    setDateRangeStart('all');
-                                    $matomo &&
-                                        $matomo.trackEvent(
-                                            'Corona',
-                                            'change-daterange',
-                                            'all'
-                                        );
-                                "
-                                >komplett</v-list-item
-                            >
-                            <v-list-item
-                                @click="
-                                    setDateRangeStart('w2');
-                                    $matomo &&
-                                        $matomo.trackEvent(
-                                            'Corona',
-                                            'change-daterange',
-                                            'w2'
-                                        );
-                                "
-                                >2. Welle</v-list-item
-                            >
-                            <v-list-item
-                                @click="
-                                    setDateRangeStart('1month');
-                                    $matomo &&
-                                        $matomo.trackEvent(
-                                            'Corona',
-                                            'change-daterange',
-                                            '1month'
-                                        );
-                                "
-                                >letzter Monat</v-list-item
-                            >
-                        </v-list>
-                    </v-menu> -->
-                </v-col>
             </v-row>
 
             <v-divider></v-divider>
@@ -135,11 +72,6 @@ export default {
     },
     name: "DataView",
     data: () => ({
-        dateRangeTitles: {
-            all: "alles",
-            w2: "ab 2. Welle",
-            "1month": "letzter Monat"
-        }
     }),
     mounted() {
         if (this.muni_data) {
