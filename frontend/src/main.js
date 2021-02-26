@@ -20,9 +20,11 @@ import {
     GridComponent, 
     TooltipComponent,
     ToolboxComponent,
+    LegendComponent,
 } from "echarts/components";
 
 use([BarChart, 
+    LegendComponent,
     VisualMapComponent,
     GridComponent, 
     TooltipComponent, 

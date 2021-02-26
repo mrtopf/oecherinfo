@@ -177,6 +177,7 @@ export default {
                 yAxis: {
                     type: "value"
                 },
+                legend: {},
                 dataZoom: [
                     {
                         type: "slider",
