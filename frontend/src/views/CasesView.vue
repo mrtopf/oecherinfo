@@ -1,6 +1,11 @@
 <template>
     <div>
-        <v-card flat color="transparent" v-if="loading" class="text-center mt-10 pt-10" >
+        <v-card
+            flat
+            color="transparent"
+            v-if="loading"
+            class="text-center mt-10 pt-10"
+        >
             <div class="lds-hourglass"></div>
         </v-card>
         <DataView
@@ -131,7 +136,7 @@
                 >
                     <template v-slot:description>
                         <summary>
-                            Eine magische Reproduktionszahl. 
+                            Eine magische Reproduktionszahl.
                         </summary>
                     </template>
                     <template v-slot:tab.r4>
@@ -205,16 +210,26 @@ export default {
         attribute: String
     },
     mounted() {
-        axios
-            .get(
-                `${API}/muni/${this.muni}?fields=cumCases,activeCases,avgActiveCases,newCases,avgNewCases,r4,r7,rollingRate,rollingRatePerc,avgRollingRate`
-            )
-            .then(response => {
-                this.data = response.data;
-                this.loading = false;
-            });
+        this.load();
     },
     name: "CasesView",
+    methods: {
+        load() {
+            axios
+                .get(
+                    `${API}/muni/${this.muni}?fields=cumCases,activeCases,avgActiveCases,newCases,avgNewCases,r4,r7,rollingRate,rollingRatePerc,avgRollingRate`
+                )
+                .then(response => {
+                    this.data = response.data;
+                    this.loading = false;
+                });
+        }
+    },
+    watch: {
+        muni(v) {
+            this.load()
+        }
+    },
     data: () => ({
         loading: true,
         data: null,
