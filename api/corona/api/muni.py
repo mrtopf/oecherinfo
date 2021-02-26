@@ -77,4 +77,5 @@ class Municipality(Resource):
         resp['today'] = today
         resp['yesterday'] = yesterday
         resp['trend'] = trend
+        
         return resp

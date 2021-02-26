@@ -4,7 +4,16 @@
         flat
         color="#f8f8f8"
     >
-        <v-container fluid>
+        <v-card
+            flat
+            color="transparent"
+            v-if="loading"
+            class="text-center mt-10 pt-10"
+        >
+            <div class="lds-hourglass"></div>
+        </v-card>
+
+        <v-container fluid v-else>
             <v-row no-gutters>
                 <v-col cols="12" class="pl-2">
                     <div class="caption black--text mb-6">
@@ -36,18 +45,18 @@
                     <v-card-text
                         class="font-weight-bold text-h4 mt-0 pt-0 pb-0 mb-0"
                     >
-                        {{ (todayData[attribute.item] || 0).toLocaleString("de-DE")  }}
+                        {{ (data.today[attribute.item] || 0).toLocaleString("de-DE")  }}
                     </v-card-text>
                 </v-card>
             </v-row>
         </v-container>
 
-        <slot name="graphs"></slot>
+        <slot name="graphs" v-if="!loading"></slot>
 
-        <div class="caption text-right py-5 px-2">
+        <div class="caption text-right py-5 px-2" v-if="!loading">
             Stand {{ date }}<br />
-            <span class="l1-line"></span> Lockdown Light, 2.11.2020<br />
-            <span class="l2-line"></span> Lockdown 16.12.2020<br />
+            <span class="l1-line"></span> L1: Lockdown Light, 2.11.2020<br />
+            <span class="l2-line"></span> L2: Lockdown 16.12.2020<br />
         </div>
     </v-card>
 </template>
@@ -66,8 +75,9 @@ export default {
         },
         attribute: String,
         keyAttributes: Array,
-        todayData: Object,
         date: String,
+        data: Object,
+        loading: Boolean,
     },
     name: "DataView",
     data: () => ({
