@@ -110,7 +110,7 @@ import { mapState, mapActions, mapGetters } from "vuex";
 import DataView from "@/components/DataView.vue";
 import Panel from "@/components/Panel.vue";
 import Chart from "@/components/Chart.vue";
-import BedChart from "@/components/BedChart.vue";
+import BedChart from "@/components/charts/BedChart.vue";
 import { format } from "echarts";
 
 const API = process.env.VUE_APP_CORONA_API_NEW;

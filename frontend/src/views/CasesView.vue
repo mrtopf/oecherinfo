@@ -33,20 +33,11 @@
                 >
                     <template v-slot:description>
                         <summary>
-                            Anzahl der Personen mit durchschnittlich pro Tag
-                            positiv auf COVID-19 getestenen Personen pro 100.000
-                            Einwohner in den letzten 7 Tagen. Die prozentualen
-                            Änderungen errechnen sich durch den Vergleich des
-                            letzten 7-Tage-Zeitraums mit dem davor.
-                        </summary>
+                            Die Sieben-Tage-Inzidenz gibt an, wie viele Personen in den letzten 7 Tagen positiv auf COVID-19 getestet wurden. 
+                            Damit die Daten vergleichbar sind, wird die Zahl der Neuinfektionen je 100.000 Einwohner berechnet.
+                            Die prozentuale Änderung wird anhand des vorherigen 7-Tage-Zeitraums berechnet.
 
-                        <!-- Rate of people with at least one positive COVID-19 test
-                    result (either lab-reported or lateral flow device) per
-                    100,000 population in the rolling 7-day period ending on the
-                    dates shown. Rates and percentage changes are presented for
-                    the most recent 3 months, in order to provide transparency
-                    around decision making. Percentage changes are calculated by
-                    comparing to the previous non-overlapping 7-day period. -->
+                        </summary>
                     </template>
                     <template v-slot:tab.daily>
                         <Chart

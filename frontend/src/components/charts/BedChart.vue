@@ -86,7 +86,6 @@ export default {
                         saveAsImage: { title: "PNG" }
                     }
                 },
-                visualMap: this.showVisualMap ? visualMap : null,
                 tooltip: {
                     trigger: "axis",
                     transitionDuration: 0,

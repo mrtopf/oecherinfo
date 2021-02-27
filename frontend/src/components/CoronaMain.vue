@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid class="pa-0">
+    <v-container fluid class="pa-0" v-if="!loading">
         <v-card tile flat color="#f8f8f8">
             <v-card-text>
                 <h1
@@ -9,67 +9,158 @@
                 </h1>
             </v-card-text>
             <v-card-text class="pb-0 caption"> Stand: {{ date }} </v-card-text>
-            <v-card-title class="text-xs-h7 text-lg-h5 pb-0 font-weight-bold">
-                Übersicht Städteregion Aachen
+            <v-card-title class="text-xs-h7 text-lg-h4 pb-0 font-weight-bold">
+                Übersicht Städteregion Aachen<br>
             </v-card-title>
+            <v-card-text class="py-3 px-1" v-if="loaded">
+                <Indicator :value="sr.today.r4" title="R-Wert" description="Der 4-Tages-Reproduktionswert gibt an, wie viele weitere Personen eine an COVID-19 erkrankte Person im Durchschnitt ansteckt."
+                :trend="sr.today.r4 < 1 ? 1 : -1" />
+                <Indicator :value="sr.today.rollingRate" title="Inzidenz" description="Die Inzidenz gibt an, wie viele Personen pro 100.000 Einwohner in den letzten 7 Tagen positiv auf COVID-19 getestet wurden"
+                :trend="computeTrend(sr.today.rollingRate, 50, 200)" />
+                <Indicator :value="`${sr.today.rollingRatePerc*100}%`" title="Inzidenz-Wachstum" description="Die Wachstumsrate der Inzidenz. Verglichen wird die letzte Woche mit der Vorwoche"
+                :trend="computeTrend(sr.today.rollingRatePerc*100, 5, 10)" />
+                <Indicator :value="divi.today.freeBeds" title="freie Betten" description="Freie Intensivbetten in der Städteregion Aachen"
+                :trend="divi.today.freeBeds > 10 ? 1 : -1" />
+            </v-card-text>
             <v-card-text class="py-0" v-if="loaded">
                 <v-row>
                     <v-col cols="12" md="4">
-                        <MiniChart
-                            description="Infektionen der letzten 7 Tage pro 100.000 Einwohner"
+                        <MiniChartNew
+                            :start="150"
+                            :date="sr.date"
+                            :today="sr.today.rollingRate"
+                            :weekChange="
+                                Math.round(sr.trend.rollingRate7DayChange)
+                            "
+                            :weekChangePercent="
+                                Math.round(
+                                    sr.trend.rollingRate7DayChangePercent * 100
+                                )
+                            "
+                            description="Positiv getestete Personen der letzten 7 Tage pro 100.000 Einwohner"
                             title="7-Tage-Inzidenz"
                             attribute="incidence"
+                            :data="sr.rollingRate"
                         />
                     </v-col>
                     <v-col cols="12" md="4">
-                        <MiniChart
+                        <MiniChartNew
+                            :start="150"
+                            :date="sr.date"
+                            :today="sr.today.cumCases"
+                            :weekChange="
+                                Math.round(sr.trend.cumCases7DayChange)
+                            "
+                            :weekChangePercent="
+                                Math.round(
+                                    sr.trend.cumCases7DayChangePercent * 100
+                                )
+                            "
                             description="Positiv getestete Personen"
                             title="Fälle"
                             attribute="positive"
+                            :data="sr.cumCases"
                             sum
+                            :sumWeek="sr.trend.cumCases7DaySum"
+                            :sum2Week="sr.trend.cumCases14DaySum"
                         />
                     </v-col>
                     <v-col cols="12" md="4">
-                        <MiniChart
-                            description="Aktuell positiv getestete Personen"
+                        <MiniChartNew
+                            :start="150"
+                            :date="sr.date"
+                            :today="sr.today.activeCases"
+                            :weekChange="
+                                Math.round(sr.trend.activeCases7DayChange)
+                            "
+                            :weekChangePercent="
+                                Math.round(
+                                    sr.trend.activeCases7DayChangePercent * 100
+                                )
+                            "
+                            description="Aktive Fälle"
                             title="Aktive Fälle"
                             attribute="active"
+                            :data="sr.activeCases"
                         />
                     </v-col>
                 </v-row>
             </v-card-text>
+            <v-divider></v-divider>
             <v-card-title
-                class="text-xs-h7 text-lg-h5 pb-0 pt-10 font-weight-bold"
+                class="text-xs-h7 text-lg-h4 pb-0 pt-10 font-weight-bold"
             >
                 Übersicht Stadt Aachen
                 <v-spacer></v-spacer>
             </v-card-title>
+            <v-card-text class="py-3 px-1" v-if="loaded">
+                <Indicator :value="aachen.today.r4" title="R-Wert" description="Der 4-Tages-Reproduktionswert gibt an, wie viele weitere Personen eine an COVID-19 erkrankte Person im Durchschnitt ansteckt."
+                :trend="aachen.today.r4 < 1 ? 1 : -1" />
+                <Indicator :value="aachen.today.rollingRate" title="Inzidenz" description="Die Inzidenz gibt an, wie viele Personen pro 100.000 Einwohner in den letzten 7 Tagen positiv auf COVID-19 getestet wurden"
+                :trend="computeTrend(aachen.today.rollingRate, 50, 200)" />
+                <Indicator :value="`${aachen.today.rollingRatePerc*100}%`" title="Inzidenz-Wachstum" description="Die Wachstumsrate der Inzidenz. Verglichen wird die letzte Woche mit der Vorwoche"
+                :trend="computeTrend(aachen.today.rollingRatePerc*100, 5, 10)" />
+            </v-card-text>
 
             <v-card-text class="py-0" v-if="loaded">
                 <v-row>
                     <v-col cols="12" md="4">
-                        <MiniChart
+                        <MiniChartNew
+                            :date="aachen.date"
+                            :today="aachen.today.rollingRate"
+                            :weekChange="
+                                Math.round(aachen.trend.rollingRate7DayChange)
+                            "
+                            :weekChangePercent="
+                                Math.round(
+                                    aachen.trend.rollingRate7DayChangePercent *
+                                        100
+                                )
+                            "
                             description="Infektionen der letzten 7 Tage pro 100.000 Einwohner"
                             title="7-Tage-Inzidenz"
                             attribute="incidence"
-                            muni="aachen"
+                            :data="aachen.rollingRate"
                         />
                     </v-col>
                     <v-col cols="12" md="4">
-                        <MiniChart
+                        <MiniChartNew
+                            :date="aachen.date"
+                            :today="aachen.today.cumCases"
+                            :weekChange="
+                                Math.round(aachen.trend.cumCases7DayChange)
+                            "
+                            :weekChangePercent="
+                                Math.round(
+                                    aachen.trend.cumCases7DayChangePercent * 100
+                                )
+                            "
                             description="Positiv getestete Personen"
                             title="Fälle"
                             attribute="positive"
-                            muni="aachen"
+                            :data="aachen.cumCases"
                             sum
+                            :sumWeek="aachen.trend.cumCases7DaySum"
+                            :sum2Week="aachen.trend.cumCases14DaySum"
                         />
                     </v-col>
                     <v-col cols="12" md="4">
-                        <MiniChart
-                            description="Aktuell positiv getestete Personen"
+                        <MiniChartNew
+                            :date="aachen.date"
+                            :today="aachen.today.activeCases"
+                            :weekChange="
+                                Math.round(aachen.trend.activeCases7DayChange)
+                            "
+                            :weekChangePercent="
+                                Math.round(
+                                    aachen.trend.activeCases7DayChangePercent *
+                                        100
+                                )
+                            "
+                            description="Aktive Fälle"
                             title="Aktive Fälle"
                             attribute="active"
-                            muni="aachen"
+                            :data="aachen.activeCases"
                         />
                     </v-col>
                 </v-row>
@@ -82,6 +173,7 @@
                     >Open Data Portal der Stadt Aachen</a
                 >.
             </v-card-text>
+            <v-divider></v-divider>
             <v-card-text class="mt-10" v-if="loaded">
                 <h3 class="text-h6 text-md-h4 black--text text-uppercase my-3">
                     Tabellarische Übersicht
@@ -103,7 +195,7 @@
                 <h3 class="text-h6 text-md-h4 black--text text-uppercase my-3">
                     Intensivbetten in der Städteregion Aachen
                 </h3>
-                <hospital-table></hospital-table>
+                <hospital-table :data="divi"></hospital-table>
             </v-card-text>
             <v-divider></v-divider>
             <v-card-text class="mb-5">
@@ -137,6 +229,9 @@
 <script>
 import Mini from "./charts/Mini.vue";
 import MiniChart from "./charts/MiniChart.vue";
+import MiniChartNew from "./charts/MiniChartNew.vue";
+
+import Indicator from "@/components/Indicator.vue";
 
 import OverviewTable from "./OverviewTable.vue";
 import HospitalTable from "./HospitalTable.vue";
@@ -160,18 +255,27 @@ export default {
         loading: true
     }),
     methods: {
+        computeTrend(v, min, max) {
+            if (v<min) {
+                return 1
+            }
+            if (v>max) {
+                return -1
+            }
+            return 0
+        },
         async load2() {
             await axios
-                .get(`${API}/muni/sr?fields=rollingRate,activeCases,newCases`)
+                .get(`${API}/muni/sr?fields=rollingRate,activeCases,cumCases`)
                 .then(response => {
                     this.sr = response.data;
                 });
             await axios
                 .get(
-                    `${API}/muni/aachen?fields=rollingRate,activeCases,newCases`
+                    `${API}/muni/aachen?fields=rollingRate,activeCases,cumCases`
                 )
                 .then(response => {
-                    this.sr = response.data;
+                    this.aachen = response.data;
                 });
             await axios.get(`${API}/divi/`).then(response => {
                 this.divi = response.data;
@@ -189,8 +293,10 @@ export default {
     components: {
         Mini,
         MiniChart,
+        MiniChartNew,
         OverviewTable,
-        HospitalTable
+        HospitalTable,
+        Indicator
     },
     computed: {
         date() {
@@ -199,10 +305,7 @@ export default {
 
         ...mapGetters("corona", ["muniName", "muni_data", "todayList"]),
         ...mapState({
-            muniDict: state => state.corona.muniDict,
             loaded: state => state.corona.loaded,
-            munis: state => state.corona.munis,
-            divi: state => state.corona.divi,
             today: state => state.corona.today,
             yesterday: state => state.corona.yesterday,
             weekerday: state => state.corona.weekerday,
