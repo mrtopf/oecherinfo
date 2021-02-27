@@ -5,6 +5,26 @@ from corona.config import API_TO_DIVI_DATABASE_MAPPING, ALLOWED_DIVI_FIELDS
 from corona.db import mongo
 
 
+STATUS_COLORS = {
+    'NICHT_VERFUEGBAR': 'red',
+    'BEGRENZT': 'oecheryellow',
+    'KEINE_ANGABE': 'grey lighten-3',
+    'VERFUEGBAR': 'green',
+}
+
+
+HOSPITAL_MAP = {
+    '771888' :  'Marienhospital, Aachen',
+    '772078' :  'Luisenhospital, Aachen',
+    '771450' :  'Universitätsklinikum, Aachen',
+    '772113' :  'Rhein-Maas Klinikum, Würselen',
+    '771699' :  'Bethlehem-Gesundheitszentrum, Stolberg',
+    '772187' :  'St.-Antonius-Hospital, Eschweiler',
+    '772720' :  'Eifelklinik St. Brigida, Simmerath',
+}
+
+
+
 class DIVIData(Resource):
     """return divi data for hospitals
     """
@@ -66,6 +86,25 @@ class DIVIData(Resource):
             # compute the trends
             diff = trend['%s7DayChange' %f] = sum(series[0:7]) - sum(series[8:14])
             trend['%s7DayChangePercent' %f] = round(diff / max(sum(series[8:14]),0.0001),2)
+
+        # add hospital status
+        divi_results =  mongo.db.divi_hospitals.find({},{'krankenhausStandort': 1, 'bettenStatus': 1})
+        hospitals = []
+        for h in divi_results:
+            hospitals.append({
+                #'name': h['krankenhausStandort']['bezeichnung'],
+                'name': HOSPITAL_MAP[h['_id']],
+                'lowCare': STATUS_COLORS[h['bettenStatus']['statusLowCare']],
+                'highCare': STATUS_COLORS[h['bettenStatus']['statusHighCare']],
+                'ecmo': STATUS_COLORS[h['bettenStatus']['statusECMO']],
+                'lowCareText': h['bettenStatus']['statusLowCare'].capitalize(),
+                'highCareText': h['bettenStatus']['statusHighCare'].capitalize(),
+                'ecmoText': h['bettenStatus']['statusECMO'].capitalize(),
+                
+            })
+    
+        resp['hospitals'] = hospitals
+
                 
         resp['today'] = today
         resp['yesterday'] = yesterday
