@@ -11,26 +11,27 @@ import * as echarts from "echarts/core";
 const { use, registerMap, registerTheme } = echarts;
 
 import { CanvasRenderer } from "echarts/renderers";
-import { BarChart, LineChart } from "echarts/charts";
+import { BarChart, LineChart, PieChart } from "echarts/charts";
 import {
     DataZoomComponent,
     VisualMapComponent,
     MarkLineComponent,
-    DataZoomSliderComponent, 
-    GridComponent, 
+    DataZoomSliderComponent,
+    GridComponent,
     TooltipComponent,
     ToolboxComponent,
     LegendComponent,
 } from "echarts/components";
 
-use([BarChart, 
+use([BarChart,
+    PieChart,
     LegendComponent,
     VisualMapComponent,
-    GridComponent, 
-    TooltipComponent, 
-    LineChart, 
+    GridComponent,
+    TooltipComponent,
+    LineChart,
     DataZoomComponent,
-    DataZoomSliderComponent, 
+    DataZoomSliderComponent,
     MarkLineComponent,
     ToolboxComponent,
     CanvasRenderer]);
@@ -39,9 +40,11 @@ use([BarChart,
 // register globally (or you can do it locally)
 Vue.component('v-chart', ECharts)
 
-
-import VueMoment from 'vue-moment'
-Vue.use(VueMoment, {
+// my own date formatter as we have echarts already
+import { format } from "echarts";
+Vue.filter('dateformat', function (value, fmt) {
+    if (!value) return ''
+    return value && format.formatTime(fmt || "dd.MM.yyyy", value);
 })
 
 const MATOMO_URL = process.env.VUE_APP_MATOMO_URL

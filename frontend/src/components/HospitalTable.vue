@@ -4,9 +4,12 @@
             <v-card tile>
                 <v-toolbar dark dense flat color="primary">
                     <v-toolbar-title class="body-1 text-md-h6"
-                        >Überblick</v-toolbar-title
+                        >Bettenbelegung</v-toolbar-title
                     >
                 </v-toolbar>
+                <v-card class="mt-5" color="#fff" flat :height="400">
+                    <v-chart :option="options" ref="bar" autoresize />
+                </v-card>
 
                 <v-simple-table
                     class="mb-5"
@@ -31,35 +34,18 @@
                                     {{ data.today.occupiedBeds }}
                                 </td>
                             </tr>
-                            <tr>
-                                <th>Freie Betten</th>
-                                <td>
-                                    {{ data.today.freeBeds }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>COVID-Fälle</th>
-                                <td>
-                                    {{ data.today.covid19Cases }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>davon beatmet</th>
-                                <td>
-                                    {{ data.today.ventilatorCases }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Stand</th>
-                                <td>
-                                    {{ date }}
-                                </td>
-                            </tr>
                         </tbody>
                     </template>
                 </v-simple-table>
+
                 <v-card-actions>
-                    <v-btn :to="{name: 'hospitals'}" tile small color="primary">Alle Daten einsehen</v-btn>
+                    <v-btn
+                        :to="{ name: 'hospitals' }"
+                        tile
+                        small
+                        color="primary"
+                        >Alle Daten einsehen</v-btn
+                    >
                 </v-card-actions>
             </v-card>
         </v-col>
@@ -72,7 +58,13 @@
                     <v-dialog v-model="hospitalHelp" scrollable width="700">
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn
-                                @click.capture="$matomo && $matomo.trackEvent('Corona', 'hospital-info-click')"
+                                @click.capture="
+                                    $matomo &&
+                                        $matomo.trackEvent(
+                                            'Corona',
+                                            'hospital-info-click'
+                                        )
+                                "
                                 color="white"
                                 dark
                                 v-bind="attrs"
@@ -310,7 +302,7 @@ import { format } from "echarts";
 
 export default {
     props: {
-        data: Object,
+        data: Object
     },
     data() {
         return {
@@ -321,15 +313,77 @@ export default {
                 { color: "green", name: "verfügbar" },
                 {
                     color: "grey lighten-2",
-                    name: "keine Angabe / nicht vorhanden",
-                },
-            ],
+                    name: "keine Angabe / nicht vorhanden"
+                }
+            ]
         };
     },
     computed: {
         date() {
             return this.data && format.formatTime("dd.MM.yyyy", this.data.date);
         },
-    },
+        options() {
+            return {
+                grid: {
+                    top: 0,
+                    right: 0,
+                    left: 0
+                },
+                title: {
+                    text: `Stand ${this.date}`,
+                    left: "center"
+                },
+                tooltip: {
+                    trigger: "item"
+                },
+                textStyle: {
+                    fontFamily: "JetBrains Mono"
+                },
+                series: [
+                    {
+                        name: "Bettenbelegung",
+                        type: "pie",
+                        radius: ["40%", "80%"],
+                        //radius: ["40%"],
+                        colors: ["#0fa", "#fa0"],
+                        startAngle: 140,
+                        data: [
+                            {
+                                value:
+                                    this.data.today.occupiedBeds -
+                                    this.data.today.covid19Cases,
+                                name: "sonstige Fälle",
+                                itemStyle: { color: "#FFC43D" }
+                            },
+                            {
+                                value: this.data.today.ventilatorCases,
+                                name: "Beatmet, COVID-19",
+                                itemStyle: { color: "#960D2D" }
+                            },
+                            {
+                                value:
+                                    this.data.today.covid19Cases -
+                                    this.data.today.ventilatorCases,
+                                name: "COVID-19-Fälle",
+                                itemStyle: { color: "#F78656" }
+                            },
+                            {
+                                value: this.data.today.freeBeds,
+                                name: "freie Betten",
+                                itemStyle: { color: "#05C793" }
+                            }
+                        ],
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: "rgba(0, 0, 0, 0.5)"
+                            }
+                        }
+                    }
+                ]
+            };
+        }
+    }
 };
 </script>

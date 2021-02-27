@@ -127,24 +127,12 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from "vuex";
-
 export default {
     props: {
         // muni: String
     },
     name: "App",
 
-    mounted() {
-        this.loadCoronaData();
-    },
-
-    methods: {
-        ...mapActions({
-            loadCoronaData: "corona/load",
-            updateMuni: "corona/updateMuni"
-        })
-    },
     computed: {
         muni() {
             const muni = this.$route.params.muni;
@@ -153,14 +141,6 @@ export default {
             }
             return muni;
         },
-        ...mapGetters("corona", ["muni_data"]),
-        ...mapState({
-            munis: state => state.corona.munis,
-            today: state => state.corona.today,
-            loaded: state => state.corona.loaded,
-            date: state => state.corona.date,
-            selectedMuni: state => state.corona.selectedMuni
-        })
     },
     watch: {
         $route(to, from) {

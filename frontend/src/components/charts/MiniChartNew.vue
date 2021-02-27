@@ -11,11 +11,11 @@
             {{ title }}
         </v-card-title>
         <v-card-text class="mb-0 pt-0">
-            Aktueller Wert / vor 7 Tagen
+            Aktueller Wert <small>(vor 7 Tagen)</small>
             <div class="value">
                 <v-tooltip bottom max-width="300" color="rgba(0,0,0,1)">
                     <template v-slot:activator="{ on }">
-                        <span v-on="on" class="ttip mr-4">{{ today }}/{{ today - weekChange }}</span>
+                        <span v-on="on" class="ttip mr-4">{{ today }} <small>({{ today - weekChange }})</small></span>
                     </template>
                     {{ description }}, Stand: {{ dateFormatted }}
                 </v-tooltip>

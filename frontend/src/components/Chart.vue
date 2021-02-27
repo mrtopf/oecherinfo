@@ -115,7 +115,8 @@ export default {
                     {
                         gt: 0,
                         lte: 50,
-                        color: "#037758"
+                        //color: "#037758"
+                        color: "#05C793"
                     },
                     {
                         gt: 50,

@@ -11,6 +11,7 @@
         <template v-slot:graphs>
             <Panel
                 title="freie Betten"
+                :showTrends="false"
                 matomoAttribute="beds"
                 attribute="freeBeds"
                 :data="data"
@@ -30,7 +31,7 @@
             >
                 <template v-slot:description>
                     <summary>
-                        Anzahl der Betten auf Intensivstationen
+                        Anzahl der Betten auf den Intensivstationen der Städteregion Aachen
                     </summary>
                 </template>
                 <template v-slot:tab.daily>
@@ -171,7 +172,7 @@ export default {
     computed: {
         date() {
             return this.data && format.formatTime("dd.MM.yyyy", this.data.date);
-        }
+        },
     },
     components: {
         DataView,

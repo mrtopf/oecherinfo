@@ -118,10 +118,6 @@ def avgs():
                 data[t-1]['r4'] = None
             else:
                 data[t-1]['r4'] = round(sum(cases[t-window:t]) / max(sum(cases[t-window*2:t-window]),1),2)
-                # if r > 200:
-                #     print(sum(cases[t-window:t]), sum(cases[t-window*2:t-window]))
-                #     print(cases[t-window:t], cases[t-window*2:t-window])
-                #     print(data[t-1]['r'], data[t-1]['new'])
             mongo.db.data.save(data[t-1])
 
         window=7

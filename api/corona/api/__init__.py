@@ -1,4 +1,4 @@
-from . import muni, divi
+from . import muni, divi, overview
 
 def setup(api):
     """setup the api endpoints"""
@@ -12,4 +12,10 @@ def setup(api):
         divi.DIVIData,
         '/divi/',
         endpoint="divi"
+    )
+
+    api.add_resource(
+        overview.Overview,
+        '/overview/',
+        endpoint="overview"
     )

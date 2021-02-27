@@ -4,7 +4,7 @@
             primary-title
             class="text-h6 text-md-h4 font-weight-bold primary--text"
         >
-            {{ title }}: <span class="pl-2">{{ todayValue }}</span>
+            {{ title }}: <span class="pl-2">{{ todayValue || 0 }}</span>
             <v-tooltip bottom max-width="300" v-if="showTrends">
                 <template v-slot:activator="{ on }">
                     <span v-on="on" class="ml-3 mr-3 pa-0 ttip">
@@ -82,7 +82,7 @@
                             :height="$vuetify.breakpoint.mdAndUp ? 500 : 280"
                         >
                             <template v-slot:item.dates="item">
-                                {{ item.item.dates | moment("D.M.Y") }}
+                                {{ item.item.dates | dateformat }}
                             </template>
                         </v-data-table>
                     </v-card>
@@ -170,8 +170,8 @@ export default {
             }
         },
         trend() {
-            const d = this.data.trend[this.attribute];
-            if (d > 0) {
+            const d = this.data.trend[this.attribute+"7DayChangePercent"] * 100;
+            if (d > 5) {
                 return {
                     rotate:
                         "padding-bottom: 0px; transform: translate(0px,8px) rotate(45deg) ",
@@ -179,7 +179,7 @@ export default {
                     color: "red",
                     hint: "Aufwärtstrend über 14 Tage"
                 };
-            } else if (d < 0) {
+            } else if (d < -5) {
                 return {
                     rotate: "transform: rotate(-45deg)",
                     icon: "fas fa-arrow-down",

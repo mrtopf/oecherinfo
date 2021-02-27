@@ -12,7 +12,7 @@
             <v-card-title class="text-xs-h7 text-lg-h4 pb-0 font-weight-bold">
                 Übersicht Städteregion Aachen<br>
             </v-card-title>
-            <v-card-text class="py-3 px-1" v-if="loaded">
+            <v-card-text class="py-3 px-1" v-if="!loading">
                 <Indicator :value="sr.today.r4" title="R-Wert" description="Der 4-Tages-Reproduktionswert gibt an, wie viele weitere Personen eine an COVID-19 erkrankte Person im Durchschnitt ansteckt."
                 :trend="sr.today.r4 < 1 ? 1 : -1" />
                 <Indicator :value="sr.today.rollingRate" title="Inzidenz" description="Die Inzidenz gibt an, wie viele Personen pro 100.000 Einwohner in den letzten 7 Tagen positiv auf COVID-19 getestet wurden"
@@ -22,7 +22,7 @@
                 <Indicator :value="divi.today.freeBeds" title="freie Betten" description="Freie Intensivbetten in der Städteregion Aachen"
                 :trend="divi.today.freeBeds > 10 ? 1 : -1" />
             </v-card-text>
-            <v-card-text class="py-0" v-if="loaded">
+            <v-card-text class="py-0" v-if="!loading">
                 <v-row>
                     <v-col cols="12" md="4">
                         <MiniChartNew
@@ -31,7 +31,7 @@
                             :today="sr.today.rollingRate"
                             :weekChange="
                                 Math.round(sr.trend.rollingRate7DayChange)
-                            "
+                            "                                
                             :weekChangePercent="
                                 Math.round(
                                     sr.trend.rollingRate7DayChangePercent * 100
@@ -93,7 +93,7 @@
                 Übersicht Stadt Aachen
                 <v-spacer></v-spacer>
             </v-card-title>
-            <v-card-text class="py-3 px-1" v-if="loaded">
+            <v-card-text class="py-3 px-1" v-if="!loading">
                 <Indicator :value="aachen.today.r4" title="R-Wert" description="Der 4-Tages-Reproduktionswert gibt an, wie viele weitere Personen eine an COVID-19 erkrankte Person im Durchschnitt ansteckt."
                 :trend="aachen.today.r4 < 1 ? 1 : -1" />
                 <Indicator :value="aachen.today.rollingRate" title="Inzidenz" description="Die Inzidenz gibt an, wie viele Personen pro 100.000 Einwohner in den letzten 7 Tagen positiv auf COVID-19 getestet wurden"
@@ -102,7 +102,7 @@
                 :trend="computeTrend(aachen.today.rollingRatePerc*100, 5, 10)" />
             </v-card-text>
 
-            <v-card-text class="py-0" v-if="loaded">
+            <v-card-text class="py-0" v-if="!loading">
                 <v-row>
                     <v-col cols="12" md="4">
                         <MiniChartNew
@@ -165,7 +165,7 @@
                     </v-col>
                 </v-row>
             </v-card-text>
-            <v-card-text v-if="loaded" class="text-right">
+            <v-card-text v-if="!loading" class="text-right">
                 Datenquelle:
                 <a
                     target="_blank"
@@ -174,7 +174,7 @@
                 >.
             </v-card-text>
             <v-divider></v-divider>
-            <v-card-text class="mt-10" v-if="loaded">
+            <v-card-text class="mt-10" v-if="!loading">
                 <h3 class="text-h6 text-md-h4 black--text text-uppercase my-3">
                     Tabellarische Übersicht
                 </h3>
@@ -182,7 +182,7 @@
                     Klicke auf eine Kommune, um weitere Informationen zu
                     erhalten
                 </div>
-                <OverviewTable></OverviewTable>
+                <OverviewTable :data="overview"></OverviewTable>
                 <v-card-text class="caption text-right">
                     Die Pfeile
                     <v-icon small color="red">fa fa-chevron-down</v-icon>
@@ -231,17 +231,14 @@ import Mini from "./charts/Mini.vue";
 import MiniChart from "./charts/MiniChart.vue";
 import MiniChartNew from "./charts/MiniChartNew.vue";
 
-import Indicator from "@/components/Indicator.vue";
 
 import OverviewTable from "./OverviewTable.vue";
 import HospitalTable from "./HospitalTable.vue";
 
+import Indicator from "@/components/Indicator.vue";
+
 import { format } from "echarts";
-
-import { mapState, mapActions, mapGetters } from "vuex";
-
 import axios from "axios";
-
 import _ from "lodash";
 
 const API = process.env.VUE_APP_CORONA_API_NEW;
@@ -252,6 +249,7 @@ export default {
         sr: null,
         aachen: null,
         divi: null,
+        overview: null,
         loading: true
     }),
     methods: {
@@ -264,7 +262,7 @@ export default {
             }
             return 0
         },
-        async load2() {
+        async load() {
             await axios
                 .get(`${API}/muni/sr?fields=rollingRate,activeCases,cumCases`)
                 .then(response => {
@@ -280,15 +278,14 @@ export default {
             await axios.get(`${API}/divi/`).then(response => {
                 this.divi = response.data;
             });
+            await axios.get(`${API}/overview/`).then(response => {
+                this.overview = response.data;
+            });
             this.loading = false;
         },
-        ...mapActions({
-            updateMuni: "corona/updateMuni",
-            load: "corona/load"
-        })
     },
     async mounted() {
-        this.load2();
+        this.load();
     },
     components: {
         Mini,
@@ -302,16 +299,6 @@ export default {
         date() {
             return this.sr && format.formatTime("dd.MM.yyyy", this.sr.date);
         },
-
-        ...mapGetters("corona", ["muniName", "muni_data", "todayList"]),
-        ...mapState({
-            loaded: state => state.corona.loaded,
-            today: state => state.corona.today,
-            yesterday: state => state.corona.yesterday,
-            weekerday: state => state.corona.weekerday,
-            yesterdate: state => state.corona.yesterdate,
-            selectedMuni: state => state.corona.selectedMuni
-        })
     }
 };
 </script>
