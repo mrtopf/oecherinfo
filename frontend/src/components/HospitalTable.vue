@@ -9,7 +9,6 @@
                 </v-toolbar>
 
                 <v-simple-table
-                    v-if="divi.length>0"
                     class="mb-5"
                     dense
                     :class="
@@ -21,39 +20,39 @@
                     <template v-slot:default>
                         <tbody>
                             <tr>
-                                <th>Anzahl Standorte</th>
+                                <th>Gesamtzahl Betten</th>
                                 <td>
-                                    {{ divi[0].anzahl_standorte }}
+                                    {{ data.today.allBeds }}
                                 </td>
                             </tr>
                             <tr>
-                                <th>Verfügbare Betten</th>
+                                <th>belegte Betten</th>
                                 <td>
-                                    {{ divi[0].betten_belegt }}
+                                    {{ data.today.occupiedBeds }}
                                 </td>
                             </tr>
                             <tr>
                                 <th>Freie Betten</th>
                                 <td>
-                                    {{ divi[0].betten_frei }}
+                                    {{ data.today.freeBeds }}
                                 </td>
                             </tr>
                             <tr>
                                 <th>COVID-Fälle</th>
                                 <td>
-                                    {{ divi[0].faelle_covid_aktuell }}
+                                    {{ data.today.covid19Cases }}
                                 </td>
                             </tr>
                             <tr>
                                 <th>davon beatmet</th>
                                 <td>
-                                    {{ divi[0].faelle_covid_aktuell_beatmet }}
+                                    {{ data.today.ventilatorCases }}
                                 </td>
                             </tr>
                             <tr>
                                 <th>Stand</th>
                                 <td>
-                                    {{ divi_date }}
+                                    {{ date }}
                                 </td>
                             </tr>
                         </tbody>
@@ -270,7 +269,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="item in hospitals" :key="item.name">
+                            <tr v-for="item in data.hospitals" :key="item.name">
                                 <td>
                                     {{ item.name }}
                                 </td>
@@ -307,9 +306,12 @@
     </v-row>
 </template>
 <script>
-import { mapState, mapActions, mapGetters } from "vuex";
+import { format } from "echarts";
 
 export default {
+    props: {
+        data: Object,
+    },
     data() {
         return {
             hospitalHelp: false,
@@ -325,21 +327,9 @@ export default {
         };
     },
     computed: {
-        ...mapGetters("corona", ["muniName", "muni_data", "todayList"]),
-        ...mapState({
-            muniDict: (state) => state.corona.muniDict,
-            loaded: (state) => state.corona.loaded,
-            munis: (state) => state.corona.munis,
-            divi: (state) => state.corona.divi,
-            divi_date: (state) => state.corona.divi_date,
-            hospitals: (state) => state.corona.hospitals,
-            today: (state) => state.corona.today,
-            yesterday: (state) => state.corona.yesterday,
-            weekerday: (state) => state.corona.weekerday,
-            date: (state) => state.corona.date,
-            yesterdate: (state) => state.corona.yesterdate,
-            selectedMuni: (state) => state.corona.selectedMuni,
-        }),
+        date() {
+            return this.data && format.formatTime("dd.MM.yyyy", this.data.date);
+        },
     },
 };
 </script>
