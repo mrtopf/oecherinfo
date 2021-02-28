@@ -7,7 +7,7 @@ module.exports = {
   ],
   configureWebpack: {
     plugins: [
-      new BundleAnalyzerPlugin(),
+      //new BundleAnalyzerPlugin(),
     ],
   }
 }
