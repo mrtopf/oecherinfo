@@ -4,6 +4,8 @@ from flask_restful import Resource, abort, request
 from corona.config import ALLOWED_MUNI_FIELDS, API_TO_MUNI_DATABASE_MAPPING
 from corona.db import mongo
 
+from flask_csv import send_csv
+
 
 class Municipality(Resource):
     """return data for a municipality
@@ -92,5 +94,14 @@ class Municipality(Resource):
         resp['today'] = today
         resp['yesterday'] = yesterday
         resp['trend'] = trend
-        
-        return resp
+        if output=="json":
+            return resp
+        elif output=="csv":
+            headers = ['date'] + fields
+            res = []
+            for (idx, d) in enumerate(resp['dates']):
+                record = dict([(f, resp[f][idx]) for f in fields])
+                record['date'] = d.date()
+                res.append(record)
+            return send_csv(res,
+                    "corona_%s_%s_corona.csv" %(resp['date'].strftime("%Y_%m_%d"), muni), headers)
