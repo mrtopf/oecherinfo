@@ -254,30 +254,30 @@
                     <template v-slot:default>
                         <thead>
                             <tr>
-                                <th class="text-left">Krankenhaus</th>
-                                <th class="text-left">Low</th>
-                                <th class="text-left">High</th>
-                                <th class="text-left">ECMO</th>
+                                <th :class="$vuetify.breakpoint.smAndUp ? 'black--text text-uppercase' : 'black--text text-uppercase px-1 py-1'">Krankenhaus</th>
+                                <th :class="$vuetify.breakpoint.smAndUp ? 'black--text text-center text-uppercase' : 'black--text text-uppercase px-1 py-1'">Low</th>
+                                <th :class="$vuetify.breakpoint.smAndUp ? 'black--text text-center text-uppercase' : 'black--text text-uppercase px-1 py-1'">High</th>
+                                <th :class="$vuetify.breakpoint.smAndUp ? 'black--text text-center text-uppercase' : 'black--text text-uppercase px-1 py-1'">ECMO</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="item in data.hospitals" :key="item.name">
-                                <td>
+                                <td :class="$vuetify.breakpoint.smAndUp ? 'body-2' : 'caption px-1 py-1'">
                                     {{ item.name }}
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     <v-badge
                                         :dot="!$vuetify.breakpoint.smAndUp"
                                         :color="item.lowCare"
                                     ></v-badge>
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     <v-badge
                                         :dot="!$vuetify.breakpoint.smAndUp"
                                         :color="item.highCare"
                                     ></v-badge>
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     <v-badge
                                         :dot="!$vuetify.breakpoint.smAndUp"
                                         :color="item.ecmo"
@@ -344,9 +344,8 @@ export default {
                         name: "Bettenbelegung",
                         type: "pie",
                         radius: ["40%", "80%"],
-                        //radius: ["40%"],
                         colors: ["#0fa", "#fa0"],
-                        startAngle: 140,
+                        startAngle: 70,
                         data: [
                             {
                                 value:

@@ -37,7 +37,7 @@
         <v-card-text style="max-width: 1024px;" class="body-2 pr-10 pl-5">
             <slot name="description"></slot>
         </v-card-text>
-        <v-card-text>
+        <v-card-text :class="$vuetify.breakpoint.mdAndUp ? '' : 'px-0'">
             <v-tabs
                 ref="tabs"
                 v-model="view"
@@ -62,7 +62,7 @@
                 </v-tab>
             </v-tabs>
             <v-tabs-items v-model="view">
-                <v-tab-item transition="none" v-for="tab in tabs" :key="tab.id">
+                <v-tab-item transition="none" v-for="tab in tabs" :key="tab.id" :class="$vuetify.breakpoint.mdAndUp ? '' : 'py-4 pa-0'">
                     <slot :name="`tab.${tab.id}`"></slot>
                 </v-tab-item>
 

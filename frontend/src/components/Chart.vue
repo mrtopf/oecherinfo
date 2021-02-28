@@ -111,6 +111,7 @@ export default {
                 top: 50,
                 right: 10,
                 seriesIndex: 0,
+                show: this.$vuetify.breakpoint.mdAndUp,
                 pieces: [
                     {
                         gt: 0,
@@ -135,10 +136,10 @@ export default {
 
             return {
                 grid: {
-                    left: 50
+                    left: 40,
                 },
-
                 toolbox: {
+                    show: this.$vuetify.breakpoint.mdAndUp,
                     itemSize: 20,
                     feature: {
                         dataZoom: {

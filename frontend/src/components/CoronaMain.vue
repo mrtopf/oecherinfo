@@ -1,6 +1,15 @@
 <template>
-    <v-container fluid class="pa-0" v-if="!loading">
-        <v-card tile flat color="#f8f8f8">
+    <v-container fluid class="pa-0">
+        <v-card
+            flat
+            color="transparent"
+            v-if="loading"
+            class="text-center mt-10 pt-10"
+        >
+            <div class="lds-hourglass"></div>
+        </v-card>
+
+        <v-card tile flat color="#f8f8f8" v-else>
             <v-card-text>
                 <h1
                     class="text-xs-h7 text-md-h3 pb-3 font-weight-bold primary--text"
@@ -228,7 +237,6 @@
 
 <script>
 import Mini from "./charts/Mini.vue";
-import MiniChart from "./charts/MiniChart.vue";
 import MiniChartNew from "./charts/MiniChartNew.vue";
 
 
@@ -289,7 +297,6 @@ export default {
     },
     components: {
         Mini,
-        MiniChart,
         MiniChartNew,
         OverviewTable,
         HospitalTable,

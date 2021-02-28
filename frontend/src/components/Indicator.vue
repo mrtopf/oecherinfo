@@ -1,7 +1,7 @@
 <template>
     <v-tooltip bottom max-width="300" color="rgba(0,0,0,1)">
         <template v-slot:activator="{ on }">
-            <v-chip small v-on="on" :dark="dark" class="ml-3" :color="color"
+            <v-chip v-on="on" :dark="dark" class="my-1 ml-3" :color="color"
                 >{{title}}: {{ value}}</v-chip
             >
         </template>
