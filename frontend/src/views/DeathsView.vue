@@ -6,6 +6,7 @@
         :data="data"
         :keyAttributes="keyAttributes"
         :attribute="attribute"
+        :downloadUrl="downloadUrl"
         :date="date"
     >
         <template v-slot:graphs>
@@ -29,7 +30,8 @@
             >
                 <template v-slot:description>
                     <summary>
-                        Die Anzahl der Personen, die an oder mit COVID-19 verstorben sind.
+                        Die Anzahl der Personen, die an oder mit COVID-19
+                        verstorben sind.
                     </summary>
                 </template>
                 <template v-slot:tab.daily>
@@ -110,6 +112,9 @@ export default {
         ]
     }),
     computed: {
+        downloadUrl() {
+            return `${API}/muni/${this.muni}?format=csv`;
+        },
         date() {
             return this.data && format.formatTime("dd.MM.yyyy", this.data.date);
         }

@@ -29,6 +29,11 @@
                         >{{ title }}</span
                     >
                 </v-col>
+                <v-col cols="12" md="4" class="text-md-right d-sm-none d-md-block" v-if="downloadUrl">
+                    <v-btn :href="downloadUrl" color="primary" small tile class="my-1">
+                        <v-icon small left>fa fa-file-download</v-icon>
+                        Daten als CSV herunterladen</v-btn>
+                </v-col>
             </v-row>
 
             <v-divider></v-divider>
@@ -80,11 +85,12 @@ export default {
             default: "sr"
         },
         attribute: String,
+        downloadUrl: String,
         keyAttributes: Array,
         date: String,
         data: Object,
         loading: Boolean,
-        hideMuniSelector: Boolean
+        hideMuniSelector: Boolean,
     },
     name: "DataView",
     data: () => ({}),
