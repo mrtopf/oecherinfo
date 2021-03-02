@@ -23,17 +23,46 @@
                     <template v-slot:default>
                         <tbody>
                             <tr>
+                                <th>COVID-19 Fälle</th>
+                                <td>
+                                    {{ data.today.covid19Cases }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>davon beatmet</th>
+                                <td>
+                                    {{ data.today.ventilatorCases }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>sonstige Fälle</th>
+                                <td>
+                                    {{
+                                        data.today.occupiedBeds -
+                                            data.today.covid19Cases
+                                    }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="border-top: 2px solid black">belegte Betten</th>
+                                <td style="border-top: 2px solid black" class="font-weight-bold">
+                                    {{ data.today.occupiedBeds }}
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <th>freie Betten</th>
+                                <td>
+                                    {{ data.today.freeBeds }}
+                                    <v-badge dot :color="freeBedColor"></v-badge>
+                                </td>
+                            </tr>
+                            <tr class="">
                                 <th>Gesamtzahl Betten</th>
                                 <td>
                                     {{ data.today.allBeds }}
                                 </td>
                             </tr>
-                            <tr>
-                                <th>belegte Betten</th>
-                                <td>
-                                    {{ data.today.occupiedBeds }}
-                                </td>
-                            </tr>
+
                         </tbody>
                     </template>
                 </v-simple-table>
@@ -254,15 +283,53 @@
                     <template v-slot:default>
                         <thead>
                             <tr>
-                                <th :class="$vuetify.breakpoint.smAndUp ? 'black--text text-uppercase' : 'black--text text-uppercase px-1 py-1'">Krankenhaus</th>
-                                <th :class="$vuetify.breakpoint.smAndUp ? 'black--text text-center text-uppercase' : 'black--text text-uppercase px-1 py-1'">Low</th>
-                                <th :class="$vuetify.breakpoint.smAndUp ? 'black--text text-center text-uppercase' : 'black--text text-uppercase px-1 py-1'">High</th>
-                                <th :class="$vuetify.breakpoint.smAndUp ? 'black--text text-center text-uppercase' : 'black--text text-uppercase px-1 py-1'">ECMO</th>
+                                <th
+                                    :class="
+                                        $vuetify.breakpoint.smAndUp
+                                            ? 'black--text text-uppercase'
+                                            : 'black--text text-uppercase px-1 py-1'
+                                    "
+                                >
+                                    Krankenhaus
+                                </th>
+                                <th
+                                    :class="
+                                        $vuetify.breakpoint.smAndUp
+                                            ? 'black--text text-center text-uppercase'
+                                            : 'black--text text-uppercase px-1 py-1'
+                                    "
+                                >
+                                    Low
+                                </th>
+                                <th
+                                    :class="
+                                        $vuetify.breakpoint.smAndUp
+                                            ? 'black--text text-center text-uppercase'
+                                            : 'black--text text-uppercase px-1 py-1'
+                                    "
+                                >
+                                    High
+                                </th>
+                                <th
+                                    :class="
+                                        $vuetify.breakpoint.smAndUp
+                                            ? 'black--text text-center text-uppercase'
+                                            : 'black--text text-uppercase px-1 py-1'
+                                    "
+                                >
+                                    ECMO
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="item in data.hospitals" :key="item.name">
-                                <td :class="$vuetify.breakpoint.smAndUp ? 'body-2' : 'caption px-1 py-1'">
+                                <td
+                                    :class="
+                                        $vuetify.breakpoint.smAndUp
+                                            ? 'body-2'
+                                            : 'caption px-1 py-1'
+                                    "
+                                >
                                     {{ item.name }}
                                 </td>
                                 <td class="text-center">
@@ -322,6 +389,15 @@ export default {
         date() {
             return this.data && format.formatTime("dd.MM.yyyy", this.data.date);
         },
+        freeBedColor() {
+            if (this.data.today.freeBeds < 5) {
+                return "#960D2D"
+            } else if (this.data.today.freeBeds < 10) {
+                return "#F78656"                
+            } else {
+                return "#05C793"
+            }
+        },
         options() {
             return {
                 grid: {
@@ -330,7 +406,7 @@ export default {
                     left: 0
                 },
                 title: {
-                    text: `Stand ${this.date}`,
+                    subtext: `Stand ${this.date}`,
                     left: "center"
                 },
                 tooltip: {
@@ -341,6 +417,7 @@ export default {
                 },
                 series: [
                     {
+                        top: 30,
                         name: "Bettenbelegung",
                         type: "pie",
                         radius: ["40%", "80%"],
