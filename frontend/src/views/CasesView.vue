@@ -7,6 +7,7 @@
             :data="data"
             :keyAttributes="keyAttributes"
             :attribute="attribute"
+            :downloadUrl="downloadUrl"
             :date="date"
         >
             <template v-slot:graphs>
@@ -121,9 +122,7 @@
                 >
                     <template v-slot:description>
                         <summary>
-                            Die Reproduktionszahl R besagt, wie viele weitere Personen eine einzelne Person mit COVID-19 infiziert.
-                            Dies wird sowohl über einen 4-Tages- als auch einen 7-Tages-Zeitraum berechnet.
-                        </summary>
+                            Die Reproduktionszahl, auch R-Wert oder R-Zahl genannt, gibt an, wie viele Menschen eine infizierte Person in einer bestimmten Zeiteinheit im Mittel ansteckt. Liegt der Wert über 1, dann steigt die Zahl der Neuinfektionen, die Krankheit breitet sich also weiter aus. Ist sie kleiner als 1, gibt es immer weniger Neuinfektionen, die Epidemie läuft also aus.</summary>
                     </template>
                     <template v-slot:tab.r4>
                         <Chart
@@ -250,6 +249,9 @@ export default {
     }),
 
     computed: {
+        downloadUrl() {
+            return `${API}/muni/${this.muni}?format=csv`
+        },
         date() {
             return this.data && format.formatTime('dd.MM.yyyy', this.data.date)
         }
