@@ -19,17 +19,33 @@
             </v-card-text>
             <v-card-text class="pb-0 caption"> Stand: {{ date }} </v-card-text>
             <v-card-title class="text-xs-h7 text-lg-h4 pb-0 font-weight-bold">
-                Übersicht Städteregion Aachen<br>
+                Übersicht Städteregion Aachen<br />
             </v-card-title>
             <v-card-text class="py-3 px-1" v-if="!loading">
-                <Indicator :value="sr.today.r4" title="R-Wert" description="Die Reproduktionszahl, auch R-Wert oder R-Zahl genannt, gibt an, wie viele Menschen eine infizierte Person in einer bestimmten Zeiteinheit (hier 4 Tage) im Mittel ansteckt. Liegt der Wert über 1, dann steigt die Zahl der Neuinfektionen, die Krankheit breitet sich also weiter aus. Ist sie kleiner als 1, gibt es immer weniger Neuinfektionen, die Epidemie läuft also aus."
-                :trend="sr.today.r4 < 1 ? 1 : -1" />
-                <Indicator :value="sr.today.rollingRate" title="Inzidenz" description="Die Inzidenz gibt an, wie viele Personen pro 100.000 Einwohner in den letzten 7 Tagen positiv auf COVID-19 getestet wurden"
-                :trend="computeTrend(sr.today.rollingRate, 50, 200)" />
-                <Indicator :value="`${sr.today.rollingRatePerc*100}%`" title="Inzidenz-Wachstum" description="Die Wachstumsrate der Inzidenz. Verglichen wird die letzte Woche mit der Vorwoche"
-                :trend="computeTrend(sr.today.rollingRatePerc*100, 5, 10)" />
-                <Indicator :value="divi.today.freeBeds" title="freie Betten" description="Freie Intensivbetten in der Städteregion Aachen"
-                :trend="divi.today.freeBeds > 10 ? 1 : -1" />
+                <Indicator
+                    :value="sr.today.r4"
+                    title="R-Wert"
+                    description="Die Reproduktionszahl, auch R-Wert oder R-Zahl genannt, gibt an, wie viele Menschen eine infizierte Person in einer bestimmten Zeiteinheit (hier 4 Tage) im Mittel ansteckt. Liegt der Wert über 1, dann steigt die Zahl der Neuinfektionen, die Krankheit breitet sich also weiter aus. Ist sie kleiner als 1, gibt es immer weniger Neuinfektionen, die Epidemie läuft also aus."
+                    :trend="sr.today.r4 < 1 ? 1 : -1"
+                />
+                <Indicator
+                    :value="sr.today.rollingRate"
+                    title="Inzidenz"
+                    description="Die Inzidenz gibt an, wie viele Personen pro 100.000 Einwohner in den letzten 7 Tagen positiv auf COVID-19 getestet wurden"
+                    :trend="computeTrend(sr.today.rollingRate, 50, 200)"
+                />
+                <Indicator
+                    :value="`${sr.today.rollingRatePerc * 100}%`"
+                    title="Inzidenz-Wachstum"
+                    description="Die Wachstumsrate der Inzidenz. Verglichen wird die letzte Woche mit der Vorwoche"
+                    :trend="computeTrend(sr.today.rollingRatePerc * 100, 5, 10)"
+                />
+                <Indicator
+                    :value="divi.today.freeBeds"
+                    title="freie Betten"
+                    description="Freie Intensivbetten in der Städteregion Aachen"
+                    :trend="divi.today.freeBeds > 10 ? 1 : -1"
+                />
             </v-card-text>
             <v-card-text class="py-0" v-if="!loading">
                 <v-row>
@@ -40,7 +56,7 @@
                             :today="sr.today.rollingRate"
                             :weekChange="
                                 Math.round(sr.trend.rollingRate7DayChange)
-                            "                                
+                            "
                             :weekChangePercent="
                                 Math.round(
                                     sr.trend.rollingRate7DayChangePercent * 100
@@ -103,12 +119,26 @@
                 <v-spacer></v-spacer>
             </v-card-title>
             <v-card-text class="py-3 px-1" v-if="!loading">
-                <Indicator :value="aachen.today.r4" title="R-Wert" description="Die Reproduktionszahl, auch R-Wert oder R-Zahl genannt, gibt an, wie viele Menschen eine infizierte Person in einer bestimmten Zeiteinheit (hier 4 Tage) im Mittel ansteckt. Liegt der Wert über 1, dann steigt die Zahl der Neuinfektionen, die Krankheit breitet sich also weiter aus. Ist sie kleiner als 1, gibt es immer weniger Neuinfektionen, die Epidemie läuft also aus."
-                :trend="aachen.today.r4 < 1 ? 1 : -1" />
-                <Indicator :value="aachen.today.rollingRate" title="Inzidenz" description="Die Inzidenz gibt an, wie viele Personen pro 100.000 Einwohner in den letzten 7 Tagen positiv auf COVID-19 getestet wurden"
-                :trend="computeTrend(aachen.today.rollingRate, 50, 200)" />
-                <Indicator :value="`${aachen.today.rollingRatePerc*100}%`" title="Inzidenz-Wachstum" description="Die Wachstumsrate der Inzidenz. Verglichen wird die letzte Woche mit der Vorwoche"
-                :trend="computeTrend(aachen.today.rollingRatePerc*100, 5, 10)" />
+                <Indicator
+                    :value="aachen.today.r4"
+                    title="R-Wert"
+                    description="Die Reproduktionszahl, auch R-Wert oder R-Zahl genannt, gibt an, wie viele Menschen eine infizierte Person in einer bestimmten Zeiteinheit (hier 4 Tage) im Mittel ansteckt. Liegt der Wert über 1, dann steigt die Zahl der Neuinfektionen, die Krankheit breitet sich also weiter aus. Ist sie kleiner als 1, gibt es immer weniger Neuinfektionen, die Epidemie läuft also aus."
+                    :trend="aachen.today.r4 < 1 ? 1 : -1"
+                />
+                <Indicator
+                    :value="aachen.today.rollingRate"
+                    title="Inzidenz"
+                    description="Die Inzidenz gibt an, wie viele Personen pro 100.000 Einwohner in den letzten 7 Tagen positiv auf COVID-19 getestet wurden"
+                    :trend="computeTrend(aachen.today.rollingRate, 50, 200)"
+                />
+                <Indicator
+                    :value="`${aachen.today.rollingRatePerc * 100}%`"
+                    title="Inzidenz-Wachstum"
+                    description="Die Wachstumsrate der Inzidenz. Verglichen wird die letzte Woche mit der Vorwoche"
+                    :trend="
+                        computeTrend(aachen.today.rollingRatePerc * 100, 5, 10)
+                    "
+                />
             </v-card-text>
 
             <v-card-text class="py-0" v-if="!loading">
@@ -239,7 +269,6 @@
 import Mini from "./charts/Mini.vue";
 import MiniChartNew from "./charts/MiniChartNew.vue";
 
-
 import OverviewTable from "./OverviewTable.vue";
 import HospitalTable from "./HospitalTable.vue";
 
@@ -262,13 +291,13 @@ export default {
     }),
     methods: {
         computeTrend(v, min, max) {
-            if (v<min) {
-                return 1
+            if (v < min) {
+                return 1;
             }
-            if (v>max) {
-                return -1
+            if (v > max) {
+                return -1;
             }
-            return 0
+            return 0;
         },
         async load() {
             await axios
@@ -290,7 +319,7 @@ export default {
                 this.overview = response.data;
             });
             this.loading = false;
-        },
+        }
     },
     async mounted() {
         this.load();
@@ -302,10 +331,21 @@ export default {
         HospitalTable,
         Indicator
     },
+    metaInfo: {
+        title: "Corona-Dashboard für die Städteregion Aachen",
+        meta: [
+            {
+                name: "description",
+                content:
+                    "Alle Corona-Daten für die Städteregion Aachen: Inzidenzen, Fallzahlen, Intensivbelegung und deren Entwicklung"
+            }
+        ]
+    },
+
     computed: {
         date() {
             return this.sr && format.formatTime("dd.MM.yyyy", this.sr.date);
-        },
+        }
     }
 };
 </script>

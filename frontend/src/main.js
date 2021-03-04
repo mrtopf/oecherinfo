@@ -5,8 +5,10 @@ import router from "./router"
 import store from "./store"
 import vuetify from "./plugins/vuetify"
 
-import ECharts from 'vue-echarts'
+import VueMeta from 'vue-meta'
+Vue.use(VueMeta)
 
+import ECharts from 'vue-echarts'
 import * as echarts from "echarts/core";
 const { use, registerMap, registerTheme } = echarts;
 

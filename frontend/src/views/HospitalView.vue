@@ -140,6 +140,7 @@ import Panel from "@/components/Panel.vue";
 import Chart from "@/components/Chart.vue";
 import BedChart from "@/components/charts/BedChart.vue";
 import { format } from "echarts";
+import { genMetaInfo } from "@/utils.js";
 
 const API = process.env.VUE_APP_CORONA_API_NEW;
 
@@ -196,6 +197,13 @@ export default {
             }
         ]
     }),
+    metaInfo() {
+        return genMetaInfo(
+            "COVID-19: Intensivbettenbelegung Städteregion Aachen",
+            "Aktuelle Lage der Intensivbettenbelegung der Krankenhäuser in der Städteregion Aachen"
+        );
+    },
+
     computed: {
         date() {
             return this.data && format.formatTime("dd.MM.yyyy", this.data.date);

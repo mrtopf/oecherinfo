@@ -61,6 +61,7 @@ import DataView from "@/components/DataView.vue";
 import Panel from "@/components/Panel.vue";
 import Chart from "@/components/Chart.vue";
 import { format } from "echarts";
+import { genMetaInfo, MUNI_DICT } from "@/utils.js";
 
 const API = process.env.VUE_APP_CORONA_API_NEW;
 
@@ -110,6 +111,13 @@ export default {
             }
         ]
     }),
+    metaInfo() {
+        return genMetaInfo(
+            `COVID-19: Fallzahlen für ${MUNI_DICT[this.muni]}`,
+            `Aktuelle Zahlen und Entwicklung der genesenen Personen für ${MUNI_DICT[this.muni]}.`
+        )
+    },
+
     computed: {
         downloadUrl() {
             return `${API}/muni/${this.muni}?format=csv`;

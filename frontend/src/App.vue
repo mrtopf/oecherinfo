@@ -140,7 +140,7 @@ export default {
                 return "sr";
             }
             return muni;
-        },
+        }
     },
     watch: {
         $route(to, from) {
@@ -175,7 +175,18 @@ export default {
                 route: "hospitals"
             }
         ]
-    })
+    }),
+    metaInfo: {
+        title: "Corona-Dashboard für die Städteregion Aachen",
+        titleTemplate: '%s | CORONA | oecher.info',
+        meta: [
+            {
+                name: "description",
+                content:
+                    "Alle Corona-Daten für die Städteregion Aachen: Inzidenzen, Fallzahlen, Intensivbelegung und deren Entwicklung"
+            }
+        ]
+    }
 };
 </script>
 <style >
@@ -206,8 +217,9 @@ main {
 #nav-list .v-list-item:before {
     border-radius: 0 !important;
 }
-.v-card__text, .v-card__title {
-  word-break: normal !important;
+.v-card__text,
+.v-card__title {
+    word-break: normal !important;
 }
 .lds-hourglass {
     display: inline-block;

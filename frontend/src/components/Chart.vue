@@ -73,10 +73,13 @@ export default {
             };
             if (this.showLines) {
                 markLines.data.push(
-                    { yAxis: 50 }
+                    { yAxis: 50, lineStyle: {color: "#049F76"} }
                 )
                 markLines.data.push(
-                    { yAxis: 200 }
+                    { yAxis: 100, lineStyle: {color: "#F78656"} }
+                )
+                markLines.data.push(
+                    { yAxis: 200, lineStyle: {color: "#7D314E"} }
                 )
             }
 
@@ -117,16 +120,21 @@ export default {
                         gt: 0,
                         lte: 50,
                         //color: "#037758"
-                        color: "#05C793"
+                        color: "#06D6A0"
                     },
                     {
                         gt: 50,
+                        lte: 100,
+                        color: "#FFBC1F"
+                    },
+                    {
+                        gt: 100,
                         lte: 200,
                         color: "#F78656"
                     },
                     {
                         gt: 200,
-                        color: "#960D2D"
+                        color: "#7D314E"
                     }
                 ],
                 outOfRange: {

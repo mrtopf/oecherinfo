@@ -2,7 +2,7 @@
     <div>
         <DataView
             title="Fallzahlen"
-            :loading = "loading"
+            :loading="loading"
             :muni="muni"
             :data="data"
             :keyAttributes="keyAttributes"
@@ -34,10 +34,12 @@
                 >
                     <template v-slot:description>
                         <summary>
-                            Die Sieben-Tage-Inzidenz gibt an, wie viele Personen in den letzten 7 Tagen positiv auf COVID-19 getestet wurden. 
-                            Damit die Daten vergleichbar sind, wird die Zahl der Neuinfektionen je 100.000 Einwohner berechnet.
-                            Die prozentuale Änderung wird anhand des vorherigen 7-Tage-Zeitraums berechnet.
-
+                            Die Sieben-Tage-Inzidenz gibt an, wie viele Personen
+                            in den letzten 7 Tagen positiv auf COVID-19 getestet
+                            wurden. Damit die Daten vergleichbar sind, wird die
+                            Zahl der Neuinfektionen je 100.000 Einwohner
+                            berechnet. Die prozentuale Änderung wird anhand des
+                            vorherigen 7-Tage-Zeitraums berechnet.
                         </summary>
                     </template>
                     <template v-slot:tab.daily>
@@ -122,7 +124,15 @@
                 >
                     <template v-slot:description>
                         <summary>
-                            Die Reproduktionszahl, auch R-Wert oder R-Zahl genannt, gibt an, wie viele Menschen eine infizierte Person in einer bestimmten Zeiteinheit im Mittel ansteckt. Liegt der Wert über 1, dann steigt die Zahl der Neuinfektionen, die Krankheit breitet sich also weiter aus. Ist sie kleiner als 1, gibt es immer weniger Neuinfektionen, die Epidemie läuft also aus.</summary>
+                            Die Reproduktionszahl, auch R-Wert oder R-Zahl
+                            genannt, gibt an, wie viele Menschen eine infizierte
+                            Person in einer bestimmten Zeiteinheit im Mittel
+                            ansteckt. Liegt der Wert über 1, dann steigt die
+                            Zahl der Neuinfektionen, die Krankheit breitet sich
+                            also weiter aus. Ist sie kleiner als 1, gibt es
+                            immer weniger Neuinfektionen, die Epidemie läuft
+                            also aus.</summary
+                        >
                     </template>
                     <template v-slot:tab.r4>
                         <Chart
@@ -184,6 +194,7 @@ import DataView from "@/components/DataView.vue";
 import Panel from "@/components/Panel.vue";
 import Chart from "@/components/Chart.vue";
 import { format } from "echarts";
+import { genMetaInfo, MUNI_DICT } from "@/utils.js";
 
 const API = process.env.VUE_APP_CORONA_API_NEW;
 
@@ -213,7 +224,7 @@ export default {
     },
     watch: {
         muni(v) {
-            this.load()
+            this.load();
         }
     },
     data: () => ({
@@ -250,11 +261,17 @@ export default {
 
     computed: {
         downloadUrl() {
-            return `${API}/muni/${this.muni}?format=csv`
+            return `${API}/muni/${this.muni}?format=csv`;
         },
         date() {
-            return this.data && format.formatTime('dd.MM.yyyy', this.data.date)
+            return this.data && format.formatTime("dd.MM.yyyy", this.data.date);
         }
+    },
+    metaInfo() {
+        return genMetaInfo(
+            `COVID-19: Fallzahlen für ${MUNI_DICT[this.muni]}`,
+            `Aktuelle Daten und Entwicklung der Inzidenz, neuen und aktiven Fällen sowie des R-Werts für ${MUNI_DICT[this.muni]}.`
+        )
     },
 
     components: {
