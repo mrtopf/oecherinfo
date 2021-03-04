@@ -65,8 +65,12 @@ def import_corona():
     for f in data['features']:
         d = f['attributes']
 
+
         oid = d['ObjectID']
-        record = {
+        doc = mongo.db.data.find_one({'_id': oid})
+        if doc is None:
+            doc = {}
+        doc.update({
             '_id': oid,
             'date': datetime.datetime.fromtimestamp(d['Meldedatum']/1000),
             'municipality': KOMMUNEN_MAP[d['Kommune']],
@@ -80,9 +84,9 @@ def import_corona():
             'new_deaths': d['Neue_Tote'] or 0,
             'deaths': d['Tote'],
             'average_new_cases': d['Schnitt_neue_Fälle'],
-        }
-
-        mongo.db.data.update({'_id': oid}, record, True)
+        })
+        
+        mongo.db.data.update({'_id': oid}, doc, True)
         click.echo("Import finished in %s seconds" %
                    (round(time.time()-start_time, 2)))
 

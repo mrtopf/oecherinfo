@@ -37,7 +37,7 @@ class Municipality(Resource):
         # get the general header information with trends etc.
 
         data = list(mongo.db.data.find(
-            {'municipality': muni}).sort("date", -1))
+            {'municipality': muni, 'r4': {'$exists': True}}).sort("date", -1))
         first = data[0]
         resp = {
             'date': first['date'],

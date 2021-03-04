@@ -33,7 +33,7 @@ class Overview(Resource):
                 'muni': muni['muni'],
                 'name': muni['name'],
             }
-            data=  list(mongo.db.data.find({'municipality': muni['muni']}).sort("date", -1).limit(20))
+            data=  list(mongo.db.data.find({'municipality': muni['muni'], 'r4': {'$exists': True}}).sort("date", -1).limit(20))
             today={}
             yesterday={}
             trend={}
