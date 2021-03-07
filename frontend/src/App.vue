@@ -17,7 +17,15 @@
             </v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn
+                icon
+                target="_blank"
+                href="https://twitter.com/oecherinfo"
+            >
+                <v-icon>fab fa-twitter</v-icon>
+            </v-btn>
+            <v-btn
                 text
+                target="_blank"
                 href="https://blog.oecher.info?utm_source=oecher.info&utm_medium=web&utm_campaign=bloglink"
             >
                 Blog
@@ -127,24 +135,12 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from "vuex";
-
 export default {
     props: {
         // muni: String
     },
     name: "App",
 
-    mounted() {
-        this.loadCoronaData();
-    },
-
-    methods: {
-        ...mapActions({
-            loadCoronaData: "corona/load",
-            updateMuni: "corona/updateMuni"
-        })
-    },
     computed: {
         muni() {
             const muni = this.$route.params.muni;
@@ -152,15 +148,7 @@ export default {
                 return "sr";
             }
             return muni;
-        },
-        ...mapGetters("corona", ["muni_data"]),
-        ...mapState({
-            munis: state => state.corona.munis,
-            today: state => state.corona.today,
-            loaded: state => state.corona.loaded,
-            date: state => state.corona.date,
-            selectedMuni: state => state.corona.selectedMuni
-        })
+        }
     },
     watch: {
         $route(to, from) {
@@ -195,7 +183,18 @@ export default {
                 route: "hospitals"
             }
         ]
-    })
+    }),
+    metaInfo: {
+        title: "Corona-Dashboard für die Städteregion Aachen",
+        titleTemplate: '%s | CORONA | oecher.info',
+        meta: [
+            {
+                name: "description",
+                content:
+                    "Alle Corona-Daten für die Städteregion Aachen: Inzidenzen, Fallzahlen, Intensivbelegung und deren Entwicklung"
+            }
+        ]
+    }
 };
 </script>
 <style >
@@ -226,8 +225,39 @@ main {
 #nav-list .v-list-item:before {
     border-radius: 0 !important;
 }
-.v-card__text, .v-card__title {
-  word-break: normal !important;
+.v-card__text,
+.v-card__title {
+    word-break: normal !important;
 }
-
+.lds-hourglass {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+.lds-hourglass:after {
+    content: " ";
+    display: block;
+    border-radius: 50%;
+    width: 0;
+    height: 0;
+    margin: 8px;
+    box-sizing: border-box;
+    border: 32px solid #333;
+    border-color: #333 transparent #333 transparent;
+    animation: lds-hourglass 1.2s infinite;
+}
+@keyframes lds-hourglass {
+    0% {
+        transform: rotate(0);
+        animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+    }
+    50% {
+        transform: rotate(900deg);
+        animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+    100% {
+        transform: rotate(1800deg);
+    }
+}
 </style>

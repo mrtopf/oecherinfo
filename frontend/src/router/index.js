@@ -5,7 +5,6 @@ import CasesView from "../views/CasesView.vue"
 import RecoveredView from "../views/RecoveredView.vue"
 import DeathsView from "../views/DeathsView.vue"
 import HospitalView from "../views/HospitalView.vue"
-import { faHospitalSymbol } from "@fortawesome/pro-regular-svg-icons"
 
 Vue.use(VueRouter)
 

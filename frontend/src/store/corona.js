@@ -19,7 +19,18 @@ const state = {
     weekerday: {},
     yesterdate: null,
     selectedMuni: "aachen",
-    munis: [], // list of all known munis in select style
+    munis: [{ "muni": "sr", "name": "Städteregion Aachen" }, 
+            { "muni": "aachen", "name": "Aachen" }, 
+            { "muni": "alsdorf", "name": "Alsdorf" }, 
+            { "muni": "baesweiler", "name": "Baesweiler" }, 
+            { "muni": "eschweiler", "name": "Eschweiler" }, 
+            { "muni": "herzogenrath", "name": "Herzogenrath" }, 
+            { "muni": "monschau", "name": "Monschau" }, 
+            { "muni": "roetgen", "name": "Roetgen" }, 
+            { "muni": "simmerath", "name": "Simmerath" }, 
+            { "muni": "stolberg", "name": "Stolberg" }, 
+            { "muni": "wuerselen", "name": "Würselen" }
+    ]
 }
 
 const getters = {
@@ -121,13 +132,13 @@ const actions = {
     updateMuni({ commit }, muni) {
         commit("setMuni", muni)
     },
-    setDateRangeStart({commit, state, getters}, dateRangeName) {
+    setDateRangeStart({ commit, state, getters }, dateRangeName) {
         commit("setDateRangeName", dateRangeName)
         const end = getters.muni_data.incidence.length;
         if (dateRangeName == "w2") {
             commit("setDateRange", [state.selectedMuni == "sr" ? 180 : 54, end])
         } else if (dateRangeName == "1month") {
-            commit("setDateRange", [end-31, end])
+            commit("setDateRange", [end - 31, end])
         } else if (dateRangeName == "all") {
             commit("setDateRange", [0, end])
         } else {

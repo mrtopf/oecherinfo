@@ -5,9 +5,48 @@ import router from "./router"
 import store from "./store"
 import vuetify from "./plugins/vuetify"
 
+import VueMeta from 'vue-meta'
+Vue.use(VueMeta)
 
-import VueMoment from 'vue-moment'
-Vue.use(VueMoment, {
+import ECharts from 'vue-echarts'
+import * as echarts from "echarts/core";
+const { use, registerMap, registerTheme } = echarts;
+
+import { CanvasRenderer } from "echarts/renderers";
+import { BarChart, LineChart, PieChart } from "echarts/charts";
+import {
+    DataZoomComponent,
+    VisualMapComponent,
+    MarkLineComponent,
+    DataZoomSliderComponent,
+    GridComponent,
+    TooltipComponent,
+    ToolboxComponent,
+    LegendComponent,
+} from "echarts/components";
+
+use([BarChart,
+    PieChart,
+    LegendComponent,
+    VisualMapComponent,
+    GridComponent,
+    TooltipComponent,
+    LineChart,
+    DataZoomComponent,
+    DataZoomSliderComponent,
+    MarkLineComponent,
+    ToolboxComponent,
+    CanvasRenderer]);
+
+
+// register globally (or you can do it locally)
+Vue.component('v-chart', ECharts)
+
+// my own date formatter as we have echarts already
+import { format } from "echarts";
+Vue.filter('dateformat', function (value, fmt) {
+    if (!value) return ''
+    return value && format.formatTime(fmt || "dd.MM.yyyy", value);
 })
 
 const MATOMO_URL = process.env.VUE_APP_MATOMO_URL

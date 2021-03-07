@@ -4,12 +4,14 @@
             <v-card tile>
                 <v-toolbar dark dense flat color="primary">
                     <v-toolbar-title class="body-1 text-md-h6"
-                        >Überblick</v-toolbar-title
+                        >Bettenbelegung</v-toolbar-title
                     >
                 </v-toolbar>
+                <v-card class="mt-5" color="#fff" flat :height="400">
+                    <v-chart :option="options" ref="bar" autoresize />
+                </v-card>
 
                 <v-simple-table
-                    v-if="divi.length>0"
                     class="mb-5"
                     dense
                     :class="
@@ -21,46 +23,58 @@
                     <template v-slot:default>
                         <tbody>
                             <tr>
-                                <th>Anzahl Standorte</th>
+                                <th>COVID-19 Fälle</th>
                                 <td>
-                                    {{ divi[0].anzahl_standorte }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Verfügbare Betten</th>
-                                <td>
-                                    {{ divi[0].betten_belegt }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Freie Betten</th>
-                                <td>
-                                    {{ divi[0].betten_frei }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>COVID-Fälle</th>
-                                <td>
-                                    {{ divi[0].faelle_covid_aktuell }}
+                                    {{ data.today.covid19Cases }}
                                 </td>
                             </tr>
                             <tr>
                                 <th>davon beatmet</th>
                                 <td>
-                                    {{ divi[0].faelle_covid_aktuell_beatmet }}
+                                    {{ data.today.ventilatorCases }}
                                 </td>
                             </tr>
                             <tr>
-                                <th>Stand</th>
+                                <th>sonstige Fälle</th>
                                 <td>
-                                    {{ divi_date }}
+                                    {{
+                                        data.today.occupiedBeds -
+                                            data.today.covid19Cases
+                                    }}
                                 </td>
                             </tr>
+                            <tr>
+                                <th style="border-top: 2px solid black">belegte Betten</th>
+                                <td style="border-top: 2px solid black" class="font-weight-bold">
+                                    {{ data.today.occupiedBeds }}
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <th>freie Betten</th>
+                                <td>
+                                    {{ data.today.freeBeds }}
+                                    <v-badge dot :color="freeBedColor"></v-badge>
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <th>Gesamtzahl Betten</th>
+                                <td>
+                                    {{ data.today.allBeds }}
+                                </td>
+                            </tr>
+
                         </tbody>
                     </template>
                 </v-simple-table>
+
                 <v-card-actions>
-                    <v-btn :to="{name: 'hospitals'}" tile small color="primary">Alle Daten einsehen</v-btn>
+                    <v-btn
+                        :to="{ name: 'hospitals' }"
+                        tile
+                        small
+                        color="primary"
+                        >Alle Daten einsehen</v-btn
+                    >
                 </v-card-actions>
             </v-card>
         </v-col>
@@ -73,7 +87,13 @@
                     <v-dialog v-model="hospitalHelp" scrollable width="700">
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn
-                                @click.capture="$matomo && $matomo.trackEvent('Corona', 'hospital-info-click')"
+                                @click.capture="
+                                    $matomo &&
+                                        $matomo.trackEvent(
+                                            'Corona',
+                                            'hospital-info-click'
+                                        )
+                                "
                                 color="white"
                                 dark
                                 v-bind="attrs"
@@ -263,30 +283,68 @@
                     <template v-slot:default>
                         <thead>
                             <tr>
-                                <th class="text-left">Krankenhaus</th>
-                                <th class="text-left">Low</th>
-                                <th class="text-left">High</th>
-                                <th class="text-left">ECMO</th>
+                                <th
+                                    :class="
+                                        $vuetify.breakpoint.smAndUp
+                                            ? 'black--text text-uppercase'
+                                            : 'black--text text-uppercase px-1 py-1'
+                                    "
+                                >
+                                    Krankenhaus
+                                </th>
+                                <th
+                                    :class="
+                                        $vuetify.breakpoint.smAndUp
+                                            ? 'black--text text-center text-uppercase'
+                                            : 'black--text text-uppercase px-1 py-1'
+                                    "
+                                >
+                                    Low
+                                </th>
+                                <th
+                                    :class="
+                                        $vuetify.breakpoint.smAndUp
+                                            ? 'black--text text-center text-uppercase'
+                                            : 'black--text text-uppercase px-1 py-1'
+                                    "
+                                >
+                                    High
+                                </th>
+                                <th
+                                    :class="
+                                        $vuetify.breakpoint.smAndUp
+                                            ? 'black--text text-center text-uppercase'
+                                            : 'black--text text-uppercase px-1 py-1'
+                                    "
+                                >
+                                    ECMO
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="item in hospitals" :key="item.name">
-                                <td>
+                            <tr v-for="item in data.hospitals" :key="item.name">
+                                <td
+                                    :class="
+                                        $vuetify.breakpoint.smAndUp
+                                            ? 'body-2'
+                                            : 'caption px-1 py-1'
+                                    "
+                                >
                                     {{ item.name }}
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     <v-badge
                                         :dot="!$vuetify.breakpoint.smAndUp"
                                         :color="item.lowCare"
                                     ></v-badge>
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     <v-badge
                                         :dot="!$vuetify.breakpoint.smAndUp"
                                         :color="item.highCare"
                                     ></v-badge>
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     <v-badge
                                         :dot="!$vuetify.breakpoint.smAndUp"
                                         :color="item.ecmo"
@@ -307,9 +365,12 @@
     </v-row>
 </template>
 <script>
-import { mapState, mapActions, mapGetters } from "vuex";
+import { format } from "echarts";
 
 export default {
+    props: {
+        data: Object
+    },
     data() {
         return {
             hospitalHelp: false,
@@ -319,27 +380,86 @@ export default {
                 { color: "green", name: "verfügbar" },
                 {
                     color: "grey lighten-2",
-                    name: "keine Angabe / nicht vorhanden",
-                },
-            ],
+                    name: "keine Angabe / nicht vorhanden"
+                }
+            ]
         };
     },
     computed: {
-        ...mapGetters("corona", ["muniName", "muni_data", "todayList"]),
-        ...mapState({
-            muniDict: (state) => state.corona.muniDict,
-            loaded: (state) => state.corona.loaded,
-            munis: (state) => state.corona.munis,
-            divi: (state) => state.corona.divi,
-            divi_date: (state) => state.corona.divi_date,
-            hospitals: (state) => state.corona.hospitals,
-            today: (state) => state.corona.today,
-            yesterday: (state) => state.corona.yesterday,
-            weekerday: (state) => state.corona.weekerday,
-            date: (state) => state.corona.date,
-            yesterdate: (state) => state.corona.yesterdate,
-            selectedMuni: (state) => state.corona.selectedMuni,
-        }),
-    },
+        date() {
+            return this.data && format.formatTime("dd.MM.yyyy", this.data.date);
+        },
+        freeBedColor() {
+            if (this.data.today.freeBeds < 5) {
+                return "#960D2D"
+            } else if (this.data.today.freeBeds < 10) {
+                return "#F78656"                
+            } else {
+                return "#05C793"
+            }
+        },
+        options() {
+            return {
+                grid: {
+                    top: 0,
+                    right: 0,
+                    left: 0
+                },
+                title: {
+                    subtext: `Stand ${this.date}`,
+                    left: "center"
+                },
+                tooltip: {
+                    trigger: "item"
+                },
+                textStyle: {
+                    fontFamily: "JetBrains Mono"
+                },
+                series: [
+                    {
+                        top: 30,
+                        name: "Bettenbelegung",
+                        type: "pie",
+                        radius: ["40%", "80%"],
+                        colors: ["#0fa", "#fa0"],
+                        startAngle: 70,
+                        data: [
+                            {
+                                value:
+                                    this.data.today.occupiedBeds -
+                                    this.data.today.covid19Cases,
+                                name: "sonstige Fälle",
+                                itemStyle: { color: "#FFC43D" }
+                            },
+                            {
+                                value: this.data.today.ventilatorCases,
+                                name: "Beatmet, COVID-19",
+                                itemStyle: { color: "#960D2D" }
+                            },
+                            {
+                                value:
+                                    this.data.today.covid19Cases -
+                                    this.data.today.ventilatorCases,
+                                name: "COVID-19-Fälle",
+                                itemStyle: { color: "#F78656" }
+                            },
+                            {
+                                value: this.data.today.freeBeds,
+                                name: "freie Betten",
+                                itemStyle: { color: "#05C793" }
+                            }
+                        ],
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: "rgba(0, 0, 0, 0.5)"
+                            }
+                        }
+                    }
+                ]
+            };
+        }
+    }
 };
 </script>

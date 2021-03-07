@@ -1,6 +1,15 @@
 <template>
-    <v-card v-if="muni_data" class="ma-0 flex-grow-1 flex-shrink-0" flat color="#f8f8f8">
-        <v-container fluid>
+    <v-card class="ma-0 flex-grow-1 flex-shrink-0" flat color="#f8f8f8">
+        <v-card
+            flat
+            color="transparent"
+            v-if="loading"
+            class="text-center mt-10 pt-10"
+        >
+            <div class="lds-hourglass"></div>
+        </v-card>
+
+        <v-container fluid v-else>
             <v-row no-gutters>
                 <v-col cols="12" class="pl-2">
                     <div class="caption black--text mb-6">
@@ -8,98 +17,57 @@
                     </div>
                 </v-col>
                 <v-col cols="12" md="8" class="pl-2">
-                    <MuniSelector :title="title" :muni="muni" :attribute="attribute" />
+                    <MuniSelector
+                        v-if="!hideMuniSelector"
+                        :title="title"
+                        :muni="muni"
+                        :attribute="attribute"
+                    />
+                    <span
+                        class="float-left text-h6 text-md-h5 font-weight-bold pl-0 black--text labelButton"
+                        v-else
+                        >{{ title }}</span
+                    >
                 </v-col>
-                <v-col cols="12" md="4" class="text-md-right pl-0">
-                    <v-menu offset-y bottom left>
-                        <template v-slot:activator="{ on }">
-                            <v-btn
-                                color="primary"
-                                dark
-                                text
-                                class="pl-2"
-                                v-on="on"
-                            >
-                                Zeitspanne:
-                                {{ dateRangeTitles[dateRangeName] }}
-                                <v-icon right>fa fa-caret-down</v-icon>
-                            </v-btn>
-                        </template>
-                        <v-list>
-                            <v-list-item
-                                class="font-weight-bold text-uppercase"
-                            >
-                                <v-icon small left>fa fa-calendar-alt</v-icon>
-
-                                Zeitfenster
-                            </v-list-item>
-                            <v-divider></v-divider>
-                            <v-list-item
-                                @click="
-                                    setDateRangeStart('all');
-                                    $matomo && $matomo.trackEvent(
-                                        'Corona',
-                                        'change-daterange',
-                                        'all'
-                                    );
-                                "
-                                >komplett</v-list-item
-                            >
-                            <v-list-item
-                                @click="
-                                    setDateRangeStart('w2');
-                                    $matomo && $matomo.trackEvent(
-                                        'Corona',
-                                        'change-daterange',
-                                        'w2'
-                                    );
-                                "
-                                >2. Welle</v-list-item
-                            >
-                            <v-list-item
-                                @click="
-                                    setDateRangeStart('1month');
-                                    $matomo && $matomo.trackEvent(
-                                        'Corona',
-                                        'change-daterange',
-                                        '1month'
-                                    );
-                                "
-                                >letzter Monat</v-list-item
-                            >
-                        </v-list>
-                    </v-menu>
+                <v-col cols="12" md="4" class="text-md-right d-sm-none d-md-block" v-if="downloadUrl">
+                    <v-btn :href="downloadUrl" color="primary" small tile class="my-1">
+                        <v-icon small left>fa fa-file-download</v-icon>
+                        Daten als CSV herunterladen</v-btn>
                 </v-col>
             </v-row>
 
-        <v-divider></v-divider>
-        <v-row>
-            <v-card
-                flat
-                class="mx-2 pb-0"
-                :width="attribute.width"
-                :key="attribute.name"
-                color="#f8f8f8"
-                v-for="attribute in keyAttributes"
-            >
-                <v-card-text class="font-weight-bold caption pb-0 mt-0">
-                    {{ attribute.name }}
-                </v-card-text>
-                <v-card-text
-                    class="font-weight-bold text-h3 mt-0 pt-0 pb-0 mb-0"
+            <v-divider></v-divider>
+            <v-row>
+                <v-card
+                    flat
+                    class="mx-2 pb-0"
+                    :width="attribute.width"
+                    :key="attribute.name"
+                    color="#f8f8f8"
+                    v-for="attribute in keyAttributes"
                 >
-                    {{ Math.round(todayData[attribute.item]) }}
-                </v-card-text>
-            </v-card>
-        </v-row>
-                </v-container>
+                    <v-card-text class="font-weight-bold caption pb-0 mt-0">
+                        {{ attribute.name }}
+                    </v-card-text>
+                    <v-card-text
+                        class="font-weight-bold text-h4 mt-0 pt-0 pb-0 mb-0"
+                    >
+                        {{
+                            (data.today[attribute.item] || 0).toLocaleString(
+                                "de-DE"
+                            )
+                        }}
+                    </v-card-text>
+                </v-card>
+            </v-row>
+        </v-container>
 
-        <slot name="graphs"></slot>
+        <slot name="graphs" v-if="!loading"></slot>
 
-        <div class="caption text-right py-5 px-2">
+        <div class="caption text-right py-5 px-2" v-if="!loading">
             Stand {{ date }}<br />
-            <span class="l1-line"></span> Lockdown Light, 2.11.2020<br />
-            <span class="l2-line"></span> Lockdown 16.12.2020<br>
+            <span class="l1-line"></span> L1: Lockdown Light, 2.11.2020<br />
+            <span class="l2-line"></span> L2: Lockdown 16.12.2020<br />
         </div>
     </v-card>
 </template>
@@ -107,7 +75,6 @@
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
 
-import CoronaGraph from "@/components/CoronaGraph.vue";
 import MuniSelector from "@/components/MuniSelector.vue";
 
 export default {
@@ -118,55 +85,17 @@ export default {
             default: "sr"
         },
         attribute: String,
+        downloadUrl: String,
         keyAttributes: Array,
-        todayData: Object,
+        date: String,
+        data: Object,
+        loading: Boolean,
+        hideMuniSelector: Boolean,
     },
     name: "DataView",
-    data: () => ({
-        dateRangeTitles: {
-            all: "alles",
-            w2: "ab 2. Welle",
-            "1month": "letzter Monat"
-        }
-    }),
-    mounted() {
-        if (this.muni_data) {
-            this.setDateRangeStart("all");
-        }
-        this.updateMuni(this.muni);
-    },
-    watch: {
-        muni_data(val, oldval) {
-            this.setDateRangeStart("all");
-        }
-    },
-    methods: {
-        ...mapActions({
-            setDateRangeStart: "corona/setDateRangeStart",
-            updateMuni: "corona/updateMuni"
-        })
-    },
+    data: () => ({}),
     components: {
-        CoronaGraph,
         MuniSelector
-    },
-    computed: {
-        muni_data() {
-            return this.allMuniData[this.muni];
-        },
-        ...mapGetters("corona", ["muniName"]),
-        ...mapState({
-            muniDict: state => state.corona.muniDict,
-            loaded: state => state.corona.loaded,
-            munis: state => state.corona.munis,
-            allMuniData: state => state.corona.allMuniData,
-            today: state => state.corona.today,
-            yesterday: state => state.corona.yesterday,
-            weekerday: state => state.corona.weekerday,
-            date: state => state.corona.date,
-            dateRange: state => state.corona.dateRange,
-            dateRangeName: state => state.corona.dateRangeName
-        })
     }
 };
 </script>

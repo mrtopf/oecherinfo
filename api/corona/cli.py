@@ -1,4 +1,5 @@
 import datetime
+from typing import NoReturn
 import click
 import time
 import requests
@@ -13,6 +14,9 @@ from flask.cli import with_appcontext, AppGroup
 from flask import current_app
 
 from corona.db import mongo
+
+import pandas
+import math
 
 corona_cli = AppGroup('corona')
 
@@ -30,8 +34,10 @@ KOMMUNEN_MAP = {
     'Würselen': 'wuerselen',
 }
 
-ATTRIBUTES = ['incidence', 'new', 'active', 'recovered', 'positive', 'deaths']
-
+# all attributes we compute averages for
+ATTRIBUTES = ['incidence', 'new', 'active', 'new_recovered', 'new_deaths', 'recovered', 'positive', 'deaths']
+#ATTRIBUTES = ['incidence', 'new', 'active', 'new_recovered', 'new_deaths']
+ATTRIBUTES_DIVI = ['faelle_covid_aktuell', 'faelle_covid_aktuell_beatmet', 'betten_frei', 'betten_belegt', 'betten_gesamt']
 
 @corona_cli.command()
 @with_appcontext
@@ -59,8 +65,12 @@ def import_corona():
     for f in data['features']:
         d = f['attributes']
 
+
         oid = d['ObjectID']
-        record = {
+        doc = mongo.db.data.find_one({'_id': oid})
+        if doc is None:
+            doc = {}
+        doc.update({
             '_id': oid,
             'date': datetime.datetime.fromtimestamp(d['Meldedatum']/1000),
             'municipality': KOMMUNEN_MAP[d['Kommune']],
@@ -74,9 +84,9 @@ def import_corona():
             'new_deaths': d['Neue_Tote'] or 0,
             'deaths': d['Tote'],
             'average_new_cases': d['Schnitt_neue_Fälle'],
-        }
-
-        mongo.db.data.update({'_id': oid}, record, True)
+        })
+        
+        mongo.db.data.update({'_id': oid}, doc, True)
         click.echo("Import finished in %s seconds" %
                    (round(time.time()-start_time, 2)))
 
@@ -84,23 +94,105 @@ def import_corona():
 @corona_cli.command()
 @with_appcontext
 def avgs():
-    """compute the 7 day averages of all features and munis"""
+    """compute 
+        - the 7 day averages of all features in 
+        - the change per day
+
+        We compute a 7 day window around the number (+/-3)
+
+        Naming:
+            - `feature_avg` is the rolling average
+            - `feature_change` is the change from last day
+    """
     start_time = time.time()
+    window_size = 7
 
     for (name, muni) in KOMMUNEN_MAP.items():
         data = list(mongo.db.data.find({'municipality': muni}).sort("date", 1))
-        for (idx, d) in enumerate(data):
-            sub = data[max(idx-7, 0):idx]
-            for attr in ATTRIBUTES:
-                nums = [s[attr] for s in sub if s[attr] is not None]
-                if len(nums) == 0:
-                    m = 0
+
+        cases = [0 if d['new'] is None else d['new'] for d in data]
+
+        ###
+        ### compute R4 and R7
+        ###
+        window=4
+        # note that a[:len(cases)] does not get the last element
+        for t in range(0,len(cases)+1):
+            if t <window*2:
+                data[t-1]['r4'] = None
+            else:
+                data[t-1]['r4'] = round(sum(cases[t-window:t]) / max(sum(cases[t-window*2:t-window]),1),2)
+            mongo.db.data.save(data[t-1])
+
+        window=7
+        for t in range(0, len(cases)+1):
+            if t<window*2:
+                data[t-1]['r7'] = None
+            else:
+                data[t-1]['r7'] = round(sum(cases[t-window:t]) / max(sum(cases[t-window*2:t-window]),1),2)
+                #print(data[t-1]['r7'], data[t-1]['new'])
+            mongo.db.data.save(data[t-1])
+
+
+        for attr in ATTRIBUTES:
+            numbers = [d[attr] for d in data]
+            numbers_series = pandas.Series(numbers)
+            windows = numbers_series.rolling(window_size, center=True)
+            moving_averages = windows.mean()
+            
+            # convert nan to None
+            avg = [None if math.isnan(d) else d for d in moving_averages]
+
+            # put data back into individual records in data            
+            for idx,v in enumerate(avg):
+                data[idx][attr+'_avg'] = v
+
+                # get yesterdays value 
+                # not sure we really need this as we only need it for status
+                if idx>0:
+                    data[idx][attr+'_last'] = data[idx-1][attr]
                 else:
-                    m = round(mean(nums))
-                d["%s_avg" % attr] = m
-                mongo.db.data.save(d)
+                    data[idx][attr+'_last'] = data[idx][attr]
+
+                # for incidence compute percentage change from past 7 days
+                if attr=="incidence":
+                    # incidence should not be None or 0 (div by zero)
+                    if idx > 7 and data[idx-7]['incidence']:
+                        diff = data[idx]['incidence'] - data[idx-7]['incidence']
+                        perc = diff/data[idx-7]['incidence']
+                    else:
+                        perc = 0
+                    data[idx]['incidence_perc'] = perc
+                    
+                mongo.db.data.save(data[idx])
+                
         click.echo("Finished %s" % name)
 
+    # do divi averages
+    data = list(mongo.db.divi_daily.find({'gemeindeschluessel': '05334'}).sort("date", 1))
+    # compute beds sum
+    for idx, d in enumerate(data):
+        data[idx]['betten_gesamt'] = int(d['betten_frei']) + int(d['betten_belegt'])
+        for attr in ATTRIBUTES_DIVI:
+            data[idx][attr] = int(data[idx][attr])
+    
+    for attr in ATTRIBUTES_DIVI:
+        numbers = [d[attr] for d in data]
+        numbers_series = pandas.Series(numbers)
+        windows = numbers_series.rolling(window_size, center=True)
+        moving_averages = windows.mean()
+        
+        # convert nan to None
+        avg = [None if math.isnan(d) else d for d in moving_averages]
+
+        # put data back into individual records in data            
+        for idx,v in enumerate(avg):
+            data[idx][attr+'_avg'] = v
+            mongo.db.divi_daily.save(data[idx])
+
+        
+        click.echo("Finished DIVI - %s" %attr)
+    
     click.echo("Finished computing avgs in %s seconds" %
                (round(time.time()-start_time, 2)))
 
@@ -160,7 +252,7 @@ def import_divi_details():
 def all(ctx):
     """import all"""
     ctx.invoke(import_corona)
-    ctx.invoke(avgs)
     ctx.invoke(import_divi)
     ctx.invoke(import_divi_details)
+    ctx.invoke(avgs)
     
