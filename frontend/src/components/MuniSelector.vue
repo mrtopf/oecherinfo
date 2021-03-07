@@ -6,7 +6,7 @@
                     text
                     class="float-left text-h6 text-md-h5 font-weight-bold pl-0 black--text labelButton"
                     disabled
-                >{{ title }}
+                    >{{ title }}
                 </v-btn>
                 <v-btn
                     color="primary"
@@ -21,7 +21,7 @@
             </template>
             <v-list dense nav>
                 <v-list-item
-                    v-for="item in $store.state.corona.munis"
+                    v-for="item in munis"
                     :key="item.value"
                     link
                     :to="{
@@ -52,10 +52,40 @@ export default {
             default: "sr"
         }
     },
+    data() {
+        return {
+            munis: [
+                { muni: "sr", name: "Städteregion Aachen" },
+                { muni: "aachen", name: "Aachen" },
+                { muni: "alsdorf", name: "Alsdorf" },
+                { muni: "baesweiler", name: "Baesweiler" },
+                { muni: "eschweiler", name: "Eschweiler" },
+                { muni: "herzogenrath", name: "Herzogenrath" },
+                { muni: "monschau", name: "Monschau" },
+                { muni: "roetgen", name: "Roetgen" },
+                { muni: "simmerath", name: "Simmerath" },
+                { muni: "stolberg", name: "Stolberg" },
+                { muni: "wuerselen", name: "Würselen" }
+            ],
+            muniDict: {
+                "sr": "Städteregion",
+                "aachen": "Aachen",
+                "alsdorf": "Alsdorf",
+                "baesweiler": "Baesweiler",
+                "eschweiler": "Eschweiler",
+                "herzogenrath": "Herzogenrath",
+                "monschau": "Monschau",
+                "roetgen": "Roetgen",
+                "simmerath": "Simmerath",
+                "stolberg": "Stolberg",
+                "wuerselen": "Würselen"
+            }
+        };
+    },
     computed: {
-        ...mapState({
-            muniDict: state => state.corona.muniDict
-        })
+        // ...mapState({
+        //     muniDict: state => state.corona.muniDict
+        // })
     }
 };
 </script>

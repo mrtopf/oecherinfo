@@ -65,8 +65,12 @@ def import_corona():
     for f in data['features']:
         d = f['attributes']
 
+
         oid = d['ObjectID']
-        record = {
+        doc = mongo.db.data.find_one({'_id': oid})
+        if doc is None:
+            doc = {}
+        doc.update({
             '_id': oid,
             'date': datetime.datetime.fromtimestamp(d['Meldedatum']/1000),
             'municipality': KOMMUNEN_MAP[d['Kommune']],
@@ -80,9 +84,9 @@ def import_corona():
             'new_deaths': d['Neue_Tote'] or 0,
             'deaths': d['Tote'],
             'average_new_cases': d['Schnitt_neue_Fälle'],
-        }
-
-        mongo.db.data.update({'_id': oid}, record, True)
+        })
+        
+        mongo.db.data.update({'_id': oid}, doc, True)
         click.echo("Import finished in %s seconds" %
                    (round(time.time()-start_time, 2)))
 
@@ -107,18 +111,17 @@ def avgs():
         data = list(mongo.db.data.find({'municipality': muni}).sort("date", 1))
 
         cases = [0 if d['new'] is None else d['new'] for d in data]
-        # compute R for this muni
-        rwert = [None for i in range(0,len(cases)+1)]
-        rwert7 = [None for i in range(0,len(cases)+1)]
 
+        ###
+        ### compute R4 and R7
+        ###
         window=4
         # note that a[:len(cases)] does not get the last element
         for t in range(0,len(cases)+1):
             if t <window*2:
                 data[t-1]['r4'] = None
             else:
-                data[t-1]['r4'] = round(sum(cases[t-window:t]) / max(sum(cases[t-window*2:t-window]),0.001),2)
-                #print(data[t-1]['r'], data[t-1]['new'])
+                data[t-1]['r4'] = round(sum(cases[t-window:t]) / max(sum(cases[t-window*2:t-window]),1),2)
             mongo.db.data.save(data[t-1])
 
         window=7
@@ -126,9 +129,10 @@ def avgs():
             if t<window*2:
                 data[t-1]['r7'] = None
             else:
-                data[t-1]['r7'] = round(sum(cases[t-window:t]) / max(sum(cases[t-window*2:t-window]),0.001),2)
+                data[t-1]['r7'] = round(sum(cases[t-window:t]) / max(sum(cases[t-window*2:t-window]),1),2)
                 #print(data[t-1]['r7'], data[t-1]['new'])
             mongo.db.data.save(data[t-1])
+
 
         for attr in ATTRIBUTES:
             numbers = [d[attr] for d in data]
@@ -165,7 +169,7 @@ def avgs():
         click.echo("Finished %s" % name)
 
     # do divi averages
-    data = list(mongo.db.divi_daily.find().sort("date", 1))
+    data = list(mongo.db.divi_daily.find({'gemeindeschluessel': '05334'}).sort("date", 1))
     # compute beds sum
     for idx, d in enumerate(data):
         data[idx]['betten_gesamt'] = int(d['betten_frei']) + int(d['betten_belegt'])
@@ -186,7 +190,7 @@ def avgs():
             data[idx][attr+'_avg'] = v
             mongo.db.divi_daily.save(data[idx])
 
-                
+        
         click.echo("Finished DIVI - %s" %attr)
     
     click.echo("Finished computing avgs in %s seconds" %

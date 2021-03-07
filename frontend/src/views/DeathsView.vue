@@ -1,20 +1,57 @@
 <template>
     <DataView
         title="Todesfälle"
+        :loading="loading"
         :muni="muni"
+        :data="data"
         :keyAttributes="keyAttributes"
         :attribute="attribute"
-        :todayData="today[muni]"
+        :downloadUrl="downloadUrl"
+        :date="date"
     >
         <template v-slot:graphs>
-            <CoronaGraph
-                class="pb-8 mt-10 mx-0 px-0 mx-md-6"
-                title="Todesfälle nach Datum"
-                attribute="new_deaths"
-                cumulative="deaths"
-                :data="muni_data"
-                :trends="false"
-            />
+            <Panel
+                title="Todesfälle"
+                matomoAttribute="recovered"
+                attribute="recoveredCases"
+                :data="data"
+                :tableAttributes="[
+                    { value: 'newDeaths', text: 'Todesfälle' },
+                    {
+                        value: 'avgNewDeaths',
+                        text: 'Durchschnitt der letzten 7 Tage'
+                    },
+                    { value: 'cumDeaths', text: 'kumulierte Fälle' }
+                ]"
+                :tabs="[
+                    { id: 'daily', title: 'Täglich' },
+                    { id: 'cum', title: 'Kumuliert' }
+                ]"
+            >
+                <template v-slot:description>
+                    <summary>
+                        Die Anzahl der Personen, die an oder mit COVID-19
+                        verstorben sind.
+                    </summary>
+                </template>
+                <template v-slot:tab.daily>
+                    <Chart
+                        :labels="data.dates"
+                        :data="data.newDeaths"
+                        :avgs="data.avgNewDeaths"
+                        name="Todesfälle"
+                    >
+                    </Chart>
+                </template>
+                <template v-slot:tab.cum>
+                    <Chart
+                        :labels="data.dates"
+                        :data="data.cumDeaths"
+                        name="kumuliert"
+                    >
+                    </Chart>
+                </template>
+            </Panel>
         </template>
     </DataView>
 </template>
@@ -22,7 +59,12 @@
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
 import DataView from "@/components/DataView.vue";
-import CoronaGraph from "@/components/CoronaGraph.vue";
+import Panel from "@/components/Panel.vue";
+import Chart from "@/components/Chart.vue";
+import { format } from "echarts";
+import { genMetaInfo, MUNI_DICT } from "@/utils.js";
+
+const API = process.env.VUE_APP_CORONA_API_NEW;
 
 export default {
     props: {
@@ -33,33 +75,64 @@ export default {
         attribute: String
     },
     name: "DeathsView",
+    mounted() {
+        this.load();
+    },
+    methods: {
+        load() {
+            axios
+                .get(
+                    `${API}/muni/${this.muni}?fields=newDeaths,cumDeaths,avgNewDeaths`
+                )
+                .then(response => {
+                    this.data = response.data;
+                    this.loading = false;
+                });
+        }
+    },
+    watch: {
+        muni(v) {
+            this.load();
+        }
+    },
+
     data: () => ({
+        loading: true,
+        data: null,
         keyAttributes: [
             {
                 name: "heute",
-                item: "new_deaths",
+                item: "newDeaths",
                 width: 150
             },
             {
                 name: "Insgesamt",
-                item: "deaths",
+                item: "cumDeaths",
                 width: 200
             }
         ]
     }),
-    computed: {
-        muni_data() {
-            return this.allMuniData[this.muni];
-        },
-        ...mapState({
-            allMuniData: state => state.corona.allMuniData,
-            today: state => state.corona.today
-        })
+    metaInfo() {
+        return genMetaInfo(
+            `COVID-19: Todesfälle für ${MUNI_DICT[this.muni]}`,
+            `Aktuelle Daten zur Entwicklung der Todesfälle für ${
+                MUNI_DICT[this.muni]
+            }.`
+        );
     },
 
+    computed: {
+        downloadUrl() {
+            return `${API}/muni/${this.muni}?format=csv`;
+        },
+        date() {
+            return this.data && format.formatTime("dd.MM.yyyy", this.data.date);
+        }
+    },
     components: {
         DataView,
-        CoronaGraph
+        Panel,
+        Chart
     }
 };
 </script>
