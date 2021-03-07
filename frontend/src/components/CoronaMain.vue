@@ -332,7 +332,7 @@ export default {
         Indicator
     },
     metaInfo: {
-        title: "Corona-Dashboard für die Städteregion Aachen",
+        title: "Corona-Dashboard für die Stadt und Städteregion Aachen",
         meta: [
             {
                 name: "description",
