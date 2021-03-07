@@ -17,7 +17,15 @@
             </v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn
+                icon
+                target="_blank"
+                href="https://twitter.com/oecherinfo"
+            >
+                <v-icon>fab fa-twitter</v-icon>
+            </v-btn>
+            <v-btn
                 text
+                target="_blank"
                 href="https://blog.oecher.info?utm_source=oecher.info&utm_medium=web&utm_campaign=bloglink"
             >
                 Blog
