@@ -146,6 +146,7 @@
                     <v-col cols="12" md="4">
                         <MiniChartNew
                             :date="aachen.date"
+                            muni="aachen"
                             :today="aachen.today.rollingRate"
                             :weekChange="
                                 Math.round(aachen.trend.rollingRate7DayChange)
