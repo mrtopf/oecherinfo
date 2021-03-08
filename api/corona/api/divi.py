@@ -55,7 +55,8 @@ class DIVIData(Resource):
         
         # get the general header information with trends etc.
         data = list(mongo.db.divi_daily.find(
-            {'gemeindeschluessel': '05334'}).sort("date", -1))
+            {'gemeindeschluessel': '05334', 'faelle_covid_aktuell_avg': {'$exists': True}}).sort("date", -1))
+                        
         first = data[0]
         resp = {
             'date': first['date'],
