@@ -71,16 +71,16 @@ class DIVIData(Resource):
         for f in fields:
             db_field = API_TO_DIVI_DATABASE_MAPPING[f]
             if data[0][db_field]:
-                today[f] = round(data[0][db_field],0)
+                today[f] = round(float(data[0][db_field]),0)
             else:
                 today[f] = None
             if data[1][db_field]:
-                yesterday[f] = round(data[1][db_field],0)
+                yesterday[f] = round(float(data[1][db_field]),0)
             else:
                 yesterday[f] = None
 
             # add the series to the response
-            series = resp[f] = [round(d[db_field] or 0,0) for d in data]
+            series = resp[f] = [round(float(d[db_field] or 0),0) for d in data]
             resp[f].reverse()
 
             # compute the trends
