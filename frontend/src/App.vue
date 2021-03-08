@@ -16,13 +16,23 @@
                 </v-btn>
             </v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn
-                icon
-                target="_blank"
-                href="https://twitter.com/oecherinfo"
-            >
+            <v-btn icon target="_blank" href="https://twitter.com/oecherinfo">
                 <v-icon>fab fa-twitter</v-icon>
             </v-btn>
+            <v-tooltip bottom max-width="300" color="rgba(0,0,0,1)">
+                <template v-slot:activator="{ on }">
+                    <v-btn
+                        v-on="on"
+                        icon
+                        target="_blank"
+                        href="https://github.com/mrtopf/oecherinfo"
+                    >
+                        <v-icon>fab fa-github</v-icon>
+                    </v-btn>
+                </template>
+                Hier findet Du den Source-Code von oecher.info auf github
+            </v-tooltip>
+
             <v-btn
                 text
                 target="_blank"
@@ -186,7 +196,7 @@ export default {
     }),
     metaInfo: {
         title: "Corona-Dashboard für die Städteregion Aachen",
-        titleTemplate: '%s | CORONA | oecher.info',
+        titleTemplate: "%s | CORONA | oecher.info",
         meta: [
             {
                 name: "description",
