@@ -208,7 +208,7 @@ def create_app(config=None):
 
     # REST endpoints
 
-    api = Api(app, prefix='/corona/v1')
+    api = Api(app, prefix='/api/corona/v1')
     coronaapi.setup(api)
 
     # old API

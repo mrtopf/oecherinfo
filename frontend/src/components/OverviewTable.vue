@@ -43,7 +43,7 @@
                         :key="muni.muni"
                         :class="muni.muni == 'sr' ? 'totalRow' : ''"
                     >
-                        <td>{{ muni.name }}</td>
+                        <td class="link">{{ muni.name }}</td>
                         <td>
                             <v-badge
                                 :color="getChipColor(muni.today.rollingRate)"
@@ -193,6 +193,9 @@ export default {
 #corona-overview-table {
     tr {
         cursor: pointer;
+    }
+    .link {
+        text-decoration: underline;
     }
 }
 #corona-table .v-data-table-header tr {

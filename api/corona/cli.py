@@ -205,7 +205,6 @@ def import_divi():
     divi_url = "https://diviexchange.blob.core.windows.net/%24web/DIVI_Intensivregister_Auszug_pro_Landkreis.csv"
     resp = requests.get(divi_url)
     csvfile = io.StringIO(resp.text)
-    #csvfile = open("example.csv", "r")
     with csvfile as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:

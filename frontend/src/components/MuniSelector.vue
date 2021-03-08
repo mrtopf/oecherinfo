@@ -21,8 +21,11 @@
             </template>
             <v-list dense nav>
                 <v-list-item
+                    @click="
+                            $matomo && $matomo.trackEvent('Corona', 'muni-selector-click', item.muni)
+                    "
                     v-for="item in munis"
-                    :key="item.value"
+                    :key="item.muni"
                     link
                     :to="{
                         name: $route.name,

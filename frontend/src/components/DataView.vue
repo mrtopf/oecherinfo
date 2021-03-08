@@ -36,7 +36,7 @@
                 </v-col>
             </v-row>
 
-            <v-divider></v-divider>
+            <v-divider class="py-3"></v-divider>
             <v-row>
                 <v-card
                     flat
