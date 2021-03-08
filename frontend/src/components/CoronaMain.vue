@@ -35,7 +35,7 @@
                     :trend="computeTrend(sr.today.rollingRate, 50, 200)"
                 />
                 <Indicator
-                    :value="`${sr.today.rollingRatePerc * 100}%`"
+                    :value="`${Math.round(sr.today.rollingRatePerc * 100, 2)}%`"
                     title="Inzidenz-Wachstum"
                     description="Die Wachstumsrate der Inzidenz. Verglichen wird die letzte Woche mit der Vorwoche"
                     :trend="computeTrend(sr.today.rollingRatePerc * 100, 5, 10)"
@@ -132,7 +132,7 @@
                     :trend="computeTrend(aachen.today.rollingRate, 50, 200)"
                 />
                 <Indicator
-                    :value="`${aachen.today.rollingRatePerc * 100}%`"
+                    :value="`${Math.round(aachen.today.rollingRatePerc * 100, 2)}%`"
                     title="Inzidenz-Wachstum"
                     description="Die Wachstumsrate der Inzidenz. Verglichen wird die letzte Woche mit der Vorwoche"
                     :trend="
