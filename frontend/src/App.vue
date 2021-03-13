@@ -42,7 +42,7 @@
             </v-btn>
         </v-app-bar>
 
-        <v-navigation-drawer app v-model="drawer">
+        <v-navigation-drawer app v-model="drawer" touchless>
             <v-list-item>
                 <v-list-item-content>
                     <v-list-item-title class="title">
