@@ -168,6 +168,7 @@ def avgs():
                     else:
                         perc = 0
                     data[idx]['incidence_perc'] = perc
+                    data[idx]['incidence_perc_100'] = round(perc*100)
 
                 mongo.db.data.save(data[idx])
 
@@ -369,3 +370,4 @@ def all(ctx):
     ctx.invoke(import_divi)
     ctx.invoke(import_divi_details)
     ctx.invoke(avgs)
+    ctx.invoke(import_age_groups)
