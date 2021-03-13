@@ -56,7 +56,7 @@
                             (data.today[attribute.item] || 0).toLocaleString(
                                 "de-DE"
                             )
-                        }}
+                        }}{{attribute.suffix}}
                     </v-card-text>
                 </v-card>
             </v-row>
