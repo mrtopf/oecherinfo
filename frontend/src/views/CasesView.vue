@@ -281,9 +281,10 @@ export default {
                 width: 100
             },
             {
-                name: "Aktive Fälle",
-                item: "activeCases",
-                width: 150
+                name: "7-Tage-Wachstum",
+                item: "rollingRatePerc100",
+                width: 200,
+                suffix: "%"
             },
             {
                 name: "Neue Fälle",
@@ -291,15 +292,15 @@ export default {
                 width: 150
             },
             {
+                name: "Aktive Fälle",
+                item: "activeCases",
+                width: 150
+            },
+            {
                 name: "Gesamzahl",
                 item: "cumCases",
                 width: 200
             },
-            {
-                name: "R-Wert",
-                item: "r4",
-                width: 150
-            }
         ]
     }),
 
