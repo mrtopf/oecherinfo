@@ -29,7 +29,7 @@
                     ]"
                     :tabs="[
                         { id: 'daily', title: 'Täglich' },
-                        { id: 'percent', title: 'proz. Änderung' }
+                        { id: 'percent', title: 'Änderung in Prozent' }
                     ]"
                 >
                     <template v-slot:description>
