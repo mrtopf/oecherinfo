@@ -30,10 +30,6 @@ export function genMetaInfo(title, description) {
         title: title,
         meta: [
             { name: "description", content: description },
-            { name: "twitter:description", content: description },
-            { name: "og:description", content: description },
-            { name: "twitter:title", content: title },
-            { name: "og:title", content: title },
         ]
     }
 }
