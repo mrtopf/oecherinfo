@@ -90,7 +90,7 @@
                             fixed-header
                             id="data-table"
                             must-sort
-                            sort-by="date"
+                            sort-by="dates"
                             sort-desc
                             dense
                             disable-pagination
