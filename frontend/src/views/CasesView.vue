@@ -108,7 +108,39 @@
                 </Panel>
 
                 <Panel
-                    title="R-Wert"
+                    v-if="age_data && muni=='sr'"
+                    title="Inzidenz nach Altersgruppen"
+                    matomoAttribute="ageIncidence"
+                    attribute="ageIncidence"
+                    hide-table
+                    hide-header
+                    :data="age_data"
+                    :tabs="[{ id: 'heatmap', title: 'Altersverteilung' }]"
+                >
+                    <template v-slot:description>
+                        <summary>
+                                Die Verteilung der 7-Tage-Inzidenzen nach
+                                Altersgruppe und Kalenderwoche für die
+                                Städteregion Aachen.
+                        </summary>
+                    </template>
+                    <template v-slot:footer>
+                        <summary>
+                            Datenquelle: Robert Koch-Institut: SurvStat@RKI 2.0,
+                            <a href="https://survstat.rki.de">https://survstat.rki.de</a>, Abfragedatum: {{age_data.updated|dateformat}}
+                        </summary>
+                    </template>
+                    <template v-slot:tab.heatmap>
+                        <HeatMap
+                            :labels="data.weeks"
+                            :data="ageData"
+                            name="Altersgruppen"
+                        >
+                        </HeatMap>
+                    </template>
+                </Panel>
+                <Panel
+                    title="4-Tage-R-Wert"
                     matomoAttribute="rvalue"
                     attribute="r4"
                     :showTrends="false"
@@ -122,6 +154,12 @@
                         { id: 'r7', title: 'R-Wert 7 Tage' }
                     ]"
                 >
+                    <template v-slot:trends>
+                        <span class="pl-3">
+                        <small>(7-Tage: {{data.today['r7'].toLocaleString("de-DE")}})</small>
+                        </span>
+                    </template>
+
                     <template v-slot:description>
                         <summary>
                             Die Reproduktionszahl, auch R-Wert oder R-Zahl
@@ -193,7 +231,8 @@ import { mapState, mapActions, mapGetters } from "vuex";
 import DataView from "@/components/DataView.vue";
 import Panel from "@/components/Panel.vue";
 import Chart from "@/components/Chart.vue";
-import { format } from "echarts";
+import HeatMap from "@/components/HeatMap.vue";
+import { format, innerDrawElementOnCanvas } from "echarts";
 import { genMetaInfo, MUNI_DICT } from "@/utils.js";
 
 const API = process.env.VUE_APP_CORONA_API_NEW;
@@ -220,6 +259,10 @@ export default {
                     this.data = response.data;
                     this.loading = false;
                 });
+            axios.get(`${API}/age/`).then(response => {
+                this.age_data = response.data;
+                this.loading = false;
+            });
         }
     },
     watch: {
@@ -230,6 +273,7 @@ export default {
     data: () => ({
         loading: true,
         data: null,
+        age_data: null,
         keyAttributes: [
             {
                 name: "Inzidenz",
@@ -265,19 +309,36 @@ export default {
         },
         date() {
             return this.data && format.formatTime("dd.MM.yyyy", this.data.date);
+        },
+        ageData() {
+            // convert weeks: [], groups: {} to [week, age, value] and [week]
+            const weeks = this.age_data.weeks;
+            let data = [];
+            let i = 0;
+            for (const group_key in this.age_data.groups) {
+                const gdata = this.age_data.groups[group_key];
+                for (const w in weeks) {
+                    data.push([weeks[w], group_key, gdata[w]]);
+                }
+                i = i + 1;
+            }
+            return data;
         }
     },
     metaInfo() {
         return genMetaInfo(
             `COVID-19: Fallzahlen für ${MUNI_DICT[this.muni]}`,
-            `Aktuelle Daten und Entwicklung der Inzidenz, neuen und aktiven Fällen sowie des R-Werts für ${MUNI_DICT[this.muni]}.`
-        )
+            `Aktuelle Daten und Entwicklung der Inzidenz, neuen und aktiven Fällen sowie des R-Werts für ${
+                MUNI_DICT[this.muni]
+            }.`
+        );
     },
 
     components: {
         DataView,
         Panel,
-        Chart
+        Chart,
+        HeatMap
     }
 };
 </script>
