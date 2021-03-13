@@ -61,7 +61,7 @@
                     {{ tab.title }}
                 </v-tab>
             </v-tabs>
-            <v-tabs-items v-model="view">
+            <v-tabs-items v-model="view" touchless>
                 <v-tab-item transition="none" v-for="tab in tabs" :key="tab.id" :class="$vuetify.breakpoint.mdAndUp ? '' : 'py-4 pa-0'">
                     <slot :name="`tab.${tab.id}`"></slot>
                 </v-tab-item>
