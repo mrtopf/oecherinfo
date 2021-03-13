@@ -281,7 +281,7 @@ export default {
                 width: 100
             },
             {
-                name: "7-Tage-Wachstum",
+                name: "14-Tage-Wachstum",
                 item: "rollingRatePerc100",
                 width: 200,
                 suffix: "%"
