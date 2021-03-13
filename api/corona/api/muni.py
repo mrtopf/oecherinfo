@@ -75,7 +75,7 @@ class Municipality(Resource):
 
             # compute the trends
             if f=="rollingRate":
-                diff = trend['rollingRate7DayChange'] = round(data[0]['incidence'] - data[7]['incidence'],2)
+                diff = trend['rollingRate7DayChange'] = round(data[0]['incidence'] - max(data[7]['incidence'],1),2)
                 trend['rollingRate7DayChangePercent'] = round(diff / data[7]['incidence'],2)
             elif f.startswith("cum"):
                 # we assume cumulative data here
@@ -83,12 +83,12 @@ class Municipality(Resource):
                 last7 = trend['%s7DaySum' %f] = series[-1] - series[-8]
                 last14 = trend['%s14DaySum' %f] = series[-9] - series[-15] # change in previous week
                 diff = trend['%s7DayChange' %f] = last7 - last14
-                trend['%s7DayChangePercent' %f] = round(diff / max(last7,0.0001),2)
+                trend['%s7DayChangePercent' %f] = round(diff / max(last7,1),2)
             else:
                 # here we just take the value from 7 days back
                 last7 = trend['%s7DaySum' %f] = series[-8]
                 diff = trend['%s7DayChange' %f] = series[-1] - series[-8]
-                trend['%s7DayChangePercent' %f] = round(diff / max(last7,0.0001),2)
+                trend['%s7DayChangePercent' %f] = round(diff / max(last7,1),2)
 
                 
         resp['today'] = today

@@ -59,7 +59,7 @@ class Overview(Resource):
                 # compute the trends
                 if f=="rollingRate":
                     diff = trend['rollingRate7DayChange'] = round(data[0]['incidence'] - data[7]['incidence'],2)
-                    trend['rollingRate7DayChangePercent'] = round(diff / data[7]['incidence'],2)
+                    trend['rollingRate7DayChangePercent'] = round(diff / max(data[7]['incidence'],1),2)
                 elif f.startswith("cum"):
                     # we assume cumulative data here
                     # we sum the values of the last 7 days and the 7 days before that
