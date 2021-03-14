@@ -103,34 +103,7 @@
                     </template>
                 </Panel>
 
-                <Panel
-                    v-if="age_data && muni=='sr'"
-                    title="Inzidenz nach Altersgruppen"
-                    matomoAttribute="ageIncidence"
-                    attribute="ageIncidence"
-                    hide-table
-                    hide-header
-                    :data="age_data"
-                    :tabs="[{ id: 'heatmap', title: 'Altersverteilung' }]"
-                >
-                    <template v-slot:description>
-                                Die Verteilung der 7-Tage-Inzidenzen nach
-                                Altersgruppe und Kalenderwoche für die
-                                Städteregion Aachen.
-                    </template>
-                    <template v-slot:footer>
-                            Datenquelle: Robert Koch-Institut: SurvStat@RKI 2.0,
-                            <a href="https://survstat.rki.de">https://survstat.rki.de</a>, Abfragedatum: {{age_data.updated|dateformat}}
-                    </template>
-                    <template v-slot:tab.heatmap>
-                        <HeatMap
-                            :labels="data.weeks"
-                            :data="ageData"
-                            name="Altersgruppen"
-                        >
-                        </HeatMap>
-                    </template>
-                </Panel>
+
                 <Panel
                     title="4-Tage-R-Wert"
                     matomoAttribute="rvalue"
