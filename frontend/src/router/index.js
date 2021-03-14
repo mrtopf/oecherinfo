@@ -5,6 +5,7 @@ import CasesView from "../views/CasesView.vue"
 import RecoveredView from "../views/RecoveredView.vue"
 import DeathsView from "../views/DeathsView.vue"
 import HospitalView from "../views/HospitalView.vue"
+import DemographicsView from "../views/DemographicsView.vue"
 
 Vue.use(VueRouter)
 
@@ -30,6 +31,15 @@ const routes = [
         props: true,
         meta: {
             title: 'oecher.info | Corona Dashboard | Intensivbetten'
+        }
+    },
+    {
+        path: "/demographics",
+        name: "demographics",
+        component: DemographicsView,
+        props: true,
+        meta: {
+            title: 'oecher.info | Corona Dashboard | Demographie'
         }
     },
     {
