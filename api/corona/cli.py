@@ -267,6 +267,22 @@ def import_age_groups():
 
 
     """
+    from .coronaimport.survstat import import_age_incidence, import_age_sex
+
+    start_time = time.time()
+    #import_age_incidence()
+    import_age_sex()
+
+    click.echo("Finished age group import in %s seconds" %
+               (round(time.time()-start_time, 2)))
+
+
+
+@corona_cli.command()
+@with_appcontext
+def import_age_demographics():
+    """import age demographics from SurvStat+
+    """
     start_time = time.time()
 
     client = zeep.Client(
@@ -323,8 +339,6 @@ def import_age_groups():
     )
 
     # convert 2020-KW1 etc. in dates
-    now = datetime.datetime.now()
-    start = datetime.datetime(year=2020, month=3, day=1)
     columns = [i["Caption"] for i in res.Columns.QueryResultColumn[1:]]
     dates = [datetime.datetime.strptime(
         d + '-1', "%Y-KW%W-%w") for d in columns]

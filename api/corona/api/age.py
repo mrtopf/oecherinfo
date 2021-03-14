@@ -14,7 +14,11 @@ class AgeData(Resource):
         """
 
         # get the general header information with trends etc.
-        data = mongo.db.age_incidence.find_one({'_id': '05334'})
-        return data
+        incidence = mongo.db.age_incidence.find_one({'_id': '05334'})
+        age_sex = mongo.db.age_sex.find_one({'_id': '05334'})
+        return {
+            'incidence': incidence,
+            'age_sex': age_sex,
+        }
 
 
