@@ -114,8 +114,8 @@
                                             >{{ item.title }}
                                             <v-chip
                                                 small
-                                                color="#F8FFE5"
-                                                
+                                                color="#D6470A"
+                                                dark
                                                 v-if="item.new"
                                                 class="font-weight-bold"
                                             >
