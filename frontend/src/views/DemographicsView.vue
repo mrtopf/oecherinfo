@@ -1,7 +1,8 @@
 <template>
     <div>
         <DataView
-            title="Demographie"
+            title="Demographische Entwicklung in der Städteregion Aachen"
+            hide-muni-selector
             :loading="loading"
             muni="sr"
             :data="data"
@@ -19,10 +20,13 @@
                     :tabs="[{ id: 'heatmap', title: 'Altersverteilung' }]"
                 >
                     <template v-slot:description>
-                        Die Verteilung der 7-Tage-Inzidenzen nach Altersgruppe
-                        und Kalenderwoche für die Städteregion Aachen.
+                        Anzahl der mindestens einmal positiv getesteten Personen pro 100.000 Einwohner
+                        im zeitlichen Verlauf, aufgeteilt nach Altersgruppen.
                     </template>
                     <template v-slot:footer>
+                        <p>
+                            Durch das Überfahren der Legende rechts kannst Du die entsprechenden Inzidenzen hervorheben. Weiterhin kannst Du die Ränder der Legende verschieben.
+                        </p>
                         Datenquelle: Robert Koch-Institut: SurvStat@RKI 2.0,
                         <a href="https://survstat.rki.de"
                             >https://survstat.rki.de</a
@@ -38,7 +42,7 @@
                         </HeatMap>
                     </template>
                 </Panel>
-                <v-row>
+                <v-row no-gutters>
                     <v-col>
                         <Panel
                             v-if="data"
@@ -50,7 +54,9 @@
                             :tabs="[{ id: 'heatmap', title: 'Fallzahlen' }]"
                         >
                             <template v-slot:description>
-                                hier beschreibung
+                                Anzahl der Personen mit mindestens einem
+                                positiven COVID-19-Test seit dem Start der
+                                Pandemie. Aufgeteilt nach Alter und Geschlecht.
                             </template>
                             <template v-slot:footer>
                                 Datenquelle: Robert Koch-Institut: SurvStat@RKI
@@ -67,12 +73,12 @@
                                         {
                                             name: 'Männlich',
                                             data: data.age_sex.male,
-                                            color: '#2BC9DE'
+                                            color: '#11D0B6'
                                         },
                                         {
                                             name: 'Weiblich',
                                             data: data.age_sex.female,
-                                            color: '#167F8D'
+                                            color: '#136F7C'
                                         }
                                     ]"
                                 >
@@ -92,9 +98,11 @@
                             :tabs="[{ id: 'heatmap', title: 'Inzidenz' }]"
                         >
                             <template v-slot:description>
-                                Die Verteilung der 7-Tage-Inzidenzen nach
-                                Altersgruppe und Kalenderwoche für die
-                                Städteregion Aachen.
+                                Anzahl der Personen
+                                <strong>pro 100.000 Einwohner</strong> mit
+                                mindestens einem positiven COVID-19-Test seit
+                                dem Start der Pandemie. Aufgeteilt nach Alter
+                                und Geschlecht.
                             </template>
                             <template v-slot:footer>
                                 Datenquelle: Robert Koch-Institut: SurvStat@RKI
@@ -111,12 +119,12 @@
                                         {
                                             name: 'Männlich',
                                             data: data.age_sex.male_rate,
-                                            color: '#2BC9DE'
+                                            color: '#11D0B6'
                                         },
                                         {
                                             name: 'Weiblich',
                                             data: data.age_sex.female_rate,
-                                            color: '#167F8D'
+                                            color: '#136F7C'
                                         }
                                     ]"
                                 >
