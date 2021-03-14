@@ -33,14 +33,12 @@
                     ]"
                 >
                     <template v-slot:description>
-                        <summary>
                             Die Sieben-Tage-Inzidenz gibt an, wie viele Personen
                             in den letzten 7 Tagen positiv auf COVID-19 getestet
                             wurden. Damit die Daten vergleichbar sind, wird die
                             Zahl der Neuinfektionen je 100.000 Einwohner
                             berechnet. Die prozentuale Änderung wird anhand des
                             vorherigen 7-Tage-Zeitraums berechnet.
-                        </summary>
                     </template>
                     <template v-slot:tab.daily>
                         <Chart
@@ -83,10 +81,8 @@
                     ]"
                 >
                     <template v-slot:description>
-                        <summary>
                             Die Anzahl der neu an COVID-19 positiv getesteten
                             Personen pro Tag.
-                        </summary>
                     </template>
                     <template v-slot:tab.daily>
                         <Chart
@@ -118,17 +114,13 @@
                     :tabs="[{ id: 'heatmap', title: 'Altersverteilung' }]"
                 >
                     <template v-slot:description>
-                        <summary>
                                 Die Verteilung der 7-Tage-Inzidenzen nach
                                 Altersgruppe und Kalenderwoche für die
                                 Städteregion Aachen.
-                        </summary>
                     </template>
                     <template v-slot:footer>
-                        <summary>
                             Datenquelle: Robert Koch-Institut: SurvStat@RKI 2.0,
                             <a href="https://survstat.rki.de">https://survstat.rki.de</a>, Abfragedatum: {{age_data.updated|dateformat}}
-                        </summary>
                     </template>
                     <template v-slot:tab.heatmap>
                         <HeatMap
@@ -161,7 +153,6 @@
                     </template>
 
                     <template v-slot:description>
-                        <summary>
                             Die Reproduktionszahl, auch R-Wert oder R-Zahl
                             genannt, gibt an, wie viele Menschen eine infizierte
                             Person in einer bestimmten Zeiteinheit im Mittel
@@ -205,10 +196,8 @@
                     :tabs="[{ id: 'daily', title: 'Täglich' }]"
                 >
                     <template v-slot:description>
-                        <summary>
                             Die Anzahl der aktuell an COVID-19 erkrankten
                             Personen.
-                        </summary>
                     </template>
                     <template v-slot:tab.daily>
                         <Chart
@@ -230,8 +219,8 @@ import axios from "axios";
 import { mapState, mapActions, mapGetters } from "vuex";
 import DataView from "@/components/DataView.vue";
 import Panel from "@/components/Panel.vue";
-import Chart from "@/components/Chart.vue";
-import HeatMap from "@/components/HeatMap.vue";
+import Chart from "@/components/charts/Chart.vue";
+import HeatMap from "@/components/charts/HeatMap.vue";
 import { format, innerDrawElementOnCanvas } from "echarts";
 import { genMetaInfo, MUNI_DICT } from "@/utils.js";
 
@@ -300,7 +289,7 @@ export default {
                 name: "Gesamzahl",
                 item: "cumCases",
                 width: 200
-            },
+            }
         ]
     }),
 
