@@ -61,7 +61,7 @@ def import_age_sex():
         }
     )
 
-    columns = req.columns
+    columns = [l[1:].replace("..","-") for l in req.columns]
     result = {'_id': req.COUNTY['County'],
               'labels': columns,
               'updated': datetime.datetime.now()}
