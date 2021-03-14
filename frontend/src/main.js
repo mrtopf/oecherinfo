@@ -12,7 +12,7 @@ import ECharts from 'vue-echarts'
 import * as echarts from "echarts/core";
 const { use, registerMap, registerTheme } = echarts;
 
-import "echarts"
+//import "echarts"
 
 import { CanvasRenderer } from "echarts/renderers";
 import { BarChart, LineChart, PieChart } from "echarts/charts";

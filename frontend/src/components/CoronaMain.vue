@@ -22,12 +22,12 @@
                 Übersicht Städteregion Aachen<br />
             </v-card-title>
             <v-card-text class="py-3 px-1" v-if="!loading">
-                <Indicator
+                <!-- <Indicator
                     :value="sr.today.r4"
                     title="R-Wert"
                     description="Die Reproduktionszahl, auch R-Wert oder R-Zahl genannt, gibt an, wie viele Menschen eine infizierte Person in einer bestimmten Zeiteinheit (hier 4 Tage) im Mittel ansteckt. Liegt der Wert über 1, dann steigt die Zahl der Neuinfektionen, die Krankheit breitet sich also weiter aus. Ist sie kleiner als 1, gibt es immer weniger Neuinfektionen, die Epidemie läuft also aus."
                     :trend="sr.today.r4 < 1 ? 1 : -1"
-                />
+                /> -->
                 <Indicator
                     :value="sr.today.rollingRate"
                     title="Inzidenz"
@@ -36,8 +36,8 @@
                 />
                 <Indicator
                     :value="`${Math.round(sr.today.rollingRatePerc * 100, 2)}%`"
-                    title="Inzidenz-Wachstum"
-                    description="Die Wachstumsrate der Inzidenz. Verglichen wird die letzte Woche mit der Vorwoche"
+                    title="Inzidenz-Wachstum 14 Tage"
+                    description="Die Wachstumsrate der Inzidenz. Verglichen wird die letzte Woche mit der Vorwoche. Dies entspricht dem 7-Tage-R-Wert."
                     :trend="computeTrend(sr.today.rollingRatePerc * 100, 5, 10)"
                 />
                 <Indicator
@@ -119,12 +119,12 @@
                 <v-spacer></v-spacer>
             </v-card-title>
             <v-card-text class="py-3 px-1" v-if="!loading">
-                <Indicator
+                <!-- <Indicator
                     :value="aachen.today.r4"
                     title="R-Wert"
                     description="Die Reproduktionszahl, auch R-Wert oder R-Zahl genannt, gibt an, wie viele Menschen eine infizierte Person in einer bestimmten Zeiteinheit (hier 4 Tage) im Mittel ansteckt. Liegt der Wert über 1, dann steigt die Zahl der Neuinfektionen, die Krankheit breitet sich also weiter aus. Ist sie kleiner als 1, gibt es immer weniger Neuinfektionen, die Epidemie läuft also aus."
                     :trend="aachen.today.r4 < 1 ? 1 : -1"
-                />
+                /> -->
                 <Indicator
                     :value="aachen.today.rollingRate"
                     title="Inzidenz"
@@ -133,8 +133,8 @@
                 />
                 <Indicator
                     :value="`${Math.round(aachen.today.rollingRatePerc * 100, 2)}%`"
-                    title="Inzidenz-Wachstum"
-                    description="Die Wachstumsrate der Inzidenz. Verglichen wird die letzte Woche mit der Vorwoche"
+                    title="Inzidenz-Wachstum 14 Tage"
+                    description="Die Wachstumsrate der Inzidenz. Verglichen wird die letzte Woche mit der Vorwoche. Dies entspricht dem 7-Tage-R-Wert."
                     :trend="
                         computeTrend(aachen.today.rollingRatePerc * 100, 5, 10)
                     "

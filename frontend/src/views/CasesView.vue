@@ -29,18 +29,16 @@
                     ]"
                     :tabs="[
                         { id: 'daily', title: 'Täglich' },
-                        { id: 'percent', title: 'proz. Änderung' }
+                        { id: 'percent', title: 'Änderung in Prozent' }
                     ]"
                 >
                     <template v-slot:description>
-                        <summary>
                             Die Sieben-Tage-Inzidenz gibt an, wie viele Personen
                             in den letzten 7 Tagen positiv auf COVID-19 getestet
                             wurden. Damit die Daten vergleichbar sind, wird die
                             Zahl der Neuinfektionen je 100.000 Einwohner
                             berechnet. Die prozentuale Änderung wird anhand des
                             vorherigen 7-Tage-Zeitraums berechnet.
-                        </summary>
                     </template>
                     <template v-slot:tab.daily>
                         <Chart
@@ -83,10 +81,8 @@
                     ]"
                 >
                     <template v-slot:description>
-                        <summary>
                             Die Anzahl der neu an COVID-19 positiv getesteten
                             Personen pro Tag.
-                        </summary>
                     </template>
                     <template v-slot:tab.daily>
                         <Chart
@@ -107,8 +103,9 @@
                     </template>
                 </Panel>
 
+
                 <Panel
-                    title="R-Wert"
+                    title="4-Tage-R-Wert"
                     matomoAttribute="rvalue"
                     attribute="r4"
                     :showTrends="false"
@@ -122,8 +119,13 @@
                         { id: 'r7', title: 'R-Wert 7 Tage' }
                     ]"
                 >
+                    <template v-slot:trends>
+                        <span class="pl-3">
+                        <small>(7-Tage: {{data.today['r7'].toLocaleString("de-DE")}})</small>
+                        </span>
+                    </template>
+
                     <template v-slot:description>
-                        <summary>
                             Die Reproduktionszahl, auch R-Wert oder R-Zahl
                             genannt, gibt an, wie viele Menschen eine infizierte
                             Person in einer bestimmten Zeiteinheit im Mittel
@@ -167,10 +169,8 @@
                     :tabs="[{ id: 'daily', title: 'Täglich' }]"
                 >
                     <template v-slot:description>
-                        <summary>
                             Die Anzahl der aktuell an COVID-19 erkrankten
                             Personen.
-                        </summary>
                     </template>
                     <template v-slot:tab.daily>
                         <Chart
@@ -192,8 +192,9 @@ import axios from "axios";
 import { mapState, mapActions, mapGetters } from "vuex";
 import DataView from "@/components/DataView.vue";
 import Panel from "@/components/Panel.vue";
-import Chart from "@/components/Chart.vue";
-import { format } from "echarts";
+import Chart from "@/components/charts/Chart.vue";
+import HeatMap from "@/components/charts/HeatMap.vue";
+import { format, innerDrawElementOnCanvas } from "echarts";
 import { genMetaInfo, MUNI_DICT } from "@/utils.js";
 
 const API = process.env.VUE_APP_CORONA_API_NEW;
@@ -220,6 +221,10 @@ export default {
                     this.data = response.data;
                     this.loading = false;
                 });
+            axios.get(`${API}/age/`).then(response => {
+                this.age_data = response.data;
+                this.loading = false;
+            });
         }
     },
     watch: {
@@ -230,6 +235,7 @@ export default {
     data: () => ({
         loading: true,
         data: null,
+        age_data: null,
         keyAttributes: [
             {
                 name: "Inzidenz",
@@ -237,9 +243,10 @@ export default {
                 width: 100
             },
             {
-                name: "Aktive Fälle",
-                item: "activeCases",
-                width: 150
+                name: "14-Tage-Wachstum",
+                item: "rollingRatePerc100",
+                width: 200,
+                suffix: "%"
             },
             {
                 name: "Neue Fälle",
@@ -247,14 +254,14 @@ export default {
                 width: 150
             },
             {
+                name: "Aktive Fälle",
+                item: "activeCases",
+                width: 150
+            },
+            {
                 name: "Gesamzahl",
                 item: "cumCases",
                 width: 200
-            },
-            {
-                name: "R-Wert",
-                item: "r4",
-                width: 150
             }
         ]
     }),
@@ -265,19 +272,36 @@ export default {
         },
         date() {
             return this.data && format.formatTime("dd.MM.yyyy", this.data.date);
+        },
+        ageData() {
+            // convert weeks: [], groups: {} to [week, age, value] and [week]
+            const weeks = this.age_data.weeks;
+            let data = [];
+            let i = 0;
+            for (const group_key in this.age_data.groups) {
+                const gdata = this.age_data.groups[group_key];
+                for (const w in weeks) {
+                    data.push([weeks[w], group_key, gdata[w]]);
+                }
+                i = i + 1;
+            }
+            return data;
         }
     },
     metaInfo() {
         return genMetaInfo(
             `COVID-19: Fallzahlen für ${MUNI_DICT[this.muni]}`,
-            `Aktuelle Daten und Entwicklung der Inzidenz, neuen und aktiven Fällen sowie des R-Werts für ${MUNI_DICT[this.muni]}.`
-        )
+            `Aktuelle Daten und Entwicklung der Inzidenz, neuen und aktiven Fällen sowie des R-Werts für ${
+                MUNI_DICT[this.muni]
+            }.`
+        );
     },
 
     components: {
         DataView,
         Panel,
-        Chart
+        Chart,
+        HeatMap
     }
 };
 </script>

@@ -59,7 +59,7 @@
 import { mapState, mapActions, mapGetters } from "vuex";
 import DataView from "@/components/DataView.vue";
 import Panel from "@/components/Panel.vue";
-import Chart from "@/components/Chart.vue";
+import Chart from "@/components/charts/Chart.vue";
 import { format } from "echarts";
 import { genMetaInfo, MUNI_DICT } from "@/utils.js";
 

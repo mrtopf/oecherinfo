@@ -1,4 +1,5 @@
 recursive-include corona/endpoints *.py
 recursive-include corona/db *.py
 recursive-include corona/api *.py
+recursive-include corona/coronaimport *.py
 #include *.txt
