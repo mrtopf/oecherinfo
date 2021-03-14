@@ -24,7 +24,9 @@ export default {
             return {
                 grid: {
                     left: 70,
-                    right: 80
+                    right: 80,
+                    top: 20,
+                    bottom: 0,
                 },
                 visualMap: {
                     top: 50,

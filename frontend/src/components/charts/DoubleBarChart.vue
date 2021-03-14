@@ -1,5 +1,5 @@
 <template>
-    <v-card color="#fff" flat :height="$vuetify.breakpoint.mdAndUp ? 500 : 300">
+    <v-card color="#fff" flat :height="$vuetify.breakpoint.mdAndUp ? 400 : 300">
         <v-chart
             :option="options"
             :init-options="initOptions"
@@ -26,8 +26,9 @@ export default {
         options() {
             return {
                 grid: {
-                    left: 70,
-                    right: 80,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
                     containLabel: true,
                 },
                 legend: {

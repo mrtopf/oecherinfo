@@ -43,7 +43,7 @@
                     </template>
                 </Panel>
                 <v-row no-gutters>
-                    <v-col>
+                    <v-col cols=12 lg=6>
                         <Panel
                             v-if="data"
                             title="Fälle nach Alter und Geschlecht"
@@ -86,7 +86,7 @@
                             </template>
                         </Panel>
                     </v-col>
-                    <v-col>
+                    <v-col cols=12 lg=6>
                         <Panel
                             v-if="data"
                             title="Inzidenz nach Alter und Geschlecht"
