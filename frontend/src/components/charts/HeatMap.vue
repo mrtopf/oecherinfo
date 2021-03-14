@@ -90,7 +90,6 @@ export default {
 
                 xAxis: {
                     axisLabel: {
-                        interval: 3,
                         fontFamily: "JetBrains Mono",
                         formatter: function(value, index) {
                             const date = new Date(value);
