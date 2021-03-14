@@ -26,7 +26,7 @@ export default {
                     left: 70,
                     right: 80,
                     top: 20,
-                    bottom: 0,
+                    bottom: 30,
                 },
                 visualMap: {
                     top: 50,
