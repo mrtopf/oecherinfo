@@ -270,7 +270,7 @@ def import_age_groups():
     from .coronaimport.survstat import import_age_incidence, import_age_sex
 
     start_time = time.time()
-    #import_age_incidence()
+    import_age_incidence()
     import_age_sex()
 
     click.echo("Finished age group import in %s seconds" %
