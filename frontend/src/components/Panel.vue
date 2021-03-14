@@ -3,14 +3,14 @@
         <v-card-title
             v-if="hideHeader"
             primary-title
-            class="text-h6 text-md-h4 font-weight-bold primary--text"
+            class="text-h6 text-md-h5 font-weight-bold primary--text"
         >
             {{ title }}
         </v-card-title>
         <v-card-title
             v-else
             primary-title
-            class="text-h6 text-md-h4 font-weight-bold primary--text"
+            class="text-h6 text-md-h5 font-weight-bold primary--text"
         >
             {{ title }}:
             <span class="pl-2">{{
