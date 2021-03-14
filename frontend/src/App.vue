@@ -71,9 +71,9 @@
                         :active="item.active"
                     >
                         <v-list-item-content>
-                            <v-list-item-title>{{
-                                item.title
-                            }}</v-list-item-title>
+                            <v-list-item-title
+                                >{{ item.title }}
+                            </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                 </v-list-item-group>
@@ -110,9 +110,22 @@
                                     :active="item.active"
                                 >
                                     <v-list-item-content>
-                                        <v-list-item-title>{{
-                                            item.title
-                                        }}</v-list-item-title>
+                                        <v-list-item-title
+                                            >{{ item.title }}
+                                            <v-chip
+                                                small
+                                                color="#F8FFE5"
+                                                
+                                                v-if="item.new"
+                                                class="font-weight-bold"
+                                            >
+                                                <v-icon left size="10">
+                                                    fa fa-star
+                                                </v-icon>
+
+                                                neu</v-chip
+                                            >
+                                        </v-list-item-title>
                                     </v-list-item-content>
                                 </v-list-item>
                             </v-list-item-group>
@@ -124,7 +137,7 @@
                 </v-row>
             </v-container>
         </v-main>
-        <v-footer color="primary lighten-1" dark class="footer caption">
+        <v-footer color="primary lighten-1" dark class="footer caption pb-4">
             <v-row dense>
                 <v-col cols="12" lg="6">
                     Ein Projekt von
@@ -191,6 +204,11 @@ export default {
             {
                 title: "Intensivbetten",
                 route: "hospitals"
+            },
+            {
+                title: "Demographie",
+                route: "demographics",
+                new: true
             }
         ]
     }),
