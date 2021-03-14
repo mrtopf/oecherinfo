@@ -17,6 +17,7 @@ from corona.db import mongo
 
 import pandas
 import math
+import zeep
 
 corona_cli = AppGroup('corona')
 
@@ -35,9 +36,12 @@ KOMMUNEN_MAP = {
 }
 
 # all attributes we compute averages for
-ATTRIBUTES = ['incidence', 'new', 'active', 'new_recovered', 'new_deaths', 'recovered', 'positive', 'deaths']
+ATTRIBUTES = ['incidence', 'new', 'active', 'new_recovered',
+              'new_deaths', 'recovered', 'positive', 'deaths']
 #ATTRIBUTES = ['incidence', 'new', 'active', 'new_recovered', 'new_deaths']
-ATTRIBUTES_DIVI = ['faelle_covid_aktuell', 'faelle_covid_aktuell_beatmet', 'betten_frei', 'betten_belegt', 'betten_gesamt']
+ATTRIBUTES_DIVI = ['faelle_covid_aktuell', 'faelle_covid_aktuell_beatmet',
+                   'betten_frei', 'betten_belegt', 'betten_gesamt']
+
 
 @corona_cli.command()
 @with_appcontext
@@ -65,7 +69,6 @@ def import_corona():
     for f in data['features']:
         d = f['attributes']
 
-
         oid = d['ObjectID']
         doc = mongo.db.data.find_one({'_id': oid})
         if doc is None:
@@ -85,7 +88,7 @@ def import_corona():
             'deaths': d['Tote'],
             'average_new_cases': d['Schnitt_neue_Fälle'],
         })
-        
+
         mongo.db.data.update({'_id': oid}, doc, True)
         click.echo("Import finished in %s seconds" %
                    (round(time.time()-start_time, 2)))
@@ -113,86 +116,90 @@ def avgs():
         cases = [0 if d['new'] is None else d['new'] for d in data]
 
         ###
-        ### compute R4 and R7
+        # compute R4 and R7
         ###
-        window=4
+        window = 4
         # note that a[:len(cases)] does not get the last element
-        for t in range(0,len(cases)+1):
-            if t <window*2:
+        for t in range(0, len(cases)+1):
+            if t < window*2:
                 data[t-1]['r4'] = None
             else:
-                data[t-1]['r4'] = round(sum(cases[t-window:t]) / max(sum(cases[t-window*2:t-window]),1),2)
+                data[t-1]['r4'] = round(sum(cases[t-window:t]) /
+                                        max(sum(cases[t-window*2:t-window]), 1), 2)
             mongo.db.data.save(data[t-1])
 
-        window=7
+        window = 7
         for t in range(0, len(cases)+1):
-            if t<window*2:
+            if t < window*2:
                 data[t-1]['r7'] = None
             else:
-                data[t-1]['r7'] = round(sum(cases[t-window:t]) / max(sum(cases[t-window*2:t-window]),1),2)
+                data[t-1]['r7'] = round(sum(cases[t-window:t]) /
+                                        max(sum(cases[t-window*2:t-window]), 1), 2)
                 #print(data[t-1]['r7'], data[t-1]['new'])
             mongo.db.data.save(data[t-1])
-
 
         for attr in ATTRIBUTES:
             numbers = [d[attr] for d in data]
             numbers_series = pandas.Series(numbers)
             windows = numbers_series.rolling(window_size, center=True)
             moving_averages = windows.mean()
-            
+
             # convert nan to None
             avg = [None if math.isnan(d) else d for d in moving_averages]
 
-            # put data back into individual records in data            
-            for idx,v in enumerate(avg):
+            # put data back into individual records in data
+            for idx, v in enumerate(avg):
                 data[idx][attr+'_avg'] = v
 
-                # get yesterdays value 
+                # get yesterdays value
                 # not sure we really need this as we only need it for status
-                if idx>0:
+                if idx > 0:
                     data[idx][attr+'_last'] = data[idx-1][attr]
                 else:
                     data[idx][attr+'_last'] = data[idx][attr]
 
                 # for incidence compute percentage change from past 7 days
-                if attr=="incidence":
+                if attr == "incidence":
                     # incidence should not be None or 0 (div by zero)
                     if idx > 7 and data[idx-7]['incidence']:
-                        diff = data[idx]['incidence'] - data[idx-7]['incidence']
+                        diff = data[idx]['incidence'] - \
+                            data[idx-7]['incidence']
                         perc = diff/data[idx-7]['incidence']
                     else:
                         perc = 0
                     data[idx]['incidence_perc'] = perc
-                    
+                    data[idx]['incidence_perc_100'] = round(perc*100)
+
                 mongo.db.data.save(data[idx])
-                
+
         click.echo("Finished %s" % name)
 
     # do divi averages
-    data = list(mongo.db.divi_daily.find({'gemeindeschluessel': '05334'}).sort("date", 1))
+    data = list(mongo.db.divi_daily.find(
+        {'gemeindeschluessel': '05334'}).sort("date", 1))
     # compute beds sum
     for idx, d in enumerate(data):
-        data[idx]['betten_gesamt'] = int(d['betten_frei']) + int(d['betten_belegt'])
+        data[idx]['betten_gesamt'] = int(
+            d['betten_frei']) + int(d['betten_belegt'])
         for attr in ATTRIBUTES_DIVI:
             data[idx][attr] = int(data[idx][attr])
-    
+
     for attr in ATTRIBUTES_DIVI:
         numbers = [d[attr] for d in data]
         numbers_series = pandas.Series(numbers)
         windows = numbers_series.rolling(window_size, center=True)
         moving_averages = windows.mean()
-        
+
         # convert nan to None
         avg = [None if math.isnan(d) else d for d in moving_averages]
 
-        # put data back into individual records in data            
-        for idx,v in enumerate(avg):
+        # put data back into individual records in data
+        for idx, v in enumerate(avg):
             data[idx][attr+'_avg'] = v
             mongo.db.divi_daily.save(data[idx])
 
-        
-        click.echo("Finished DIVI - %s" %attr)
-    
+        click.echo("Finished DIVI - %s" % attr)
+
     click.echo("Finished computing avgs in %s seconds" %
                (round(time.time()-start_time, 2)))
 
@@ -208,7 +215,7 @@ def import_divi():
     with csvfile as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            uid = "%s-%s" %(row['gemeindeschluessel'], row['daten_stand'])
+            uid = "%s-%s" % (row['gemeindeschluessel'], row['daten_stand'])
             row['date'] = dateparse(row['daten_stand'])
             row['_id'] = uid
             mongo.db.divi_daily.update({'_id': uid}, row, True)
@@ -228,7 +235,7 @@ def import_divi_details():
             'bundesland': None,
             'standortId': None,
             'standortBezeichnung': None,
-            'geoSearch': { 'latitude': 50.7583, 'longitude': 6.08339, 'distanz': 30 },
+            'geoSearch': {'latitude': 50.7583, 'longitude': 6.08339, 'distanz': 30},
             'bettenStatus': [],
             'bettenKategorie': [],
         },
@@ -238,12 +245,38 @@ def import_divi_details():
     resp = requests.post(DIVI_URL, json=DIVI_PARAMS)
     data = resp.json()
     for hosp in data['data']:
-        uid=hosp['id']
+        uid = hosp['id']
         hosp['_id'] = hosp['id']
-        mongo.db.divi_hospitals.update({'_id': uid }, hosp, True)
+        mongo.db.divi_hospitals.update({'_id': uid}, hosp, True)
 
     click.echo("Finished divi hospital import in %s seconds" %
-            (round(time.time()-start_time, 2)))
+               (round(time.time()-start_time, 2)))
+
+
+
+@corona_cli.command()
+@with_appcontext
+def import_age_groups():
+    """import from SurvStat+
+
+    this code is taken from
+
+    https://github.com/rgieseke/opencoviddata
+
+    and adapted for our needs.
+
+
+    """
+    from .coronaimport.survstat import import_age_incidence, import_age_sex
+
+    start_time = time.time()
+    #import_age_incidence()
+    import_age_sex()
+
+    click.echo("Finished age group import in %s seconds" %
+               (round(time.time()-start_time, 2)))
+
+
 
 @corona_cli.command()
 @with_appcontext
@@ -254,4 +287,4 @@ def all(ctx):
     ctx.invoke(import_divi)
     ctx.invoke(import_divi_details)
     ctx.invoke(avgs)
-    
+    ctx.invoke(import_age_groups)

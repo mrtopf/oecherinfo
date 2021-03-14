@@ -1,38 +1,51 @@
 <template>
     <v-card color="#fff" class="pb-8 mt-10 mx-0 px-0 mx-md-6" tile>
         <v-card-title
+            v-if="hideHeader"
             primary-title
-            class="text-h6 text-md-h4 font-weight-bold primary--text"
+            class="text-h6 text-md-h5 font-weight-bold primary--text"
         >
-            {{ title }}: <span class="pl-2">{{ todayValue || 0 }}</span>
-            <v-tooltip bottom max-width="300" v-if="showTrends">
-                <template v-slot:activator="{ on }">
-                    <span v-on="on" class="ml-3 mr-3 pa-0 ttip">
-                        <small class="text-h6 text-md-h6 caption"
-                            >{{ diffYesterday }}
-                        </small>
-                    </span>
-                </template>
-                Unterschied zum Vortag
-            </v-tooltip>
-            <v-tooltip bottom max-width="300" v-if="showTrends">
-                <template v-slot:activator="{ on }">
-                    <span class="ttip">
-                        <v-icon
-                            v-on="on"
-                            :color="trend.color"
-                            :size="$vuetify.breakpoint.smAndUp ? 30 : 20"
-                            :style="trend.rotate"
-                            class="pa-0 pl-1 pr-5 ma-0 trend-icon"
-                            >{{ trend.icon }}</v-icon
-                        >
-                    </span>
-                </template>
-                <span
-                    >Der Langzeittrend ist die Differenz des Wertes von vor 7
-                    Tagen verglichen mit dem aktuellen Wert.</span
-                >
-            </v-tooltip>
+            {{ title }}
+        </v-card-title>
+        <v-card-title
+            v-else
+            primary-title
+            class="text-h6 text-md-h5 font-weight-bold primary--text"
+        >
+            {{ title }}:
+            <span class="pl-2">{{
+                (todayValue || 0).toLocaleString("de-DE")
+            }}</span>
+            <slot name="trends">
+                <v-tooltip bottom max-width="300" v-if="showTrends">
+                    <template v-slot:activator="{ on }">
+                        <span v-on="on" class="ml-3 mr-3 pa-0 ttip">
+                            <small class="text-h6 text-md-h6 caption"
+                                >{{ diffYesterday }}
+                            </small>
+                        </span>
+                    </template>
+                    Unterschied zum Vortag
+                </v-tooltip>
+                <v-tooltip bottom max-width="300" v-if="showTrends">
+                    <template v-slot:activator="{ on }">
+                        <span class="ttip">
+                            <v-icon
+                                v-on="on"
+                                :color="trend.color"
+                                :size="$vuetify.breakpoint.smAndUp ? 30 : 20"
+                                :style="trend.rotate"
+                                class="pa-0 pl-1 pr-5 ma-0 trend-icon"
+                                >{{ trend.icon }}</v-icon
+                            >
+                        </span>
+                    </template>
+                    <span
+                        >Der Langzeittrend ist die Differenz des Wertes von vor
+                        7 Tagen verglichen mit dem aktuellen Wert.</span
+                    >
+                </v-tooltip>
+            </slot>
         </v-card-title>
         <v-card-text style="max-width: 1024px;" class="body-2 pr-10 pl-5">
             <slot name="description"></slot>
@@ -62,17 +75,22 @@
                 </v-tab>
             </v-tabs>
             <v-tabs-items v-model="view" touchless>
-                <v-tab-item transition="none" v-for="tab in tabs" :key="tab.id" :class="$vuetify.breakpoint.mdAndUp ? '' : 'py-4 pa-0'">
+                <v-tab-item
+                    transition="none"
+                    v-for="tab in tabs"
+                    :key="tab.id"
+                    :class="$vuetify.breakpoint.mdAndUp ? '' : 'py-4 pa-0'"
+                >
                     <slot :name="`tab.${tab.id}`"></slot>
                 </v-tab-item>
 
-                <v-tab-item transition="none" key="data">
+                <v-tab-item transition="none" key="data" v-if="!hideTable">
                     <v-card flat color="#fff">
                         <v-data-table
                             fixed-header
                             id="data-table"
                             must-sort
-                            sort-by="date"
+                            sort-by="dates"
                             sort-desc
                             dense
                             disable-pagination
@@ -89,6 +107,9 @@
                 </v-tab-item>
             </v-tabs-items>
         </v-card-text>
+        <v-card-text style="max-width: 1024px;" class="caption pr-10 pl-5 py-0">
+            <slot name="footer"></slot>
+        </v-card-text>
     </v-card>
 </template>
 
@@ -100,6 +121,8 @@ export default {
         tabs: Array,
         matomoAttribute: String, // used for matomo to know which graph was clicked on
         title: String,
+        hideTable: { type: Boolean, default: false },
+        hideHeader: { type: Boolean, default: false },
         tableAttributes: Array,
         data: Object,
         attribute: String, // attribute to use for header numbers
@@ -115,7 +138,11 @@ export default {
     },
     computed: {
         allTabs() {
-            return [...this.tabs, { id: "data", title: "Daten" }];
+            if (this.hideTable) {
+                return this.tabs;
+            } else {
+                return [...this.tabs, { id: "data", title: "Daten" }];
+            }
         },
         tableHeaders() {
             let headers = [
@@ -170,7 +197,8 @@ export default {
             }
         },
         trend() {
-            const d = this.data.trend[this.attribute+"7DayChangePercent"] * 100;
+            const d =
+                this.data.trend[this.attribute + "7DayChangePercent"] * 100;
             if (d > 5) {
                 return {
                     rotate:

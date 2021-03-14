@@ -105,8 +105,8 @@
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
-            <v-btn small text :to="{ name: 'cases', params: { muni: muni } }"
-                >Alle Daten</v-btn
+            <v-btn small color="gray" class="primary--text font-weight-bold" depressed :to="{ name: 'cases', params: { muni: muni } }"
+                >Alle Daten ansehen</v-btn
             >
         </v-card-actions>
     </v-card>

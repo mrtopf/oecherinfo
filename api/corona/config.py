@@ -11,6 +11,7 @@ MUNI_DATABASE_TO_API_MAPPING = {
 	"r7" : 'r7',
 	"incidence_avg" : 'avgRollingRate',
 	"incidence_perc" : 'rollingRatePerc',
+	"incidence_perc_100" : 'rollingRatePerc100',
 	"new_avg" : 'avgNewCases',
 	"active_avg" : 'avgActiveCases',
 	"new_recovered_avg" : 'avgNewRecovered',
