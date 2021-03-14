@@ -253,17 +253,6 @@ def import_divi_details():
                (round(time.time()-start_time, 2)))
 
 
-"""
-this is obtained from survstart via a curl url obtained by creating the query at
-
-https://survstat.rki.de/Content/Query/Create.aspx
-
-The script is available as `get_age_group.sh`
-
-This will put a zip file into a temp directory to read
-
-"""
-
 
 @corona_cli.command()
 @with_appcontext
