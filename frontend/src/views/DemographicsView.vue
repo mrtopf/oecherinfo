@@ -196,6 +196,7 @@ export default {
             const weeks = data.weeks;
             let result = [];
             let i = 0;
+            weeks.pop()
             for (const group_key in data.groups) {
                 const gdata = data.groups[group_key];
                 for (const w in weeks) {
