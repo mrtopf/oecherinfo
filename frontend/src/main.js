@@ -9,8 +9,9 @@ import VueMeta from 'vue-meta'
 Vue.use(VueMeta)
 
 import ECharts from 'vue-echarts'
-import * as echarts from "echarts/core";
-const { use, registerMap, registerTheme } = echarts;
+//import * as echarts from "echarts/core";
+import { use } from "echarts/core";
+//const { use, registerMap, registerTheme } = echarts;
 
 //import "echarts"
 
