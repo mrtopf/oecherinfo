@@ -37,7 +37,7 @@
             </v-row>
 
             <v-divider class="py-3"></v-divider>
-            <v-row>
+            <v-row v-if="data">
                 <v-card
                     flat
                     class="mx-2 pb-0"

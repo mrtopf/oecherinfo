@@ -86,6 +86,9 @@
 
                 <v-tab-item transition="none" key="data" v-if="!hideTable">
                     <v-card flat color="#fff">
+                        <v-card-text class="caption primary--text">
+                            Klicke auf die Kopfzeilen, um die Daten entsprechend zu sortieren.
+                        </v-card-text>
                         <v-data-table
                             fixed-header
                             id="data-table"
@@ -105,6 +108,14 @@
                         </v-data-table>
                     </v-card>
                 </v-tab-item>
+                <v-tab-item transition="none" key="about" v-if="showAbout">
+                    <v-card flat color="#fff">
+                        <v-card-text>
+                            <slot name="tab.about"></slot>
+                        </v-card-text>
+                    </v-card>
+                </v-tab-item>
+
             </v-tabs-items>
         </v-card-text>
         <v-card-text style="max-width: 1024px;" class="caption pr-10 pl-5 py-0">
@@ -122,6 +133,7 @@ export default {
         matomoAttribute: String, // used for matomo to know which graph was clicked on
         title: String,
         hideTable: { type: Boolean, default: false },
+        showAbout: { type: Boolean, default: false },
         hideHeader: { type: Boolean, default: false },
         tableAttributes: Array,
         data: Object,
@@ -138,11 +150,16 @@ export default {
     },
     computed: {
         allTabs() {
-            if (this.hideTable) {
-                return this.tabs;
-            } else {
-                return [...this.tabs, { id: "data", title: "Daten" }];
+            let tabs = this.tabs
+                
+            
+            if (!this.hideTable) {
+                tabs = [...this.tabs, { id: "data", title: "Daten" }];
             }
+            if (this.showAbout) {
+                tabs = [...tabs, { id: "about", title: "Über die Daten" }];
+            }
+            return tabs
         },
         tableHeaders() {
             let headers = [
@@ -168,19 +185,23 @@ export default {
                 "dates"
             ];
 
-            // construct [{key: value},...] from {'key': [value, ...], ...} in this.data
             let data = [];
             for (const idx in this.data["dates"]) {
                 let record = {};
                 for (const attr of selectedAttributes) {
-                    record[attr] = this.data[attr][idx];
+                    const v = this.data[attr][idx]
+                    if (typeof(v)=="number") {
+                        record[attr] = v.toLocaleString("de-DE")
+                    } else {
+                        record[attr] = v
+                    }
                 }
                 data.push(record);
             }
             return data;
         },
         todayValue() {
-            return this.data.today[this.attribute];
+            return this.data.today && this.data.today[this.attribute];
         },
         diffYesterday() {
             const d = Math.round(

@@ -206,9 +206,13 @@ export default {
                 route: "hospitals"
             },
             {
+                title: "Schnelltests",
+                route: "quicktests",
+                new: true
+            },
+            {
                 title: "Demographie",
                 route: "demographics",
-                new: true
             }
         ]
     }),

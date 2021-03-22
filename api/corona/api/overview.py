@@ -78,19 +78,5 @@ class Overview(Resource):
             record['yesterday'] = yesterday
             record['trend'] = trend
             resp.append(record)
-        return resp
-
-
-
-        for f in ALLOWED_MUNI_FIELDS:
-            db_field= API_TO_MUNI_DATABASE_MAPPING[f]
-            if data[0][db_field]:
-                today[f]= round(data[0][db_field], 0 if f == 'rollingRate' else 2)
-            else:
-                today[f]= None
-            if data[1][db_field]:
-                yesterday[f]= round(data[1][db_field], 0 if f == 'rollingRate' else 2)
-            else:
-                yesterday[f]= None
 
         return resp
