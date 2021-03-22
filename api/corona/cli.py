@@ -253,6 +253,29 @@ def import_divi_details():
                (round(time.time()-start_time, 2)))
 
 
+@corona_cli.command()
+@with_appcontext
+@click.argument('filename')
+def import_quicktests(filename):
+    """import the quick test data from a CSV file"""
+    start_time = time.time()
+
+    with open(filename, "r") as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            date = row['date'] = dateparse(row['date'])
+            uid = row['_id'] = "sr-%s" %(date.strftime("%d.%m.%Y"))
+            row['county']="05334"
+            total = row['total'] = int(row['total'])
+            positive = row['positive'] = int(row['positive'])
+            row['rate'] = positive/total
+            row['rate_percent'] = round(positive/total*100,2)
+            row['rate_permille'] = round(positive/total*1000,2)
+            mongo.db.quicktests.update({'_id': uid}, row, True)
+    click.echo("Finished self test data import in %s seconds" %
+               (round(time.time()-start_time, 2)))
+
+
 
 @corona_cli.command()
 @with_appcontext

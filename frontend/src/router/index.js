@@ -6,6 +6,7 @@ import RecoveredView from "../views/RecoveredView.vue"
 import DeathsView from "../views/DeathsView.vue"
 import HospitalView from "../views/HospitalView.vue"
 import DemographicsView from "../views/DemographicsView.vue"
+import QuickTests from "../views/QuickTests.vue"
 
 Vue.use(VueRouter)
 
@@ -85,6 +86,15 @@ const routes = [
         props: true,
         meta: {
             title: 'oecher.info | Corona Dashboard | Todesfälle'
+        }
+    },
+    {
+        path: "/quicktests",
+        name: "quicktests",
+        component: QuickTests,
+        props: true,
+        meta: {
+            title: 'Schnelltests | oecher.info | Corona Dashboard'
         }
     },
     {
