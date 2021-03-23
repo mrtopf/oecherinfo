@@ -29,10 +29,8 @@
                 ]"
             >
                 <template v-slot:description>
-                    <summary>
                         Die Anzahl der Personen, die an oder mit COVID-19
                         verstorben sind.
-                    </summary>
                 </template>
                 <template v-slot:tab.daily>
                     <Chart

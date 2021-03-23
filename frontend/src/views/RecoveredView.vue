@@ -29,9 +29,7 @@
                 ]"
             >
                 <template v-slot:description>
-                    <summary>
                         Die Anzahl der Personen, die an COVID-19 genesen sind.
-                    </summary>
                 </template>
                 <template v-slot:tab.daily>
                     <Chart
