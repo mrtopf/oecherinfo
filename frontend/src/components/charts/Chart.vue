@@ -17,6 +17,10 @@ export default {
     props: {
         labels: Array,
         data: Array,
+        color: {
+            type: String,
+            default: "#1C9FB0"
+        },
         avgs: {
             type: Array,
             default: null
@@ -31,7 +35,7 @@ export default {
             default: "3100-01-01"
         },
         showLines: Boolean,
-        showVisualMap: Boolean
+        showVisualMap: {type: String, default: ""}
     },
     computed: {
         options() {
@@ -90,7 +94,7 @@ export default {
                     type: "bar",
                     barWidth: "95%",
                     barCategoryGap: 0,
-                    color: "#1C9FB0"
+                    color: this.color,
                 }
             ];
             
@@ -110,37 +114,61 @@ export default {
                 });
             }
 
-            const visualMap = {
-                top: 50,
-                right: 10,
-                seriesIndex: 0,
-                show: this.$vuetify.breakpoint.mdAndUp,
-                pieces: [
-                    {
-                        gt: 0,
-                        lte: 50,
-                        //color: "#037758"
-                        color: "#06D6A0"
-                    },
-                    {
-                        gt: 50,
-                        lte: 100,
-                        color: "#FFBC1F"
-                    },
-                    {
-                        gt: 100,
-                        lte: 200,
-                        color: "#F78656"
-                    },
-                    {
-                        gt: 200,
-                        color: "#7D314E"
+            let visualMap;
+            if (this.showVisualMap=="rollingRate") {
+                visualMap = {
+                    top: 50,
+                    right: 10,
+                    seriesIndex: 0,
+                    show: this.$vuetify.breakpoint.mdAndUp,
+                    pieces: [
+                        {
+                            gt: 0,
+                            lte: 50,
+                            //color: "#037758"
+                            color: "#06D6A0"
+                        },
+                        {
+                            gt: 50,
+                            lte: 100,
+                            color: "#FFBC1F"
+                        },
+                        {
+                            gt: 100,
+                            lte: 200,
+                            color: "#F78656"
+                        },
+                        {
+                            gt: 200,
+                            color: "#7D314E"
+                        }
+                    ],
+                    outOfRange: {
+                        color: "#999"
                     }
-                ],
-                outOfRange: {
-                    color: "#999"
-                }
-            };
+                };
+            } else if (this.showVisualMap=="r") {
+                visualMap = {
+                    top: 50,
+                    right: 10,
+                    seriesIndex: 0,
+                    show: this.$vuetify.breakpoint.mdAndUp,
+                    pieces: [
+                        {
+                            gt: 0,
+                            lte: 1,
+                            color: "#06D6A0"
+                        },
+                        {
+                            gt: 1,
+                            color: "#7D314E"
+                        }
+                    ],
+                    outOfRange: {
+                        color: "#999"
+                    }
+                };
+            }
 
             return {
                 grid: {
@@ -161,7 +189,7 @@ export default {
                         saveAsImage: { title: "PNG" }
                     }
                 },
-                visualMap: this.showVisualMap ? visualMap : null,
+                visualMap: this.showVisualMap!="" ? visualMap : null,
                 tooltip: {
                     trigger: "axis",
                     transitionDuration: 0,

@@ -47,7 +47,7 @@
                             :avgs="data.avgRollingRate"
                             name="7-Tage-Inzidenz"
                             showLines
-                            showVisualMap
+                            showVisualMap="rollingRate"
                         >
                         </Chart>
                     </template>
@@ -140,6 +140,7 @@
                         <Chart
                             :labels="data.dates"
                             :data="data.r4"
+                            showVisualMap="r"
                             name="R-Wert 4 Tage"
                         >
                         </Chart>
@@ -148,6 +149,7 @@
                         <Chart
                             :labels="data.dates"
                             :data="data.r7"
+                            showVisualMap="r"
                             name="R-Wert 7 Tage"
                         >
                         </Chart>
