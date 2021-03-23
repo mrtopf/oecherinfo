@@ -35,7 +35,7 @@ export default {
                 data: zip(this.labels, this.data.rate_percent),
                 type: "line",
                 large: true,
-                color: "#D46A38",
+                color: "#115F6A",
                 symbol: "none",
                 yAxisIndex: 1,
                 lineStyle: {
@@ -46,15 +46,15 @@ export default {
                 name: "Negative Tests",
                 data: zip(this.labels, this.data.negative),
                 type: "bar",
-                color: "#05B384",
+                color: "#98FDD6",
                 stack: 'amount',
-                label: {
-                    fontFamily: "JetBrains Mono",
-                    fontWeight: "bold",
-                    color: "#fff",
-                    show: true,
-                    position: "inside"
-                }
+                // label: {
+                //     fontFamily: "JetBrains Mono",
+                //     fontWeight: "bold",
+                //     color: "#fff",
+                //     show: true,
+                //     position: "inside"
+                // }
             };
             const positive = {
                 stack: 'amount',
@@ -62,13 +62,13 @@ export default {
                 data: zip(this.labels, this.data.positive),
                 type: "bar",
                 color: "#EF476F",
-                label: {
-                    fontFamily: "JetBrains Mono",
-                    fontWeight: "bold",
-                    distance: 3,
-                    show: true,
-                    position: "top"
-                }
+                // label: {
+                //     fontFamily: "JetBrains Mono",
+                //     fontWeight: "bold",
+                //     distance: 3,
+                //     show: true,
+                //     position: "top"
+                // }
             };
             return [total, positive, rate];
         },
@@ -77,7 +77,7 @@ export default {
             return {
                 grid: {
                     left: 0,
-                    right: 0,
+                    right: 20,
                     bottom: 0,
                     containLabel: true
                 },
@@ -122,13 +122,13 @@ export default {
                 yAxis: [
                     {
                         axisLabel: {
-                            fontFamily: "JetBrains Mono"
+                            fontFamily: "JetBrains Mono",
                         },
                         name: "Anzahl",
                         type: this.show_log ? "log" : "value"
                     },
                     {
-                        name: "Rate",
+                        name: "Rate in %",
                         axisLabel: {
                             fontFamily: "JetBrains Mono"
                         },

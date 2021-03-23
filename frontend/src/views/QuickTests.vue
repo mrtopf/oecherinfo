@@ -27,7 +27,7 @@
                 :tabs="[{ id: 'daily', title: 'Täglich' }]"
             >
                 <template v-slot:description>
-                    Anzahl der durchgeführten kostenlosen Bürgerschnelltests und der positiven Ergebnisse
+                    Anzahl der durchgeführten kostenlosen Bürgerschnelltests und der positiven Ergebnisse in der Städteregion Aachen
                 </template>
                 <template v-slot:tab.daily>
                     <QuickTestChart
