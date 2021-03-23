@@ -201,7 +201,7 @@ export default {
             return data;
         },
         todayValue() {
-            return this.data.today && this.data.today[this.attribute];
+            return this.data && this.data.today && this.data.today[this.attribute];
         },
         diffYesterday() {
             const d = Math.round(
