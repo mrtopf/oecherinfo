@@ -30,7 +30,7 @@
                 />
                 <Indicator
                     :value="`${Math.round(sr.today.rollingRatePerc * 100, 2)}%`"
-                    title="Inzidenz-Wachstum 14 Tage"
+                    title="Inzidenz-Wachstum"
                     description="Die Wachstumsrate der Inzidenz. Verglichen wird die letzte Woche mit der Vorwoche. Dies entspricht dem 7-Tage-R-Wert."
                     :trend="computeTrend(sr.today.rollingRatePerc * 100, -5, 0)"
                     middleColor="#d0d0d0"
@@ -129,7 +129,7 @@
                 />
                 <Indicator
                     :value="`${Math.round(aachen.today.rollingRatePerc * 100, 2)}%`"
-                    title="Inzidenz-Wachstum 14 Tage"
+                    title="Inzidenz-Wachstum"
                     description="Die Wachstumsrate der Inzidenz. Verglichen wird die letzte Woche mit der Vorwoche. Dies entspricht dem 7-Tage-R-Wert."
                     :trend="computeTrend(aachen.today.rollingRatePerc * 100, -5, 0)"
                     middleColor="#d0d0d0"
