@@ -92,7 +92,6 @@ class DIVIData(Resource):
         divi_results =  mongo.db.divi_hospitals.find({},{'krankenhausStandort': 1, 'bettenStatus': 1, 'dateFormatted': 1})
         hospitals = []
         for h in divi_results:
-            print(h)
             hospitals.append({
                 #'name': h['krankenhausStandort']['bezeichnung'],
                 'name': HOSPITAL_MAP[h['_id']],
