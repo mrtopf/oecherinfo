@@ -159,7 +159,7 @@ export default {
         },
         trend() {
             const diffPercent = this.weekChangePercent;
-            if (diffPercent > -5 && diffPercent < 5) {
+            if (diffPercent > -5 && diffPercent < 0) { 
                 return {
                     icon: "",
                     chipColor: "gray lighten-4",
@@ -186,7 +186,7 @@ export default {
         },
         trendColor() {
             const diffPercent = this.weekChangePercent;
-            if (diffPercent > -5 && diffPercent < 5) {
+            if (diffPercent > -5 && diffPercent < 0) {
                 return "#e0e0e0";
             } else if (diffPercent <= -5) {
                 return "#c3e5cc";
