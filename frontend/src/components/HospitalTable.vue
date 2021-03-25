@@ -270,6 +270,7 @@
                             </v-card-actions>
                         </v-card>
                     </v-dialog>
+                    <v-spacer></v-spacer>
                 </v-toolbar>
 
                 <v-simple-table
@@ -355,6 +356,10 @@
                     </template>
                 </v-simple-table>
             </v-card>
+            <div class="caption mt-3">
+                Stand: {{data.hospitals[0].dateFormatted}}
+            </div>
+
         </v-col>
         <v-col class="caption text-right" cols="12"
             >Datenquelle:

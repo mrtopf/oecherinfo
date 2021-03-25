@@ -157,11 +157,11 @@ export default {
                         {
                             gt: 0,
                             lte: 1,
-                            color: "#06D6A0"
+                            color: "#1C9FB0"
                         },
                         {
                             gt: 1,
-                            color: "#7D314E"
+                            color: "#E9430C"
                         }
                     ],
                     outOfRange: {

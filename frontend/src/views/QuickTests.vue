@@ -107,7 +107,7 @@ export default {
     },
     methods: {
         load() {
-            axios.get(`${API}/quicktests`).then(response => {
+            axios.get(`${API}/quicktests/`).then(response => {
                 this.data = response.data;
                 this.loading = false;
             });

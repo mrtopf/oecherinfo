@@ -38,7 +38,7 @@ KOMMUNEN_MAP = {
 # all attributes we compute averages for
 ATTRIBUTES = ['incidence', 'new', 'active', 'new_recovered',
               'new_deaths', 'recovered', 'positive', 'deaths']
-#ATTRIBUTES = ['incidence', 'new', 'active', 'new_recovered', 'new_deaths']
+# ATTRIBUTES = ['incidence', 'new', 'active', 'new_recovered', 'new_deaths']
 ATTRIBUTES_DIVI = ['faelle_covid_aktuell', 'faelle_covid_aktuell_beatmet',
                    'betten_frei', 'betten_belegt', 'betten_gesamt']
 
@@ -97,8 +97,8 @@ def import_corona():
 @corona_cli.command()
 @with_appcontext
 def avgs():
-    """compute 
-        - the 7 day averages of all features in 
+    """compute
+        - the 7 day averages of all features in
         - the change per day
 
         We compute a 7 day window around the number (+/-3)
@@ -135,7 +135,7 @@ def avgs():
             else:
                 data[t-1]['r7'] = round(sum(cases[t-window:t]) /
                                         max(sum(cases[t-window*2:t-window]), 1), 2)
-                #print(data[t-1]['r7'], data[t-1]['new'])
+                # print(data[t-1]['r7'], data[t-1]['new'])
             mongo.db.data.save(data[t-1])
 
         for attr in ATTRIBUTES:
@@ -245,8 +245,17 @@ def import_divi_details():
     resp = requests.post(DIVI_URL, json=DIVI_PARAMS)
     data = resp.json()
     for hosp in data['data']:
-        uid = hosp['id']
-        hosp['_id'] = hosp['id']
+        uid = hosp['krankenhausStandort']['id']
+        hosp['_id'] = uid
+
+        hosp['bettenStatus'] = {
+            "statusLowCare" : hosp['maxBettenStatusEinschaetzungLowCare'],
+		    "statusHighCare" : hosp['maxBettenStatusEinschaetzungHighCare'],
+		    "statusECMO" : hosp['maxBettenStatusEinschaetzungEcmo'],
+        }
+        date = hosp['date'] = datetime.datetime.now()
+        hosp['dateFormatted'] = date.strftime("%d. %B %Y")
+        
         mongo.db.divi_hospitals.update({'_id': uid}, hosp, True)
 
     click.echo("Finished divi hospital import in %s seconds" %
