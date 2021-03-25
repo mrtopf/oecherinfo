@@ -31,10 +31,8 @@
                     :tabs="[{ id: 'daily', title: 'täglich' }]"
                 >
                     <template v-slot:description>
-                        <summary>
                             Anzahl der Betten auf den Intensivstationen der
                             Städteregion Aachen
-                        </summary>
                     </template>
                     <template v-slot:tab.daily>
                         <BedChart
@@ -61,10 +59,8 @@
                     :tabs="[{ id: 'daily', title: 'Täglich' }]"
                 >
                     <template v-slot:description>
-                        <summary>
                             Anzahl der Betten auf Intensivstationen, die mit
                             COVID-19-Patienten belegt sind.
-                        </summary>
                     </template>
                     <template v-slot:tab.daily>
                         <Chart
@@ -92,11 +88,9 @@
                     :tabs="[{ id: 'daily', title: 'Täglich' }]"
                 >
                     <template v-slot:description>
-                        <summary>
                             Anzahl der Betten auf Intensivstationen, die mit
                             COVID-19-Patienten belegt sind, die beatmet werden
                             müssen.
-                        </summary>
                     </template>
                     <template v-slot:tab.daily>
                         <Chart

@@ -22,12 +22,6 @@
                 Übersicht Städteregion Aachen<br />
             </v-card-title>
             <v-card-text class="py-3 px-1" v-if="!loading">
-                <!-- <Indicator
-                    :value="sr.today.r4"
-                    title="R-Wert"
-                    description="Die Reproduktionszahl, auch R-Wert oder R-Zahl genannt, gibt an, wie viele Menschen eine infizierte Person in einer bestimmten Zeiteinheit (hier 4 Tage) im Mittel ansteckt. Liegt der Wert über 1, dann steigt die Zahl der Neuinfektionen, die Krankheit breitet sich also weiter aus. Ist sie kleiner als 1, gibt es immer weniger Neuinfektionen, die Epidemie läuft also aus."
-                    :trend="sr.today.r4 < 1 ? 1 : -1"
-                /> -->
                 <Indicator
                     :value="sr.today.rollingRate"
                     title="Inzidenz"
@@ -45,6 +39,13 @@
                     title="freie Betten"
                     description="Freie Intensivbetten in der Städteregion Aachen"
                     :trend="divi.today.freeBeds > 10 ? 1 : -1"
+                />
+                <Indicator
+                    :value="quicktests.positive[0]"
+                    title="positive Schnelltests"
+                    :description="`Anzahl positiver Bürgerschnelltests am ${quicktests.dateFormatted}`"
+                    :trend="computeTrend(quicktests.positive[0], 5, 15)"
+                    :ntrend="quicktests.positive[0]>0 ? -1 : 1"
                 />
             </v-card-text>
             <v-card-text class="py-0" v-if="!loading">
@@ -119,12 +120,6 @@
                 <v-spacer></v-spacer>
             </v-card-title>
             <v-card-text class="py-3 px-1" v-if="!loading">
-                <!-- <Indicator
-                    :value="aachen.today.r4"
-                    title="R-Wert"
-                    description="Die Reproduktionszahl, auch R-Wert oder R-Zahl genannt, gibt an, wie viele Menschen eine infizierte Person in einer bestimmten Zeiteinheit (hier 4 Tage) im Mittel ansteckt. Liegt der Wert über 1, dann steigt die Zahl der Neuinfektionen, die Krankheit breitet sich also weiter aus. Ist sie kleiner als 1, gibt es immer weniger Neuinfektionen, die Epidemie läuft also aus."
-                    :trend="aachen.today.r4 < 1 ? 1 : -1"
-                /> -->
                 <Indicator
                     :value="aachen.today.rollingRate"
                     title="Inzidenz"
@@ -288,6 +283,7 @@ export default {
         aachen: null,
         divi: null,
         overview: null,
+        quicktests: null,
         loading: true
     }),
     methods: {
@@ -315,6 +311,9 @@ export default {
                 });
             await axios.get(`${API}/divi/`).then(response => {
                 this.divi = response.data;
+            });
+            await axios.get(`${API}/quicktests/?limit=1&sort=-1`).then(response => {
+                this.quicktests = response.data;
             });
             await axios.get(`${API}/overview/`).then(response => {
                 this.overview = response.data;

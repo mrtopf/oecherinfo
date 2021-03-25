@@ -89,12 +89,14 @@ class DIVIData(Resource):
             trend['%s7DayChangePercent' %f] = round(diff / max(sum(series[8:14]),0.0001),2)
 
         # add hospital status
-        divi_results =  mongo.db.divi_hospitals.find({},{'krankenhausStandort': 1, 'bettenStatus': 1})
+        divi_results =  mongo.db.divi_hospitals.find({},{'krankenhausStandort': 1, 'bettenStatus': 1, 'dateFormatted': 1})
         hospitals = []
         for h in divi_results:
+            print(h)
             hospitals.append({
                 #'name': h['krankenhausStandort']['bezeichnung'],
                 'name': HOSPITAL_MAP[h['_id']],
+                'dateFormatted': h['dateFormatted'],
                 'lowCare': STATUS_COLORS[h['bettenStatus']['statusLowCare']],
                 'highCare': STATUS_COLORS[h['bettenStatus']['statusHighCare']],
                 'ecmo': STATUS_COLORS[h['bettenStatus']['statusECMO']],

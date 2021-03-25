@@ -1,4 +1,4 @@
-from . import muni, divi, overview, age
+from . import muni, divi, overview, age, quicktests
 
 def setup(api):
     """setup the api endpoints"""
@@ -24,4 +24,10 @@ def setup(api):
         overview.Overview,
         '/overview/',
         endpoint="overview"
+    )
+
+    api.add_resource(
+        quicktests.QuickTestData,
+        '/quicktests/',
+        endpoint="quicktests"
     )
