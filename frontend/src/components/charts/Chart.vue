@@ -121,25 +121,37 @@ export default {
                     right: 10,
                     seriesIndex: 0,
                     show: this.$vuetify.breakpoint.mdAndUp,
+                    // pieces: [
+                    //     {
+                    //         gt: 0,
+                    //         lte: 50,
+                    //         //color: "#037758"
+                    //         color: "#06D6A0"
+                    //     },
+                    //     {
+                    //         gt: 50,
+                    //         lte: 100,
+                    //         color: "#FFBC1F"
+                    //     },
+                    //     {
+                    //         gt: 100,
+                    //         lte: 200,
+                    //         color: "#F78656"
+                    //     },
+                    //     {
+                    //         gt: 200,
+                    //         color: "#7D314E"
+                    //     }
+                    // ],
                     pieces: [
                         {
                             gt: 0,
                             lte: 50,
                             //color: "#037758"
-                            color: "#06D6A0"
+                            color: "#1C9FB0"
                         },
                         {
                             gt: 50,
-                            lte: 100,
-                            color: "#FFBC1F"
-                        },
-                        {
-                            gt: 100,
-                            lte: 200,
-                            color: "#F78656"
-                        },
-                        {
-                            gt: 200,
                             color: "#7D314E"
                         }
                     ],
