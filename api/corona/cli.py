@@ -218,6 +218,8 @@ def import_divi():
             uid = "%s-%s" % (row['gemeindeschluessel'], row['daten_stand'])
             row['date'] = dateparse(row['daten_stand'])
             row['_id'] = uid
+            if "faelle_covid_aktuell_invasiv_beatmet" in row:
+                row['faelle_covid_aktuell_beatmet'] = row['faelle_covid_aktuell_invasiv_beatmet']
             mongo.db.divi_daily.update({'_id': uid}, row, True)
 
     click.echo("Finished divi import in %s seconds" %
