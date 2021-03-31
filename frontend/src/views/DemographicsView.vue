@@ -20,8 +20,7 @@
                     :tabs="[{ id: 'heatmap', title: 'Altersverteilung' }]"
                 >
                     <template v-slot:description>
-                        Anzahl der mindestens einmal positiv getesteten Personen pro 100.000 Einwohner
-                        im zeitlichen Verlauf, aufgeteilt nach Altersgruppen.
+                        Anzahl der mindestens einmal positiv getesteten Personen pro 100.000 Einwohner in der Städteregion Aachen, aufgeteilt nach Zeit und Altergruppe.
                     </template>
                     <template v-slot:footer>
                         <p>
