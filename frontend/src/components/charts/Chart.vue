@@ -185,6 +185,7 @@ export default {
             return {
                 grid: {
                     left: 40,
+                    right: this.showVisualMap!="" ? 40 : 10,
                 },
                 toolbox: {
                     show: this.$vuetify.breakpoint.mdAndUp,

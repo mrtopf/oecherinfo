@@ -27,7 +27,8 @@
                 :tabs="[{ id: 'daily', title: 'Täglich' }]"
             >
                 <template v-slot:description>
-                    Anzahl der durchgeführten kostenlosen Bürgerschnelltests und der positiven Ergebnisse in der Städteregion Aachen
+                    Anzahl der durchgeführten kostenlosen Bürgerschnelltests und
+                    der positiven Ergebnisse in der Städteregion Aachen
                 </template>
                 <template v-slot:tab.daily>
                     <QuickTestChart
@@ -74,9 +75,46 @@
                         Städteregion Aachen zur Verfügung gestellt und können
                         als CSV-Datei
                         <a :href="downloadUrl" target="_blank">hier</a>
-                        abgerufen werden. Unter dieser URL sind immer die aktuellen Daten zu finden. 
-                        Eine JSON-Schnittstelle ist unter <a :href="downloadUrlJson" target="_blank">{{downloadUrlJson}}</a> erhältlich.
+                        abgerufen werden. Unter dieser URL sind immer die
+                        aktuellen Daten zu finden. Eine JSON-Schnittstelle ist
+                        unter
+                        <a :href="downloadUrlJson" target="_blank">{{
+                            downloadUrlJson
+                        }}</a>
+                        erhältlich.
                     </p>
+                    <p>
+                        Weitere Informationen zur Aussagekraft von
+                        Antigen-Schnelltests
+                        <a
+                            href="https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Infografik_Antigentest_PDF.pdf?__blob=publicationFile"
+                            target="_blank"
+                            >findet man beim RKI (PDF).</a
+                        >
+                    </p>
+                </template>
+            </Panel>
+            <Panel
+                title="Anzahl Schnelltests bezogen auf die Bevölkerungszahl"
+                matomoAttribute="popPerc"
+                attribute="popPerc"
+                :data="data"
+                :tableAttributes="[{ value: 'amount', text: 'Anzahl Tests' }]"
+                :tabs="[{ id: 'daily', title: 'Täglich' }]"
+                hideTable
+                hide-header
+            >
+                <template v-slot:description>
+                    Anteil der Schnelltests bezogen an der Gesamtbevölkerung
+                    der Städteregion Aachen
+                </template>
+                <template v-slot:tab.daily>
+                    <Chart
+                        :labels="data.dates"
+                        :data="popPercentages"
+                        name="Anteil Tests/Gesamtbevölkerung in %"
+                    >
+                    </Chart>
                 </template>
             </Panel>
         </template>
@@ -88,11 +126,11 @@ import { mapState, mapActions, mapGetters } from "vuex";
 import DataView from "@/components/DataView.vue";
 import Panel from "@/components/Panel.vue";
 import QuickTestChart from "@/components/charts/QuickTestChart.vue";
+import Chart from "@/components/charts/Chart.vue";
 import { format } from "echarts";
 import { genMetaInfo, MUNI_DICT } from "@/utils.js";
 
 const API = process.env.VUE_APP_CORONA_API_NEW;
-
 export default {
     props: {
         muni: {
@@ -164,11 +202,16 @@ export default {
                     positive: this.data["positive"][0]
                 }
             };
+        },
+        popPercentages() {
+            const POP_TOTAL = 555465;
+            return this.data.total.map(d => { return d / POP_TOTAL * 100 });
         }
     },
     components: {
         DataView,
         Panel,
+        Chart,
         QuickTestChart
     }
 };
