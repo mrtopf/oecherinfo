@@ -9,13 +9,16 @@
             <div class="lds-hourglass"></div>
         </v-card>
 
+        
         <v-container fluid v-else>
+
             <v-row no-gutters>
                 <v-col cols="12" class="pl-2">
                     <div class="caption black--text mb-6">
                         Zuletzt aktualisiert am {{ date }}
                     </div>
                 </v-col>
+
                 <v-col cols="12" md="8" class="pl-2">
                     <MuniSelector
                         v-if="!hideMuniSelector"
@@ -29,6 +32,7 @@
                         >{{ title }}</span
                     >
                 </v-col>
+
                 <v-col cols="12" md="4" class="text-md-right d-sm-none d-md-block" v-if="downloadUrl">
                     <v-btn :href="downloadUrl" color="primary" small tile class="my-1">
                         <v-icon small left>fa fa-file-download</v-icon>
@@ -37,6 +41,9 @@
             </v-row>
 
             <v-divider class="py-3"></v-divider>
+
+            <slot name="info"></slot>
+
             <v-row v-if="data">
                 <v-card
                     flat

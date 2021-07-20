@@ -114,16 +114,16 @@
                                             >{{ item.title }}
                                             <v-chip
                                                 small
-                                                color="#D6470A"
+                                                color="#e0e0e"
                                                 dark
                                                 v-if="item.new"
                                                 class="font-weight-bold"
                                             >
-                                                <v-icon left size="10">
-                                                    fa fa-star
+                                                <v-icon left size="14">
+                                                    fa fa-frown
                                                 </v-icon>
 
-                                                neu</v-chip
+                                                alt</v-chip
                                             >
                                         </v-list-item-title>
                                     </v-list-item-content>
