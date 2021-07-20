@@ -92,18 +92,19 @@ class DIVIData(Resource):
         divi_results =  mongo.db.divi_hospitals.find({},{'krankenhausStandort': 1, 'bettenStatus': 1, 'dateFormatted': 1})
         hospitals = []
         for h in divi_results:
-            hospitals.append({
-                #'name': h['krankenhausStandort']['bezeichnung'],
-                'name': HOSPITAL_MAP[h['_id']],
-                'dateFormatted': h['dateFormatted'],
-                'lowCare': STATUS_COLORS[h['bettenStatus']['statusLowCare']],
-                'highCare': STATUS_COLORS[h['bettenStatus']['statusHighCare']],
-                'ecmo': STATUS_COLORS[h['bettenStatus']['statusECMO']],
-                'lowCareText': h['bettenStatus']['statusLowCare'].capitalize(),
-                'highCareText': h['bettenStatus']['statusHighCare'].capitalize(),
-                'ecmoText': h['bettenStatus']['statusECMO'].capitalize(),
-                
-            })
+            if h['_id'] in HOSPITAL_MAP:
+                hospitals.append({
+                    #'name': h['krankenhausStandort']['bezeichnung'],
+                    'name': HOSPITAL_MAP[h['_id']],
+                    'dateFormatted': h['dateFormatted'],
+                    'lowCare': STATUS_COLORS[h['bettenStatus']['statusLowCare']],
+                    'highCare': STATUS_COLORS[h['bettenStatus']['statusHighCare']],
+                    'ecmo': STATUS_COLORS[h['bettenStatus']['statusECMO']],
+                    'lowCareText': h['bettenStatus']['statusLowCare'].capitalize(),
+                    'highCareText': h['bettenStatus']['statusHighCare'].capitalize(),
+                    'ecmoText': h['bettenStatus']['statusECMO'].capitalize(),
+                    
+                })
     
         resp['hospitals'] = hospitals
 
