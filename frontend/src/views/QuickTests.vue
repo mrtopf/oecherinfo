@@ -10,6 +10,14 @@
         :downloadUrl="downloadUrl"
         :date="date"
     >
+        <template v-slot:info>
+            <div class="py-4 px-3">
+            <v-alert elevation="2" icon="fa fa-sad-tear" type="info" dense>
+                Leider werden diese Daten von der Städteregion Aachen nicht mehr
+                bereitgestellt
+            </v-alert>
+            </div>
+        </template>
         <template v-slot:graphs>
             <Panel
                 title="kostenlose Bürgerschnelltests"
@@ -22,7 +30,7 @@
                     { value: 'total', text: 'Gesamtzahl Tests' },
                     { value: 'positive', text: 'positive Tests' },
                     { value: 'negative', text: 'negative Tests' },
-                    { value: 'rate_percent', text: 'Positivrate' }
+                    { value: 'rate_percent', text: 'Positivrate' },
                 ]"
                 :tabs="[{ id: 'daily', title: 'Täglich' }]"
             >
@@ -105,8 +113,8 @@
                 hide-header
             >
                 <template v-slot:description>
-                    Anteil der Schnelltests bezogen an der Gesamtbevölkerung
-                    der Städteregion Aachen
+                    Anteil der Schnelltests bezogen an der Gesamtbevölkerung der
+                    Städteregion Aachen
                 </template>
                 <template v-slot:tab.daily>
                     <Chart
@@ -135,9 +143,9 @@ export default {
     props: {
         muni: {
             type: String,
-            default: "sr"
+            default: "sr",
         },
-        attribute: String
+        attribute: String,
     },
     name: "RecoveredView",
     mounted() {
@@ -145,16 +153,16 @@ export default {
     },
     methods: {
         load() {
-            axios.get(`${API}/quicktests/`).then(response => {
+            axios.get(`${API}/quicktests/`).then((response) => {
                 this.data = response.data;
                 this.loading = false;
             });
-        }
+        },
     },
     watch: {
         muni(v) {
             this.load();
-        }
+        },
     },
 
     data: () => ({
@@ -164,19 +172,19 @@ export default {
             {
                 name: "Schnelltests",
                 item: "total",
-                width: 200
+                width: 200,
             },
             {
                 name: "Positiv",
                 item: "positive",
-                width: 100
+                width: 100,
             },
             {
                 name: "Positivrate",
                 item: "rate_formatted",
-                width: 200
-            }
-        ]
+                width: 200,
+            },
+        ],
     }),
     metaInfo() {
         return genMetaInfo(
@@ -199,20 +207,22 @@ export default {
             return {
                 today: {
                     total: this.data["total"][0],
-                    positive: this.data["positive"][0]
-                }
+                    positive: this.data["positive"][0],
+                },
             };
         },
         popPercentages() {
             const POP_TOTAL = 555465;
-            return this.data.total.map(d => { return d / POP_TOTAL * 100 });
-        }
+            return this.data.total.map((d) => {
+                return (d / POP_TOTAL) * 100;
+            });
+        },
     },
     components: {
         DataView,
         Panel,
         Chart,
-        QuickTestChart
-    }
+        QuickTestChart,
+    },
 };
 </script>
