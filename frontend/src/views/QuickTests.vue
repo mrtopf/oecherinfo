@@ -164,7 +164,7 @@ export default {
             {
                 name: "Schnelltests",
                 item: "total",
-                width: 150
+                width: 200
             },
             {
                 name: "Positiv",

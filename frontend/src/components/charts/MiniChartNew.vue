@@ -15,7 +15,8 @@
             <div class="value">
                 <v-tooltip bottom max-width="300" color="rgba(0,0,0,1)">
                     <template v-slot:activator="{ on }">
-                        <span v-on="on" class="ttip mr-4">{{ today }} <small>({{ today - weekChange }})</small></span>
+                        <span v-if="sum" v-on="on" class="ttip mr-4">{{ today }} <small>({{ today - sumWeek }})</small></span>
+                        <span v-else v-on="on" class="ttip mr-4">{{ today }} <small>({{ today - weekChange }})</small></span>
                     </template>
                     {{ description }}, Stand: {{ dateFormatted }}
                 </v-tooltip>
@@ -129,8 +130,8 @@ export default {
         today: Number,
         sumWeek: Number,
         sum2Week: Number,
-        weekChange: Number,
-        weekChangePercent: Number,
+        weekChange: Number, // week diff to show in the label
+        weekChangePercent: Number, 
         date: String,
         start: {type: [Number, String], default: 0},
     },

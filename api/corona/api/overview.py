@@ -63,8 +63,8 @@ class Overview(Resource):
                 elif f.startswith("cum"):
                     # we assume cumulative data here
                     # we sum the values of the last 7 days and the 7 days before that
-                    last7 = trend['%s7DaySum' %f] = series[-1] - series[-8]
-                    last14 = trend['%s14DaySum' %f] = series[-9] - series[-15] # change in previous week
+                    last7 = trend['%s7DaySum' %f] = series[0] - series[7]
+                    last14 = trend['%s14DaySum' %f] = series[7] - series[13] # change in previous week                    
                     diff = trend['%s7DayChange' %f] = last7 - last14
                     trend['%s7DayChangePercent' %f] = round(diff / max(last7,0.0001),2)
                 else:

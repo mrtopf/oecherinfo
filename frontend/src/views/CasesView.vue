@@ -171,8 +171,7 @@
                     :tabs="[{ id: 'daily', title: 'Täglich' }]"
                 >
                     <template v-slot:description>
-                            Die Anzahl der aktuell an COVID-19 erkrankten
-                            Personen.
+                            Die Anzahl der aktuell als infiziert geltenden Personen.
                     </template>
                     <template v-slot:tab.daily>
                         <Chart

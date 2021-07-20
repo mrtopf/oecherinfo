@@ -81,7 +81,7 @@ class Municipality(Resource):
                 # we assume cumulative data here
                 # we sum the values of the last 7 days and the 7 days before that
                 last7 = trend['%s7DaySum' %f] = series[-1] - series[-8]
-                last14 = trend['%s14DaySum' %f] = series[-9] - series[-15] # change in previous week
+                last14 = trend['%s14DaySum' %f] = series[-8] - series[-14] # change in previous week
                 diff = trend['%s7DayChange' %f] = last7 - last14
                 trend['%s7DayChangePercent' %f] = round(diff / max(last7,1),2)
             else:

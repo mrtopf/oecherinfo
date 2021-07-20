@@ -37,3 +37,7 @@ example.csv
 .gitignore
 frontend_deploy.sh
 deploy.sh
+impfdaten
+screenshots/yarn-error.log
+screenshots/output/preview.pdf
+screenshots/output/preview.png

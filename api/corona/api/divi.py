@@ -21,6 +21,7 @@ HOSPITAL_MAP = {
     '771699' :  'Bethlehem-Gesundheitszentrum, Stolberg',
     '772187' :  'St.-Antonius-Hospital, Eschweiler',
     '772720' :  'Eifelklinik St. Brigida, Simmerath',
+    '771072' :  'St. Elisabeth-Krankenhaus, Geilenkirchen'
 }
 
 
@@ -92,6 +93,7 @@ class DIVIData(Resource):
         divi_results =  mongo.db.divi_hospitals.find({},{'krankenhausStandort': 1, 'bettenStatus': 1, 'dateFormatted': 1})
         hospitals = []
         for h in divi_results:
+            # if h['_id'] in HOSPITAL_MAP:
             hospitals.append({
                 #'name': h['krankenhausStandort']['bezeichnung'],
                 'name': HOSPITAL_MAP[h['_id']],

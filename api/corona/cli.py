@@ -251,13 +251,13 @@ def import_divi_details():
         hosp['_id'] = uid
 
         hosp['bettenStatus'] = {
-            "statusLowCare" : hosp['maxBettenStatusEinschaetzungLowCare'],
-		    "statusHighCare" : hosp['maxBettenStatusEinschaetzungHighCare'],
-		    "statusECMO" : hosp['maxBettenStatusEinschaetzungEcmo'],
+            "statusLowCare": hosp['maxBettenStatusEinschaetzungLowCare'],
+            "statusHighCare": hosp['maxBettenStatusEinschaetzungHighCare'],
+            "statusECMO": hosp['maxBettenStatusEinschaetzungEcmo'],
         }
         date = hosp['date'] = datetime.datetime.now()
         hosp['dateFormatted'] = date.strftime("%d. %B %Y")
-        
+
         mongo.db.divi_hospitals.update({'_id': uid}, hosp, True)
 
     click.echo("Finished divi hospital import in %s seconds" %
@@ -266,26 +266,41 @@ def import_divi_details():
 
 @corona_cli.command()
 @with_appcontext
-@click.argument('filename')
-def import_quicktests(filename):
+def import_quicktests():
     """import the quick test data from a CSV file"""
     start_time = time.time()
 
-    with open(filename, "r") as csvfile:
-        reader = csv.DictReader(csvfile)
+    # load csv from the interwebs
+    tests_url = "https://offenedaten.aachen.de/dataset/6f298607-4258-4fa4-be8d-ecc71655424b/resource/13fedaff-2565-4067-b30b-7b7ac816a6fb/download/corona-schnelltests-stadteregion-aachen-202104.csv"
+    resp = requests.get(tests_url)
+    csvfile = io.StringIO(resp.text)
+
+    with csvfile as csvfile:
+        reader = csv.DictReader(csvfile, delimiter=";")
         for row in reader:
-            date = row['date'] = dateparse(row['date'])
-            uid = row['_id'] = "sr-%s" %(date.strftime("%d.%m.%Y"))
-            row['county']="05334"
-            total = row['total'] = int(row['total'])
-            positive = row['positive'] = int(row['positive'])
-            row['rate'] = positive/total
-            row['rate_percent'] = round(positive/total*100,2)
-            row['rate_permille'] = round(positive/total*1000,2)
+            print(row)
+            date = row['date'] = datetime.datetime.strptime(
+                row['Datum'], '%d. %b %y')
+            uid = row['_id'] = "sr-%s" % (date.strftime("%d.%m.%Y"))
+            row['county'] = "05334"
+            at = row['Anzahl Tests'].replace(".", "").strip()
+            po = row['Positive Tests'].replace(".", "").strip()
+            if at != "-":
+                total = row['total'] = int(at)
+            else:
+                total = row['total'] = 0
+            if po != "-":
+                positive = row['positive'] = int(po)
+            else:
+                positive = row['positive'] = 0
+            row['rate'] = positive/total if total else 0
+            row['rate_percent'] = round(positive/total*100, 2) if total else 0
+            row['rate_permille'] = round(
+                positive/total*1000, 2) if total else 0
+            print(row)
             mongo.db.quicktests.update({'_id': uid}, row, True)
     click.echo("Finished self test data import in %s seconds" %
                (round(time.time()-start_time, 2)))
-
 
 
 @corona_cli.command()
@@ -309,7 +324,6 @@ def import_age_groups():
 
     click.echo("Finished age group import in %s seconds" %
                (round(time.time()-start_time, 2)))
-
 
 
 @corona_cli.command()
