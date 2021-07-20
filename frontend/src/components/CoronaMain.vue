@@ -17,7 +17,10 @@
                     Coronavirus in der Städteregion Aachen
                 </h1>
             </v-card-text>
-            <v-card-text class="pb-0 caption"> Stand: {{ date }} </v-card-text>
+            <v-card-text class="pb-0 caption"> Stand: {{ date }} 
+
+            (Leider werden diese Daten derzeit nur sporadisch von der Städteregion aktualisiert)
+            </v-card-text>
             <v-card-title class="text-xs-h7 text-lg-h4 pb-0 font-weight-bold">
                 Übersicht Städteregion Aachen<br />
             </v-card-title>
@@ -41,13 +44,13 @@
                     description="Freie Intensivbetten in der Städteregion Aachen"
                     :trend="divi.today.freeBeds > 10 ? 1 : -1"
                 />
-                <Indicator
+                <!-- <Indicator
                     :value="quicktests.positive[0]"
                     title="positive Schnelltests"
                     :description="`Anzahl positiver Bürgerschnelltests am ${quicktests.dateFormatted}`"
                     :trend="computeTrend(quicktests.positive[0], 5, 15)"
                     :ntrend="quicktests.positive[0]>0 ? -1 : 1"
-                />
+                /> -->
             </v-card-text>
             <v-card-text class="py-0" v-if="!loading">
                 <v-row>
