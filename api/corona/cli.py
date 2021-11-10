@@ -55,7 +55,6 @@ def import_corona():
         'orderByFields': 'Meldedatum asc',
         'outFields': "ObjectID, Aktiv, Genesen, Inzidenz, Kommune, Meldedatum, Neue_Fälle, Neue_Genesene, Neue_Tote, ObjectID, Positiv, Schnitt_neue_Fälle, Tote,",
         'resultOffset': '0',
-        'resultRecordCount': '5200',
         'resultType': 'standard',
         'returnGeometry': 'false',
         'spatialRel': 'esriSpatialRelIntersects',
@@ -68,7 +67,7 @@ def import_corona():
     data = resp.json()
     for f in data['features']:
         d = f['attributes']
-
+        
         oid = d['ObjectID']
         doc = mongo.db.data.find_one({'_id': oid})
         if doc is None:
