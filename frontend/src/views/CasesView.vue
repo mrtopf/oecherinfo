@@ -260,7 +260,7 @@ export default {
                 width: 150
             },
             {
-                name: "Gesamzahl",
+                name: "Gesamtzahl",
                 item: "cumCases",
                 width: 200
             }
