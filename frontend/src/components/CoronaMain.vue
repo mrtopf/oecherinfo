@@ -18,8 +18,6 @@
                 </h1>
             </v-card-text>
             <v-card-text class="pb-0 caption"> Stand: {{ date }} 
-
-            (Leider werden diese Daten derzeit nur sporadisch von der Städteregion aktualisiert)
             </v-card-text>
             <v-card-title class="text-xs-h7 text-lg-h4 pb-0 font-weight-bold">
                 Übersicht Städteregion Aachen<br />
