@@ -192,10 +192,6 @@
                                                 Katecholamintherapie
                                             </li>
                                             <li>
-                                                differenzierte
-                                                Katecholamintherapie
-                                            </li>
-                                            <li>
                                                 kontrollierte invasive Beatmung
                                                 mittels Intensivbeatmungsgeräten
                                                 (über Endotrachealtubus oder
