@@ -32,7 +32,7 @@ export default {
                     top: 50,
                     right: 10,
                     min: 0,
-                    max: 300,
+                    max: 500,
                     calculable: true,
                     realtime: true,
                     inRange: {
@@ -66,7 +66,8 @@ export default {
                             "#52458c",
                             "#472e7f",
                             "#3c1773",
-                            "#310066"
+                            "#310066",
+                            "#000000"
                         ]
                     }
                 },
